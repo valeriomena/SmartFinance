@@ -1,0 +1,38 @@
+/project-root
+|-- /controllers
+|   |-- user.controller.js
+|   |-- business.controller.js
+|   |-- productService.controller.js
+|   |-- sales.controller.js
+|   |-- productionCost.controller.js
+|   |-- operatingCost.controller.js
+|   |-- financialExpense.controller.js
+|   |-- financialIndicator.controller.js
+|   |-- incomeStatement.controller.js
+|
+|-- /models
+|   |-- User.js
+|   |-- Business.js
+|   |-- ProductService.js
+|   |-- Sales.js
+|   |-- ProductionCost.js
+|   |-- OperatingCost.js
+|   |-- FinancialExpense.js
+|   |-- FinancialIndicator.js
+|   |-- IncomeStatement.js
+|
+|-- /routes
+|   |-- user.routes.js
+|   |-- business.routes.js
+|   |-- productService.routes.js
+|   |-- sales.routes.js
+|   |-- productionCost.routes.js
+|   |-- operatingCost.routes.js
+|   |-- financialExpense.routes.js
+|   |-- financialIndicator.routes.js
+|   |-- incomeStatement.routes.js
+|
+|-- /middleware
+|   |-- errorHandler.js
+|
+|-- app.js (or index.js)
