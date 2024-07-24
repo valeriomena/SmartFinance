@@ -1,0 +1,48 @@
+SmartFinance-frontend/
+├── public/
+│   ├── index.html
+├── src/
+│   ├── assets/
+│   ├── components/
+│   │   ├── Layout/
+│   │   │   ├── Header.js
+│   │   │   ├── Footer.js
+│   │   │   ├── Sidebar.js
+│   │   │   ├── Layout.js
+│   │   ├── Business/
+│   │   │   ├── BusinessList.js
+│   │   │   ├── BusinessDetail.js
+│   │   │   ├── BusinessForm.js
+│   │   ├── Sales/
+│   │   │   ├── SalesList.js
+│   │   │   ├── SalesDetail.js
+│   │   │   ├── SalesForm.js
+│   │   ├── Products/
+│   │   │   ├── ProductList.js
+│   │   │   ├── ProductDetail.js
+│   │   │   ├── ProductForm.js
+│   │   ├── Costs/
+│   │   │   ├── CostList.js
+│   │   │   ├── CostDetail.js
+│   │   │   ├── CostForm.js
+│   │   ├── Reports/
+│   │   │   ├── ReportsList.js
+│   │   │   ├── ReportDetail.js
+│   │   │   ├── ReportForm.js
+│   │   ├── Indicators/
+│   │   │   ├── IndicatorList.js
+│   │   │   ├── IndicatorDetail.js
+│   │   │   ├── IndicatorForm.js
+│   │   ├── Auth/
+│   │   │   ├── Login.js
+│   │   │   ├── Register.js
+│   ├── pages/
+│   │   ├── Dashboard.js
+│   │   ├── NotFound.js
+│   ├── services/
+│   │   ├── api.js
+│   ├── App.js
+│   ├── index.js
+├── .env
+├── package.json
+├── README.md
