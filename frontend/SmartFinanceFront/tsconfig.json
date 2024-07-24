@@ -1,11 +1,27 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.node.json"
+  "compilerOptions": {
+    "target": "ESNext",                              // Especifica la versión de ECMAScript destino.
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],        // Incluye bibliotecas para DOM y ECMAScript.
+    "allowJs": true,                                 // Permite archivos JavaScript.
+    "skipLibCheck": true,                            // Omite la comprobación de bibliotecas.
+    "esModuleInterop": true,                         // Habilita interoperabilidad con módulos ES.
+    "allowSyntheticDefaultImports": true,            // Permite importaciones de defecto sintéticas.
+    "strict": true,                                  // Habilita todas las comprobaciones estrictas.
+    "forceConsistentCasingInFileNames": true,        // Fuerza consistencia de mayúsculas y minúsculas en los nombres de archivos.
+    "module": "ESNext",                              // Especifica el sistema de módulos.
+    "moduleResolution": "node",                      // Especifica la resolución de módulos.
+    "resolveJsonModule": true,                       // Permite importar archivos JSON.
+    "isolatedModules": true,                         // Soporte para módulos aislados.
+    "noEmit": true,                                  // No emitirá archivos de salida.
+    "jsx": "react-jsx",                              // Soporte para JSX en React.
+    "baseUrl": "./src",                              // Base URL para resolver módulos.
+    "paths": {
+      "@components/*": ["components/*"],             // Configuración de alias para componentes.
+      "@assets/*": ["assets/*"],                     // Configuración de alias para assets.
+      "@styles/*": ["styles/*"],                     // Configuración de alias para estilos.
+      "@pages/*": ["pages/*"]                        // Configuración de alias para páginas.
     }
-  ]
+  },
+  "include": ["src"],                                // Incluir todos los archivos en el directorio src.
+  "exclude": ["node_modules", "dist"]                // Excluir node_modules y dist.
 }

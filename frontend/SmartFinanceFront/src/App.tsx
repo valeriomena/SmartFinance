@@ -1,35 +1,56 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import "./App.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Home from "./components/Home";
+import Login from "./components/Auth/Login";
+import Register from "./components/Auth/Register";
+import BusinessList from "./components/Business/BusinessList";
+import BusinessDetail from "./components/Business/BusinessDetail";
+import BusinessForm from "./components/Business/BusinessForm";
+import SalesList from "./components/Sales/SalesList";
+import SalesDetail from "./components/Sales/SalesDetail";
+import SalesForm from "./components/Sales/SalesForm";
+import ProductList from "./components/Products/ProductList";
+import ProductDetail from "./components/Products/ProductDetail";
+import ProductForm from "./components/Products/ProductForm";
+import CostList from "./components/Costs/CostList";
+import CostDetail from "./components/Costs/CostDetail";
+import CostForm from "./components/Costs/CostForm";
+import ReportsList from "./components/Reports/ReportsList";
+import ReportDetail from "./components/Reports/ReportDetail";
+import ReportForm from "./components/Reports/ReportForm";
+import IndicatorList from "./components/Indicators/IndicatorList";
+import IndicatorDetail from "./components/Indicators/IndicatorDetail";
+import IndicatorForm from "./components/Indicators/IndicatorForm";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App: React.FC = () => {
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/business" element={<BusinessList />} />
+        <Route path="/business/:id" element={<BusinessDetail />} />
+        <Route path="/business/new" element={<BusinessForm />} />
+        <Route path="/sales" element={<SalesList />} />
+        <Route path="/sales/:id" element={<SalesDetail />} />
+        <Route path="/sales/new" element={<SalesForm />} />
+        <Route path="/products" element={<ProductList />} />
+        <Route path="/products/:id" element={<ProductDetail />} />
+        <Route path="/products/new" element={<ProductForm />} />
+        <Route path="/costs" element={<CostList />} />
+        <Route path="/costs/:id" element={<CostDetail />} />
+        <Route path="/costs/new" element={<CostForm />} />
+        <Route path="/reports" element={<ReportsList />} />
+        <Route path="/reports/:id" element={<ReportDetail />} />
+        <Route path="/reports/new" element={<ReportForm />} />
+        <Route path="/indicators" element={<IndicatorList />} />
+        <Route path="/indicators/:id" element={<IndicatorDetail />} />
+        <Route path="/indicators/new" element={<IndicatorForm />} />
+      </Routes>
+    </Router>
+  );
+};
 
-export default App
+export default App;
