@@ -1,0 +1,58 @@
+/* src/components/Layout/Layout.css */
+.layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--Seychelle-Islands-5);
+    color: var(--Seychelle-Islands-1);
+    text-align: center;
+    padding: 1rem;
+    z-index: 1000;
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    margin-top: 3rem;
+    /* Espacio para el header */
+}
+
+.sidebar {
+    width: 250px;
+    position: fixed;
+    top: 4rem;
+    /* Alinea con el header */
+    left: 0;
+    height: calc(100% - 4rem);
+    /* Ajusta para evitar solapamientos */
+    background-color: rgba(59, 47, 128, 0.5);
+    color: var(--Seychelle-Islands-1);
+    overflow-y: auto;
+    z-index: 1000;
+    /* Menor que el header */
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.content {
+    flex: 1;
+    margin-left: 250px;
+    /* Espacio para el sidebar */
+    padding: 1rem;
+}
+
+.footer {
+    background-color: var(--Seychelle-Islands-5);
+    color: var(--Seychelle-Islands-1);
+    text-align: center;
+    padding: 1rem;
+    border-top: 1px solid var(--Seychelle-Islands-4);
+    margin-top: auto;
+    /* Empuja el footer hacia el fondo */
+}

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Reemplazar useHistory con useNavigate
 import api from '../../services/api';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBusinessTime, faCalendarDay, faDollarSign, faChartLine, faBalanceScale, faChartPie, faCashRegister } from '@fortawesome/free-solid-svg-icons';
+import '../../styles/Form.css'; // Importa los estilos del formulario
 
 const IndicatorForm: React.FC = () => {
   const [businessId, setBusinessId] = useState('');
@@ -35,44 +38,98 @@ const IndicatorForm: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Crear Nuevo Indicador</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Negocio:</label>
-          <input type="text" value={businessId} onChange={(e) => setBusinessId(e.target.value)} required />
+        <div className="input-group">
+          <FontAwesomeIcon icon={faBusinessTime} />
+          <input
+            type="text"
+            value={businessId}
+            onChange={(e) => setBusinessId(e.target.value)}
+            placeholder="ID del negocio"
+            required
+          />
         </div>
-        <div>
-          <label>Fecha:</label>
-          <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} required />
+        <div className="input-group">
+          <FontAwesomeIcon icon={faCalendarDay} />
+          <input
+            type="date"
+            value={fecha}
+            onChange={(e) => setFecha(e.target.value)}
+            placeholder="Fecha"
+            required
+          />
         </div>
-        <div>
-          <label>Beneficio Bruto:</label>
-          <input type="number" value={beneficioBruto} onChange={(e) => setBeneficioBruto(e.target.value)} required />
+        <div className="input-group">
+          <FontAwesomeIcon icon={faDollarSign} />
+          <input
+            type="number"
+            value={beneficioBruto}
+            onChange={(e) => setBeneficioBruto(e.target.value)}
+            placeholder="Beneficio Bruto"
+            required
+          />
         </div>
-        <div>
-          <label>Beneficio Neto:</label>
-          <input type="number" value={beneficioNeto} onChange={(e) => setBeneficioNeto(e.target.value)} required />
+        <div className="input-group">
+          <FontAwesomeIcon icon={faDollarSign} />
+          <input
+            type="number"
+            value={beneficioNeto}
+            onChange={(e) => setBeneficioNeto(e.target.value)}
+            placeholder="Beneficio Neto"
+            required
+          />
         </div>
-        <div>
-          <label>Margen Beneficio Bruto:</label>
-          <input type="number" value={margenBeneficioBruto} onChange={(e) => setMargenBeneficioBruto(e.target.value)} required />
+        <div className="input-group">
+          <FontAwesomeIcon icon={faChartLine} />
+          <input
+            type="number"
+            value={margenBeneficioBruto}
+            onChange={(e) => setMargenBeneficioBruto(e.target.value)}
+            placeholder="Margen Beneficio Bruto"
+            required
+          />
         </div>
-        <div>
-          <label>Margen Beneficio Neto:</label>
-          <input type="number" value={margenBeneficioNeto} onChange={(e) => setMargenBeneficioNeto(e.target.value)} required />
+        <div className="input-group">
+          <FontAwesomeIcon icon={faChartLine} />
+          <input
+            type="number"
+            value={margenBeneficioNeto}
+            onChange={(e) => setMargenBeneficioNeto(e.target.value)}
+            placeholder="Margen Beneficio Neto"
+            required
+          />
         </div>
-        <div>
-          <label>Punto de Equilibrio:</label>
-          <input type="number" value={puntoEquilibrio} onChange={(e) => setPuntoEquilibrio(e.target.value)} required />
+        <div className="input-group">
+          <FontAwesomeIcon icon={faBalanceScale} />
+          <input
+            type="number"
+            value={puntoEquilibrio}
+            onChange={(e) => setPuntoEquilibrio(e.target.value)}
+            placeholder="Punto de Equilibrio"
+            required
+          />
         </div>
-        <div>
-          <label>Rotación de Inventario:</label>
-          <input type="number" value={rotacionInventario} onChange={(e) => setRotacionInventario(e.target.value)} required />
+        <div className="input-group">
+          <FontAwesomeIcon icon={faChartPie} />
+          <input
+            type="number"
+            value={rotacionInventario}
+            onChange={(e) => setRotacionInventario(e.target.value)}
+            placeholder="Rotación de Inventario"
+            required
+          />
         </div>
-        <div>
-          <label>Ratio de Liquidez:</label>
-          <input type="number" value={ratioLiquidez} onChange={(e) => setRatioLiquidez(e.target.value)} required />
+        <div className="input-group">
+          <FontAwesomeIcon icon={faCashRegister} />
+          <input
+            type="number"
+            value={ratioLiquidez}
+            onChange={(e) => setRatioLiquidez(e.target.value)}
+            placeholder="Ratio de Liquidez"
+            required
+          />
         </div>
         <button type="submit">Guardar</button>
       </form>

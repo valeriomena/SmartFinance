@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+import '../../styles/Form.css'; // Importa los estilos del formulario
 
-const Login = () => {
+const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -12,31 +15,33 @@ const Login = () => {
     try {
       const response = await api.post('/auth/login', { email, password });
       localStorage.setItem('token', response.data.token);
-      navigate('/'); // Actualiza la llamada para usar navigate
+      navigate('/');
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <div>
+    <div className="login-container">
       <h2>Iniciar Sesión</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Email:</label>
+        <div className="input-group">
+          <FontAwesomeIcon icon={faEnvelope} />
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            placeholder="Correo electrónico"
             required
           />
         </div>
-        <div>
-          <label>Contraseña:</label>
+        <div className="input-group">
+          <FontAwesomeIcon icon={faLock} />
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Contraseña"
             required
           />
         </div>

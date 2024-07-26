@@ -1,0 +1,99 @@
+.sidebar {
+    width: 250px;
+    /* Ajusta el ancho del sidebar según tu diseño */
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: var(--Seychelle-Islands-5);
+    color: var(--Seychelle-Islands-1);
+    overflow-y: auto;
+    z-index: 1000;
+    /* Asegúrate de que el sidebar esté en un nivel superior */
+}
+
+.main-layout {
+    display: flex;
+    margin-left: 250px;
+    /* Ajusta el margen para dar espacio al sidebar */
+    padding: 1rem;
+}
+
+.content {
+    flex: 1;
+}
+
+.sidebar {
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 60px;
+   
+    background-color: rgba(59, 47, 128, 0.5);
+     
+    transition: width 0.3s ease, background-color 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar:hover {
+    width: 200px;
+    /* Ancho visible al pasar el mouse */
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.sidebar li {
+    padding: 20px;
+    text-align: right;
+    width: 100%;
+}
+
+.sidebar a {
+    color: #FAEDDA;
+    /* Color del texto */
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.sidebar a .text {
+    margin-left: 10px;
+    display: none;
+    /* Ocultar el texto por defecto */
+}
+
+.sidebar:hover a .text {
+    display: inline;
+    /* Mostrar el texto al pasar el mouse */
+}
+
+.sidebar a:hover {
+    color: #AEE8CA;
+    /* Cambio de color al pasar el mouse */
+}
+
+.sidebar .icon {
+    font-size: 1.5em;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 40px;
+        /* Ancho más pequeño en dispositivos móviles */
+    }
+
+    .sidebar:hover {
+        width: 150px;
+        /* Ancho visible al pasar el mouse en dispositivos móviles */
+    }
+}

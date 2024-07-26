@@ -7,8 +7,7 @@ const userSchema = new Schema({
     role: { type: String, enum: ['admin', 'user'], required: true },
     phone: {
         number: { type: String, required: true },
-        country_code: { type: String, required: true },
-        region: { type: String, required: true }
+        country_code: { type: String, required: true }
     },
     whatsapp_country_code: { type: String, required: true }
 }, { timestamps: true });

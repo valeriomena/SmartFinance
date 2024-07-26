@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Reemplazar useHistory con useNavigate
+import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStore, faTag, faCalendarDay, faDollarSign, faSortAmountUp } from '@fortawesome/free-solid-svg-icons';
+import '../../styles/Form.css'; // Importa los estilos del formulario
 
 const SalesForm: React.FC = () => {
-  const [products, setProducts] = useState<any[]>([]); // Ajuste de tipos
+  const [products, setProducts] = useState<any[]>([]);
   const [businessId, setBusinessId] = useState('');
   const [productServiceId, setProductServiceId] = useState('');
   const [fecha, setFecha] = useState('');
   const [precioVenta, setPrecioVenta] = useState('');
   const [cantidadVendida, setCantidadVendida] = useState('');
   const [ingresoTotal, setIngresoTotal] = useState('');
-  const navigate = useNavigate(); // Usar useNavigate en lugar de useHistory
+  const navigate = useNavigate();
 
   useEffect(() => {
     api.get('/products')
@@ -29,43 +32,77 @@ const SalesForm: React.FC = () => {
         cantidad_vendida: cantidadVendida,
         ingreso_total: ingresoTotal
       });
-      navigate('/sales'); // Usar navigate en lugar de history.push
+      navigate('/sales');
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Crear Nueva Venta</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Negocio:</label>
-          <input type="text" value={businessId} onChange={(e) => setBusinessId(e.target.value)} required />
+        <div className="input-group">
+          <FontAwesomeIcon icon={faStore} />
+          <input
+            type="text"
+            value={businessId}
+            onChange={(e) => setBusinessId(e.target.value)}
+            placeholder="ID del negocio"
+            required
+          />
         </div>
-        <div>
-          <label>Producto/Servicio:</label>
-          <select value={productServiceId} onChange={(e) => setProductServiceId(e.target.value)} required>
+        <div className="input-group">
+          <FontAwesomeIcon icon={faTag} />
+          <select
+            value={productServiceId}
+            onChange={(e) => setProductServiceId(e.target.value)}
+            required
+          >
+            <option value="">Seleccionar producto/servicio</option>
             {products.map(product => (
               <option key={product._id} value={product._id}>{product.name}</option>
             ))}
           </select>
         </div>
-        <div>
-          <label>Fecha:</label>
-          <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} required />
+        <div className="input-group">
+          <FontAwesomeIcon icon={faCalendarDay} />
+          <input
+            type="date"
+            value={fecha}
+            onChange={(e) => setFecha(e.target.value)}
+            required
+          />
         </div>
-        <div>
-          <label>Precio Venta:</label>
-          <input type="number" value={precioVenta} onChange={(e) => setPrecioVenta(e.target.value)} required />
+        <div className="input-group">
+          <FontAwesomeIcon icon={faDollarSign} />
+          <input
+            type="number"
+            value={precioVenta}
+            onChange={(e) => setPrecioVenta(e.target.value)}
+            placeholder="Precio de Venta"
+            required
+          />
         </div>
-        <div>
-          <label>Cantidad Vendida:</label>
-          <input type="number" value={cantidadVendida} onChange={(e) => setCantidadVendida(e.target.value)} required />
+        <div className="input-group">
+          <FontAwesomeIcon icon={faSortAmountUp} />
+          <input
+            type="number"
+            value={cantidadVendida}
+            onChange={(e) => setCantidadVendida(e.target.value)}
+            placeholder="Cantidad Vendida"
+            required
+          />
         </div>
-        <div>
-          <label>Ingreso Total:</label>
-          <input type="number" value={ingresoTotal} onChange={(e) => setIngresoTotal(e.target.value)} required />
+        <div className="input-group">
+          <FontAwesomeIcon icon={faDollarSign} />
+          <input
+            type="number"
+            value={ingresoTotal}
+            onChange={(e) => setIngresoTotal(e.target.value)}
+            placeholder="Ingreso Total"
+            required
+          />
         </div>
         <button type="submit">Guardar</button>
       </form>
