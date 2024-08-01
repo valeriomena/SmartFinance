@@ -4,6 +4,7 @@ import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import '../../styles/Form.css'; // Importa los estilos del formulario
+import { AxiosError } from 'axios';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -13,11 +14,23 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await api.post('/auth/login', { email, password });
+      const response = await api.post('/api/users/login', { email, password });
+
+        console.log('Response data:', response.data); // Agregar log
+        console.log('Token:', response.data.token);
+        console.log('User ID:', response.data.userId);
+
+      // Agregar console.log para depuración
+      console.log('Token:', response.data.token);
+      console.log('User ID:', response.data.userId);
+
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('userId', response.data.userId); // Guardar el ID del usuario
+
       navigate('/');
     } catch (error) {
-      console.error(error);
+      const axiosError = error as AxiosError;
+      console.error('Error during login:', axiosError.response?.data || axiosError.message);
     }
   };
 

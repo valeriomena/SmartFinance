@@ -3,12 +3,25 @@ SmartFinance-frontend/
 │   ├── index.html
 ├── src/
 │   ├── assets/
+│   │   ├── Dashboard.js
+│   │   ├── NotFound.js
 │   ├── components/
+│   │   ├── Auth/
+│   │   │   ├── AuthContext.tsx
+│   │   │   ├── login.css
+│   │   │   ├── login.tsx
+│   │   │   ├── Register.tsx
 │   │   ├── Layout/
-│   │   │   ├── Header.js
-│   │   │   ├── Footer.js
-│   │   │   ├── Sidebar.js
-│   │   │   ├── Layout.js
+│   │   │   ├── Header.tsx
+│   │   │   ├── Header.css
+│   │   │   ├── Footer.tsx
+│   │   │   ├── Footer.css
+│   │   │   ├── Sidebar.tsx
+│   │   │   ├── Sidebar.css
+│   │   │   ├── MainLayout.css
+│   │   │   ├── Layout.css
+│   │   │   ├── Layout.tsx
+│   │   │   ├── paleta.css
 │   │   ├── Business/
 │   │   │   ├── BusinessList.js
 │   │   │   ├── BusinessDetail.js
@@ -36,12 +49,18 @@ SmartFinance-frontend/
 │   │   ├── Auth/
 │   │   │   ├── Login.js
 │   │   │   ├── Register.js
+│   │   │   ├── AuthContext.tsx
+│   ├── hooks/
+│   │   ├── useRegisterUser.tsx
 │   ├── pages/
 │   │   ├── Dashboard.js
 │   │   ├── NotFound.js
 │   ├── services/
 │   │   ├── api.js
-│   ├── App.js
+│   │   ├── countryService.tsx
+│   ├── styles/
+│   │   ├── Form.css
+│   ├── App.tsx
 │   ├── index.js
 ├── .env
 ├── package.json

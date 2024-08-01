@@ -21,38 +21,42 @@ import ReportForm from './components/Reports/ReportForm';
 import IndicatorList from './components/Indicators/IndicatorList';
 import IndicatorDetail from './components/Indicators/IndicatorDetail';
 import IndicatorForm from './components/Indicators/IndicatorForm';
-import Layout from './components/Layout/Layout'; // Importar el layout
+import Layout from './components/Layout/Layout';
+import Header from './components/Layout/Header';
+import { AuthProvider } from './components/Auth/AuthContext';
 import './App.css';
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Layout>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/business" element={<BusinessList />} />
-          <Route path="/business/:id" element={<BusinessDetail />} />
-          <Route path="/business/new" element={<BusinessForm />} />
-          <Route path="/sales" element={<SalesList />} />
-          <Route path="/sales/:id" element={<SalesDetail />} />
-          <Route path="/sales/new" element={<SalesForm />} />
-          <Route path="/products" element={<ProductList />} />
-          <Route path="/products/:id" element={<ProductDetail />} />
-          <Route path="/products/new" element={<ProductForm />} />
-          <Route path="/costs" element={<CostList />} />
-          <Route path="/costs/:id" element={<CostDetail />} />
-          <Route path="/costs/new" element={<CostForm />} />
-          <Route path="/reports" element={<ReportsList />} />
-          <Route path="/reports/:id" element={<ReportDetail />} />
-          <Route path="/reports/new" element={<ReportForm />} />
-          <Route path="/indicators" element={<IndicatorList />} />
-          <Route path="/indicators/:id" element={<IndicatorDetail />} />
-          <Route path="/indicators/new" element={<IndicatorForm />} />
-        </Routes>
-      </Layout>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/business" element={<BusinessList />} />
+            <Route path="/business/:id" element={<BusinessDetail />} />
+            <Route path="/business/new" element={<BusinessForm />} />
+            <Route path="/sales" element={<SalesList />} />
+            <Route path="/sales/:id" element={<SalesDetail />} />
+            <Route path="/sales/new" element={<SalesForm />} />
+            <Route path="/products" element={<ProductList />} />
+            <Route path="/products/:id" element={<ProductDetail />} />
+            <Route path="/products/new" element={<ProductForm />} />
+            <Route path="/costs" element={<CostList />} />
+            <Route path="/costs/:id" element={<CostDetail />} />
+            <Route path="/costs/new" element={<CostForm />} />
+            <Route path="/reports" element={<ReportsList />} />
+            <Route path="/reports/:id" element={<ReportDetail />} />
+            <Route path="/reports/new" element={<ReportForm />} />
+            <Route path="/indicators" element={<IndicatorList />} />
+            <Route path="/indicators/:id" element={<IndicatorDetail />} />
+            <Route path="/indicators/new" element={<IndicatorForm />} />
+          </Routes>
+        </Layout>
+      </Router>
+    </AuthProvider>
   );
 };
 

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock, faPhone, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import '../../styles/Form.css'; // Importa los estilos del formulario
 import { fetchCountries } from '../../services/countryService'; // Importa el servicio
+import useRegisterUser from '../../hooks/useRegisterUser'; // Importa el hook
 
 const Register: React.FC = () => {
   const [name, setName] = useState('');
@@ -16,7 +16,7 @@ const Register: React.FC = () => {
   const [region, setRegion] = useState('');
   const [whatsappCountryCode, setWhatsappCountryCode] = useState('');
   const [countries, setCountries] = useState<any[]>([]); // Estado para los países
-  const [errors, setErrors] = useState<{ email?: string; phone?: string }>({});
+  const { registerUser, errors, successMessage } = useRegisterUser();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,16 +32,6 @@ const Register: React.FC = () => {
     loadCountries();
   }, []);
 
-  const validateEmail = (email: string) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  };
-
-  const validatePhone = (phone: string) => {
-    const re = /^\+?[1-9]\d{1,14}$/;
-    return re.test(phone);
-  };
-
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedCountryCode = e.target.value;
     setCountryCode(selectedCountryCode);
@@ -55,37 +45,22 @@ const Register: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const errors: { email?: string; phone?: string } = {};
 
-    if (!validateEmail(email)) {
-      errors.email = 'El correo electrónico no es válido.';
-    }
+    const success = await registerUser({
+      name,
+      email,
+      password,
+      role,
+      phone: {
+        number: phone,
+        country_code: countryCode,
+        region
+      },
+      whatsapp_country_code: whatsappCountryCode
+    });
 
-    if (!validatePhone(phone)) {
-      errors.phone = 'El número de teléfono no es válido.';
-    }
-
-    if (Object.keys(errors).length > 0) {
-      setErrors(errors);
-      return;
-    }
-
-    try {
-      await api.post('/auth/register', {
-        name,
-        email,
-        password,
-        role,
-        phone: {
-          number: phone,
-          country_code: countryCode,
-          region
-        },
-        whatsapp_country_code: whatsappCountryCode
-      });
-      navigate('/login');
-    } catch (error) {
-      console.error(error);
+    if (success) {
+      setTimeout(() => navigate('/login'), 1300); // Redirige después de 2 segundos
     }
   };
 
@@ -146,19 +121,18 @@ const Register: React.FC = () => {
               </option>
             ))}
           </select>
-          </div>
+        </div>
         <div className="input-group">
           <FontAwesomeIcon icon={faGlobe} />
           <input
             type="text"
             value={whatsappCountryCode}
-            onChange={(e) => setWhatsappCountryCode(e.target.value)}
             placeholder="Código de país para WhatsApp"
-            required
             readOnly
           />
         </div>
         <button type="submit">Registrarse</button>
+        {successMessage && <div className="success-message">{successMessage}</div>}
       </form>
     </div>
   );

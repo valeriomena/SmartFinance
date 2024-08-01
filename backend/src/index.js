@@ -1,11 +1,13 @@
-require('dotenv').config()
+// index.js
+require('dotenv').config();
+const app = require('./app'); // Requiere app porque es el que tiene la configuración
+require('./database'); // Conexión a la base de datos
 
-const app = require('./app')//Requiere app porque es el que tiene la configuracion
-require('./database')
-//esta logica es par ejecutar el servidor
+// Esta lógica es para ejecutar el servidor
 async function main() { 
-    await app.listen(app.get('port'))
-    console.log('el servidor se esta ejecutando en el puerto: ', app.get('port'));
+    const PORT = app.get('port');
+    await app.listen(PORT);
+    console.log(`El servidor se está ejecutando en el puerto: ${PORT}`);
 }
+
 main();
-//configuracion del servidor

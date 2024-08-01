@@ -1,4 +1,4 @@
-/project-root
+/src
 |-- /controllers
 |   |-- user.controller.js
 |   |-- business.controller.js
@@ -34,5 +34,8 @@
 |
 |-- /middleware
 |   |-- errorHandler.js
+|   |-- authenticateToken.js
 |
-|-- app.js (or index.js)
+|-- app.js 
+|-- database.js
+|-- index.js

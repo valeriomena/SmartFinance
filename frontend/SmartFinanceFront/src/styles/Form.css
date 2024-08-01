@@ -80,3 +80,9 @@
     background-color: var(--Seychelle-Islands-2);
     /* Color de fondo cuando el botón está activo */
 }
+.success-message {
+    color: #28a745;
+    /* Verde para el mensaje de éxito */
+    text-align: center;
+    margin-top: 1rem;
+}

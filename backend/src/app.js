@@ -1,21 +1,21 @@
-const express = require('express')//
-const cors = require('cors')
-const app = express()
+// app.js
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
 const errorHandler = require('./middleware/errorHandler');
+const connectDB = require('./database');
 
-//configuration 
-app.set('port', process.env.PORT || 4000)//seteamos la variable port, le pasamos en el segundo parametro es una variable de entorno PORT 4000
+const app = express();
 
-//middlewares
-app.use(cors())
-app.use(express.json())
+// Configuración del puerto
+const PORT = process.env.PORT || 4000;
+app.set('port', PORT);
 
-//rutas
-app.get('/', (req, res)=> {
-    res.send('Api de Tareas');
-})
+// Middlewares
+app.use(cors());
+app.use(express.json());
 
-// Routes
+// Rutas
 app.use('/api/users', require('./routes/user.routes'));
 app.use('/api/businesses', require('./routes/business.routes'));
 app.use('/api/productServices', require('./routes/productService.routes'));
@@ -26,8 +26,7 @@ app.use('/api/financialExpenses', require('./routes/financialExpense.routes'));
 app.use('/api/financialIndicators', require('./routes/financialIndicator.routes'));
 app.use('/api/incomeStatements', require('./routes/incomeStatement.routes'));
 
-// Error Handler
+// Middleware de Error
 app.use(errorHandler);
-
 
 module.exports = app;
