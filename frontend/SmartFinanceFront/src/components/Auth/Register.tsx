@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faEnvelope, faLock, faPhone, faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faEnvelope, faLock, faPhone, faGlobe, faTimes } from '@fortawesome/free-solid-svg-icons';
 import '../../styles/Form.css'; // Importa los estilos del formulario
 import { fetchCountries } from '../../services/countryService'; // Importa el servicio
 import useRegisterUser from '../../hooks/useRegisterUser'; // Importa el hook
+import '../../styles/SlideForm.css'; // Importa los estilos deslizantes
+import './Register.css';
 
-const Register: React.FC = () => {
+interface RegisterProps {
+  onClose: () => void;
+}
+
+const Register: React.FC<RegisterProps> = ({ onClose }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -65,7 +71,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="form-container">
+    <div className="slide-form form-container">
       <h2>Registrarse</h2>
       <form onSubmit={handleSubmit}>
         <div className="input-group">
@@ -132,6 +138,9 @@ const Register: React.FC = () => {
           />
         </div>
         <button type="submit">Registrarse</button>
+        <button type="button" className="close-button" onClick={onClose}>
+          <FontAwesomeIcon icon={faTimes} /> 
+        </button>
         {successMessage && <div className="success-message">{successMessage}</div>}
       </form>
     </div>

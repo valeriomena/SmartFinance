@@ -1,25 +1,33 @@
+// src/components/Products/ProductForm.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBox, faTag, faDollarSign, faStore } from '@fortawesome/free-solid-svg-icons';
-import '../../styles/Form.css'; // Importa los estilos del formulario
+import { faBox, faTag, faDollarSign, faStore, faCalculator } from '@fortawesome/free-solid-svg-icons';
+import SetPrice from './SetPrice';
+import '../../styles/Form.css';
+import '../../styles/SlideForm.css';
 
 const ProductForm: React.FC = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [businessId, setBusinessId] = useState('');
-  const navigate = useNavigate(); // Usar useNavigate en lugar de useHistory
+  const [showSetPrice, setShowSetPrice] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await api.post('/products', { name, description, price, businessId });
-      navigate('/products'); // Usar navigate en lugar de history.push
+      navigate('/products');
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleCloseSetPrice = () => {
+    setShowSetPrice(false);
   };
 
   return (
@@ -54,6 +62,12 @@ const ProductForm: React.FC = () => {
             placeholder="Precio"
             required
           />
+          <FontAwesomeIcon 
+            icon={faCalculator} 
+            className="info-icon" 
+            onClick={() => setShowSetPrice(!showSetPrice)} 
+            title="Haz clic para calcular el precio"
+          />
         </div>
         <div className="input-group">
           <FontAwesomeIcon icon={faStore} />
@@ -67,6 +81,9 @@ const ProductForm: React.FC = () => {
         </div>
         <button type="submit">Guardar</button>
       </form>
+      {showSetPrice && (
+        <SetPrice setPrice={setPrice} onClose={handleCloseSetPrice} />
+      )}
     </div>
   );
 };

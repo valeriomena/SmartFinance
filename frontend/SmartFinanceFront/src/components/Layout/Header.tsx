@@ -2,15 +2,33 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from 'contexts/AuthContext'; // Usando el alias definido
 import Login from '../Auth/Login'; 
+import Register from '../Auth/Register'; 
 import './Header.css';
 
 const Header: React.FC = () => {
   const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
   const { token, logout } = useAuth(); // Usar el contexto de autenticación
 
   const handleLogout = () => {
     logout();
     setShowLogin(false);
+    setShowRegister(false);
+  };
+
+  const handleShowLogin = () => {
+    setShowLogin(!showLogin);
+    setShowRegister(false);
+  };
+
+  const handleShowRegister = () => {
+    setShowRegister(!showRegister);
+    setShowLogin(false);
+  };
+
+  const handleCloseForm = () => {
+    setShowLogin(false);
+    setShowRegister(false);
   };
 
   return (
@@ -24,17 +42,22 @@ const Header: React.FC = () => {
             <button onClick={handleLogout}>Cerrar Sesión</button>
           ) : (
             <>
-              <button onClick={() => setShowLogin(!showLogin)}>
+              <button onClick={handleShowLogin}>
                 {showLogin ? 'Cerrar Login' : 'Iniciar Sesión'}
               </button>
-              <Link to="/register">
-                <button>Registrarse</button>
-              </Link>
+              <button onClick={handleShowRegister}>
+                {showRegister ? 'Cerrar Registro' : 'Registrarse'}
+              </button>
             </>
           )}
         </div>
       </div>
-      {showLogin && !token && <Login />}
+      <div className={`slide-form-container ${showLogin ? 'show' : ''}`}>
+        {showLogin && !token && <Login onClose={handleCloseForm} />}
+      </div>
+      <div className={`slide-form-container ${showRegister ? 'show' : ''}`}>
+        {showRegister && !token && <Register onClose={handleCloseForm} />}
+      </div>
     </header>
   );
 };

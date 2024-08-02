@@ -1,0 +1,38 @@
+.slide-form-container {
+    position: fixed;
+    right: -100%;
+    top: 0;
+    width: 400px;
+    height: 100%;
+    background: #fff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    transition: right 0.5s ease;
+    overflow: auto;
+}
+
+.slide-form-container.show {
+    right: 0;
+}
+
+.slide-form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f4f4f4;
+    border-bottom: 1px solid #ddd;
+}
+
+.close-icon {
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+.calculated-price label span {
+    color: #ff0000;
+    /* Color llamativo */
+    font-size: 1.2rem;
+    /* Tamaño de letra grande */
+    font-weight: bold;
+}

@@ -12,6 +12,20 @@
     color: var(--Seychelle-Islands-5);
 }
 
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--Seychelle-Islands-5);
+}
+
 .form-container h2 {
     text-align: center;
 }
@@ -20,6 +34,13 @@
 .input-group {
     position: relative;
     margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.input-group label {
+    flex: 1;
     display: flex;
     align-items: center;
 }
@@ -49,11 +70,9 @@
     outline: none;
 }
 
-.input-group svg {
-    position: absolute;
-    left: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
+.info-icon {
+    margin-left: 8px;
+    cursor: pointer;
     color: var(--Seychelle-Islands-4);
 }
 
@@ -80,9 +99,15 @@
     background-color: var(--Seychelle-Islands-2);
     /* Color de fondo cuando el botón está activo */
 }
+
 .success-message {
     color: #28a745;
     /* Verde para el mensaje de éxito */
     text-align: center;
     margin-top: 1rem;
+}
+
+.info-error {
+    margin-top: 1rem;
+    color: var(--Seychelle-Islands-5);
 }

@@ -2,11 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faLock, faTimes } from '@fortawesome/free-solid-svg-icons';
 import '../../styles/Form.css'; // Importa los estilos del formulario
 import { AxiosError } from 'axios';
+import '../../styles/SlideForm.css'; // Importa los estilos deslizantes
 
-const Login: React.FC = () => {
+interface LoginProps {
+  onClose: () => void;
+}
+
+const Login: React.FC<LoginProps> = ({ onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -16,11 +21,7 @@ const Login: React.FC = () => {
     try {
       const response = await api.post('/api/users/login', { email, password });
 
-        console.log('Response data:', response.data); // Agregar log
-        console.log('Token:', response.data.token);
-        console.log('User ID:', response.data.userId);
-
-      // Agregar console.log para depuración
+      console.log('Response data:', response.data); // Agregar log
       console.log('Token:', response.data.token);
       console.log('User ID:', response.data.userId);
 
@@ -35,7 +36,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="login-container">
+    <div className="slide-form login-container">
       <h2>Iniciar Sesión</h2>
       <form onSubmit={handleSubmit}>
         <div className="input-group">
@@ -59,6 +60,9 @@ const Login: React.FC = () => {
           />
         </div>
         <button type="submit">Entrar</button>
+        <button type="button" className="close-button" onClick={onClose}>
+          <FontAwesomeIcon icon={faTimes} /> 
+        </button>
       </form>
     </div>
   );
