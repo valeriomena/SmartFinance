@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faEnvelope, faLock, faPhone, faGlobe, faTimes } from '@fortawesome/free-solid-svg-icons';
-import '../../styles/Form.css'; // Importa los estilos del formulario
-import { fetchCountries } from '../../services/countryService'; // Importa el servicio
-import useRegisterUser from '../../hooks/useRegisterUser'; // Importa el hook
-import '../../styles/SlideForm.css'; // Importa los estilos deslizantes
+import '../../styles/Form.css';
+import { fetchCountries } from '../../services/countryService';
+import useRegisterUser from '../../hooks/useRegisterUser';
+import '../../styles/SlideForm.css';
 import './Register.css';
 
 interface RegisterProps {
@@ -21,7 +21,7 @@ const Register: React.FC<RegisterProps> = ({ onClose }) => {
   const [countryCode, setCountryCode] = useState('');
   const [region, setRegion] = useState('');
   const [whatsappCountryCode, setWhatsappCountryCode] = useState('');
-  const [countries, setCountries] = useState<any[]>([]); // Estado para los países
+  const [countries, setCountries] = useState<any[]>([]);
   const { registerUser, errors, successMessage } = useRegisterUser();
   const navigate = useNavigate();
 
@@ -42,7 +42,6 @@ const Register: React.FC<RegisterProps> = ({ onClose }) => {
     const selectedCountryCode = e.target.value;
     setCountryCode(selectedCountryCode);
 
-    // Buscar el país seleccionado en el array de países y actualizar el código de WhatsApp
     const selectedCountry = countries.find((country: any) => country.cca2 === selectedCountryCode);
     if (selectedCountry) {
       setWhatsappCountryCode(selectedCountry.idd.root + selectedCountry.idd.suffixes[0]);
@@ -66,7 +65,7 @@ const Register: React.FC<RegisterProps> = ({ onClose }) => {
     });
 
     if (success) {
-      setTimeout(() => navigate('/login'), 1300); // Redirige después de 2 segundos
+      setTimeout(() => navigate('/login'), 1300);
     }
   };
 

@@ -6,8 +6,10 @@ import Register from './components/Auth/Register';
 import BusinessList from './components/Business/BusinessList';
 import BusinessDetail from './components/Business/BusinessDetail';
 import BusinessForm from './components/Business/BusinessForm';
+import Dashboard from '@components/Indicators/Dashboard';
 import SalesList from './components/Sales/SalesList';
 import SalesDetail from './components/Sales/SalesDetail';
+import SalesProjection from './components/Sales/SalesProjection';
 import SalesForm from './components/Sales/SalesForm';
 import ProductList from './components/Products/ProductList';
 import ProductDetail from './components/Products/ProductDetail';
@@ -22,25 +24,30 @@ import IndicatorList from './components/Indicators/IndicatorList';
 import IndicatorDetail from './components/Indicators/IndicatorDetail';
 import IndicatorForm from './components/Indicators/IndicatorForm';
 import Layout from './components/Layout/Layout';
-import Header from './components/Layout/Header';
 import { AuthProvider } from './components/Auth/AuthContext';
 import './App.css';
 
 const App: React.FC = () => {
+  const handleClose = () => {
+    // Lógica para cerrar el modal o hacer alguna acción específica
+  };
+
   return (
     <AuthProvider>
       <Router>
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login onClose={handleClose} />} />
+            <Route path="/register" element={<Register onClose={handleClose} />} />
             <Route path="/business" element={<BusinessList />} />
             <Route path="/business/:id" element={<BusinessDetail />} />
             <Route path="/business/new" element={<BusinessForm />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/sales" element={<SalesList />} />
             <Route path="/sales/:id" element={<SalesDetail />} />
             <Route path="/sales/new" element={<SalesForm />} />
+            <Route path="/sales/projection" element={<SalesProjection />} />
             <Route path="/products" element={<ProductList />} />
             <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/products/new" element={<ProductForm />} />

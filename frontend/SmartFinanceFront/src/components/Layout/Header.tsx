@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from 'contexts/AuthContext'; // Usando el alias definido
+import { useAuth } from '@components/Auth/AuthContext';
 import Login from '../Auth/Login'; 
 import Register from '../Auth/Register'; 
 import './Header.css';

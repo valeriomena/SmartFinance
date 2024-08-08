@@ -111,3 +111,10 @@
     margin-top: 1rem;
     color: var(--Seychelle-Islands-5);
 }
+.projection-container {
+    margin-top: 2rem;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}

@@ -15,6 +15,7 @@ const ProductForm: React.FC = () => {
   const [businessId, setBusinessId] = useState('');
   const [showSetPrice, setShowSetPrice] = useState(false);
   const navigate = useNavigate();
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +66,9 @@ const ProductForm: React.FC = () => {
           <FontAwesomeIcon 
             icon={faCalculator} 
             className="info-icon" 
-            onClick={() => setShowSetPrice(!showSetPrice)} 
+            onClick={() => setShowSetPrice(!showSetPrice)}
+            onMouseEnter={() => setInfoMessage("Calculadora de ayuda para estimar los costos variables de tu producto.")}
+            onMouseLeave={() => setInfoMessage(null)}
             title="Haz clic para calcular el precio"
           />
         </div>
@@ -84,6 +87,11 @@ const ProductForm: React.FC = () => {
       {showSetPrice && (
         <SetPrice setPrice={setPrice} onClose={handleCloseSetPrice} />
       )}
+      {infoMessage && (
+          <div className="info-error">
+            <label>{infoMessage}</label>
+          </div>
+        )}
     </div>
   );
 };

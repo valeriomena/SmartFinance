@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStore, faTag, faCalendarDay, faDollarSign, faSortAmountUp } from '@fortawesome/free-solid-svg-icons';
+import SalesProjection from './SalesProjection';
 import '../../styles/Form.css'; // Importa los estilos del formulario
 
 const SalesForm: React.FC = () => {
@@ -13,6 +14,7 @@ const SalesForm: React.FC = () => {
   const [precioVenta, setPrecioVenta] = useState('');
   const [cantidadVendida, setCantidadVendida] = useState('');
   const [ingresoTotal, setIngresoTotal] = useState('');
+  const [showProjection, setShowProjection] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +43,9 @@ const SalesForm: React.FC = () => {
   return (
     <div className="form-container">
       <h2>Crear Nueva Venta</h2>
+      <div className="menu">
+        <button onClick={() => setShowProjection(true)} style={{ marginBottom: '1rem' }}>Proyección de Ventas</button>
+      </div>
       <form onSubmit={handleSubmit}>
         <div className="input-group">
           <FontAwesomeIcon icon={faStore} />
@@ -106,6 +111,12 @@ const SalesForm: React.FC = () => {
         </div>
         <button type="submit">Guardar</button>
       </form>
+      {showProjection && (
+        <div className="projection-container">
+          <SalesProjection />
+          <button onClick={() => setShowProjection(false)}>Cerrar Proyección</button>
+        </div>
+      )}
     </div>
   );
 };

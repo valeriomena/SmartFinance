@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faTimes, faCalculator } from '@fortawesome/free-solid-svg-icons';
+import CalculateVariableCosts from '@components/Costs/CalculateVariableCosts';
 import '../../styles/Form.css';
 import '../../styles/SlideForm.css';
 
@@ -16,6 +17,7 @@ const SetPrice: React.FC<SetPriceProps> = ({ setPrice, onClose }) => {
   const [competitorPrice, setCompetitorPrice] = useState<number | null>(null);
   const [priceComparison, setPriceComparison] = useState<string | null>(null);
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
+  const [showVariableCostsForm, setShowVariableCostsForm] = useState<boolean>(false);
 
   const calculateSellingPrice = () => {
     if (contributionMargin >= 100) {
@@ -29,6 +31,11 @@ const SetPrice: React.FC<SetPriceProps> = ({ setPrice, onClose }) => {
       const percentageDifference = ((price - competitorPrice) / competitorPrice) * 100;
       setPriceComparison(percentageDifference.toFixed(2));
     }
+  };
+
+  const handleVariableCostsSubmit = (costs: number) => {
+    setVariableCosts(costs);
+    setShowVariableCostsForm(false);
   };
 
   return (
@@ -56,13 +63,24 @@ const SetPrice: React.FC<SetPriceProps> = ({ setPrice, onClose }) => {
                 onMouseLeave={() => setInfoMessage(null)}
               />
             </label>
-            <input
-              type="number"
-              value={variableCosts}
-              onChange={(e) => setVariableCosts(Number(e.target.value))}
-              placeholder="Enter variable costs"
-              required
-            />
+            <div className="input-with-button">
+              <input
+                type="number"
+                value={variableCosts}
+                onChange={(e) => setVariableCosts(Number(e.target.value))}
+                placeholder="Enter variable costs"
+                required
+              />
+              <button
+                type="button"
+                className="calculator-button"
+                onMouseEnter={() => setInfoMessage("Calculadora de ayuda para estimar los costos variables de tu producto.")}
+                onMouseLeave={() => setInfoMessage(null)}
+                onClick={() => setShowVariableCostsForm(true)}
+              >
+                <FontAwesomeIcon icon={faCalculator} />
+              </button>
+            </div>
           </div>
           <div className="input-group">
             <label>
@@ -117,6 +135,12 @@ const SetPrice: React.FC<SetPriceProps> = ({ setPrice, onClose }) => {
           </div>
         )}
       </div>
+      {showVariableCostsForm && (
+        <CalculateVariableCosts
+          onClose={() => setShowVariableCostsForm(false)}
+          onSubmit={handleVariableCostsSubmit}
+        />
+      )}
     </div>
   );
 };

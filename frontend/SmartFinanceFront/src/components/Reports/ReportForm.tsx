@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStore, faCalendarDay, faDollarSign, faChartLine, faCashRegister, faPiggyBank } from '@fortawesome/free-solid-svg-icons';
@@ -37,6 +37,7 @@ const ReportForm: React.FC = () => {
 
   return (
     <div className="form-container">
+      <Link to="/dashboard" className="nav-link">Ir al Dashboard</Link>
       <h2>Crear Nuevo Reporte</h2>
       <form onSubmit={handleSubmit}>
         <div className="input-group">

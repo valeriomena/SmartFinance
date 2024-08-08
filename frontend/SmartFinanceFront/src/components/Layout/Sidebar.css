@@ -1,37 +1,12 @@
+/* Sidebar.css */
 .sidebar {
-    width: 250px;
-    /* Ajusta el ancho del sidebar según tu diseño */
+    width: 60px;
+    /* Ancho por defecto */
     position: fixed;
     top: 0;
     left: 0;
     height: 100%;
-    background-color: var(--Seychelle-Islands-5);
-    color: var(--Seychelle-Islands-1);
-    overflow-y: auto;
-    z-index: 1000;
-    /* Asegúrate de que el sidebar esté en un nivel superior */
-}
-
-.main-layout {
-    display: flex;
-    margin-left: 250px;
-    /* Ajusta el margen para dar espacio al sidebar */
-    padding: 1rem;
-}
-
-.content {
-    flex: 1;
-}
-
-.sidebar {
-    position: fixed;
-    right: 0;
-    top: 0;
-    height: 100%;
-    width: 60px;
-   
     background-color: rgba(59, 47, 128, 0.5);
-     
     transition: width 0.3s ease, background-color 0.3s ease;
     z-index: 1000;
     display: flex;
@@ -59,7 +34,6 @@
 
 .sidebar a {
     color: #FAEDDA;
-    /* Color del texto */
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -96,4 +70,23 @@
         width: 150px;
         /* Ancho visible al pasar el mouse en dispositivos móviles */
     }
+}
+
+/* Layout.css */
+.layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.main-content {
+    display: flex;
+    margin-left: 60px;
+    /* Ajusta el margen para dar espacio al sidebar */
+    padding: 1rem;
+    flex: 1;
+}
+
+.content {
+    flex: 1;
 }
