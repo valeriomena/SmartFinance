@@ -7,7 +7,7 @@ import './Header.css';
 const Header: React.FC = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-  const { token, logout } = useAuth(); // Usar el contexto de autenticación
+  const { state, logout } = useAuth(); // Usar `state.token` en lugar de `token`
 
   // Función para cerrar sesión
   const handleLogout = () => {
@@ -41,27 +41,27 @@ const Header: React.FC = () => {
           <h1>SmartFinance</h1>
         </div>
         <div className="header-right">
-          {token ? (
+          {state.token ? (  // Aquí usamos state.token
             <button onClick={handleLogout}>Cerrar Sesión</button>
           ) : (
-            <>
+            <div className="header-buttons">
               <button onClick={handleShowLogin}>
                 {showLogin ? 'Cerrar Login' : 'Iniciar Sesión'}
               </button>
               <button onClick={handleShowRegister}>
                 {showRegister ? 'Cerrar Registro' : 'Registrarse'}
               </button>
-            </>
+            </div>
           )}
         </div>
       </div>
       {/* Contenedor para el formulario de Login */}
       <div className={`slide-form-container ${showLogin ? 'show' : ''}`}>
-        {showLogin && !token && <Login onClose={handleCloseForm} />}
+        {showLogin && !state.token && <Login onClose={handleCloseForm} />}
       </div>
       {/* Contenedor para el formulario de Registro */}
       <div className={`slide-form-container ${showRegister ? 'show' : ''}`}>
-        {showRegister && !token && <Register onClose={handleCloseForm} />}
+        {showRegister && !state.token && <Register onClose={handleCloseForm} />}
       </div>
     </header>
   );

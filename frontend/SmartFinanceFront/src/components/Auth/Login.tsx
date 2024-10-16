@@ -4,6 +4,7 @@ import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { AxiosError } from 'axios';
+import { useAuth } from '../Auth/AuthContext';  
 import '../../styles/Form.css';
 import '../../styles/SlideForm.css';
 
@@ -15,6 +16,9 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+
+  // Obtener la función login del contexto
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,6 +33,9 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
       // Almacenar el token y el ID de usuario en localStorage
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userId', response.data.userId);
+      
+      // Actualizar el estado global del contexto
+      login(response.data.token, response.data.userId);  // Invocar el login del contexto
 
       // Redirigir al inicio o a la ruta deseada
       navigate('/');  // Redirige al inicio

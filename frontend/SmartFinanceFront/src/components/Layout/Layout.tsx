@@ -1,30 +1,33 @@
 import React, { ReactNode } from 'react';
-import Sidebar from './Sidebar';  // Asumiendo que tienes un componente Sidebar
-import Header from './Header';    // Asumiendo que tienes un componente Header
+import Sidebar from './Sidebar';  
+import Header from './Header';    
+import Footer from './Footer'; 
 import { useAuth } from '../Auth/AuthContext';
 
 interface LayoutProps {
-  children: ReactNode; // Declara correctamente que 'children' es un ReactNode
+  children: ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const { token } = useAuth();  // Acceder al token desde el contexto de autenticación
+  const { state } = useAuth();  // Acceder al token desde el contexto global
 
   return (
     <div className="layout-container">
-      {token && (
-        <div className="sidebar">
-          <Sidebar />
+      <Header /> {/* El header siempre estará visible */}
+
+      <div className="main-content">
+        {state.token && (  // Verifica si hay token en el contexto antes de mostrar el Sidebar
+          <div className="sidebar">
+            <Sidebar />
+          </div>
+        )}
+
+        <div className="content">
+          {children} {/* Aquí se renderizan las rutas protegidas o públicas */}
         </div>
-      )}
-      {token && (
-        <div className="header">
-          <Header />
-        </div>
-      )}
-      <div className="content">
-        {children} {/* Aquí es donde se renderizan las rutas */}
       </div>
+
+      <Footer /> {/* El footer siempre estará visible */}
     </div>
   );
 };

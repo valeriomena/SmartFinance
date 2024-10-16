@@ -1,14 +1,44 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-interface AuthContextType {
+// Definir las acciones de autenticación
+type AuthAction = 
+  | { type: 'LOGIN'; token: string; userId: string }
+  | { type: 'LOGOUT' };
+
+// Estado inicial de autenticación
+interface AuthState {
   token: string | null;
-  login: (token: string, userId: string) => void;
-  logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const initialState: AuthState = {
+  token: localStorage.getItem('token'), // Inicializar desde localStorage
+};
 
+// Reducer de autenticación
+const authReducer = (state: AuthState, action: AuthAction): AuthState => {
+  switch (action.type) {
+    case 'LOGIN':
+      localStorage.setItem('token', action.token);
+      localStorage.setItem('userId', action.userId);
+      return { token: action.token };
+    case 'LOGOUT':
+      localStorage.removeItem('token');
+      localStorage.removeItem('userId');
+      return { token: null };
+    default:
+      return state;
+  }
+};
+
+// Contexto de autenticación
+const AuthContext = createContext<{
+  state: AuthState;
+  login: (token: string, userId: string) => void;
+  logout: () => void;
+} | undefined>(undefined);
+
+// Hook para usar el contexto de autenticación
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -17,26 +47,31 @@ export const useAuth = () => {
   return context;
 };
 
+// Proveedor del contexto de autenticación
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+  const [state, dispatch] = useReducer(authReducer, initialState);
   const navigate = useNavigate();
 
+  // useEffect para cargar el token desde localStorage al iniciar la aplicación
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+      dispatch({ type: 'LOGIN', token: storedToken, userId: '' });
+    }
+  }, []);  // Este efecto solo se ejecuta una vez al inicio
+
   const login = (token: string, userId: string) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('userId', userId);
-    setToken(token);
-    navigate('/');  // Redirige a la página de inicio o dashboard
+    dispatch({ type: 'LOGIN', token, userId });
+    navigate('/'); // Redirigir tras login
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
-    setToken(null);
-    navigate('/login');  // Redirige al login después de cerrar sesión
+    dispatch({ type: 'LOGOUT' });
+    navigate('/login'); // Redirigir tras logout
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout }}>
+    <AuthContext.Provider value={{ state, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

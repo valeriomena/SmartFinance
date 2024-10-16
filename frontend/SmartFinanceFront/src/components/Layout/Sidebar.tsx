@@ -2,13 +2,12 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faBusinessTime, faCashRegister, faBoxOpen, faFileInvoiceDollar, faChartLine } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '@components/Auth/AuthContext';
-//import { useAuth } from './AuthContext'; // Importa el contexto de autenticación
 import './Sidebar.css';
 
 const Sidebar = () => {
-  const { token } = useAuth(); // Obtén el token desde el contexto
+  const { state } = useAuth(); // Acceder a state.token en lugar de token
 
-  if (!token) {
+  if (!state.token) {  // Usar state.token para verificar si está autenticado
     return null; // No mostrar la barra lateral si no hay token
   }
 

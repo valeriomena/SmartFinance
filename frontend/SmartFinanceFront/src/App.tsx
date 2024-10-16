@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './components/Auth/AuthContext';
 
@@ -7,7 +7,7 @@ import Home from './components/Home';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 
-// Componentes privados (Las rutas protegidas que requieren autenticación)
+// Componentes privados
 import Dashboard from '@components/Indicators/Dashboard';
 import BusinessList from './components/Business/BusinessList';
 import BusinessDetail from './components/Business/BusinessDetail';
@@ -49,6 +49,7 @@ const App: React.FC = () => {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login onClose={handleClose} />} />
             <Route path="/register" element={<Register onClose={handleClose} />} />
+
             {/* Rutas privadas (protegidas) */}
             <Route
               path="/dashboard"
