@@ -1,12 +1,17 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './components/Auth/AuthContext';
+
+// Componentes públicos
 import Home from './components/Home';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
+
+// Componentes privados (Las rutas protegidas que requieren autenticación)
+import Dashboard from '@components/Indicators/Dashboard';
 import BusinessList from './components/Business/BusinessList';
 import BusinessDetail from './components/Business/BusinessDetail';
 import BusinessForm from './components/Business/BusinessForm';
-import Dashboard from '@components/Indicators/Dashboard';
 import SalesList from './components/Sales/SalesList';
 import SalesDetail from './components/Sales/SalesDetail';
 import SalesProjection from './components/Sales/SalesProjection';
@@ -23,47 +28,192 @@ import ReportForm from './components/Reports/ReportForm';
 import IndicatorList from './components/Indicators/IndicatorList';
 import IndicatorDetail from './components/Indicators/IndicatorDetail';
 import IndicatorForm from './components/Indicators/IndicatorForm';
+
+// Componentes de Layout y protección
 import Layout from './components/Layout/Layout';
-import { AuthProvider } from './components/Auth/AuthContext';
+import PrivateRoute from '@components/Routes/PrivateRoute';
+
 import './App.css';
 
-const App: React.FC = () => {
-  const handleClose = () => {
-    // Lógica para cerrar el modal o hacer alguna acción específica
-  };
+const handleClose = () => {
+  console.log('Cerrar Login');
+};
 
+const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Layout>
           <Routes>
+            {/* Rutas públicas */}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login onClose={handleClose} />} />
             <Route path="/register" element={<Register onClose={handleClose} />} />
-            <Route path="/business" element={<BusinessList />} />
-            <Route path="/business/:id" element={<BusinessDetail />} />
-            <Route path="/business/new" element={<BusinessForm />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/sales" element={<SalesList />} />
-            <Route path="/sales/:id" element={<SalesDetail />} />
-            <Route path="/sales/new" element={<SalesForm />} />
-            <Route path="/sales/projection" element={<SalesProjection />} />
-            <Route path="/products" element={<ProductList />} />
-            <Route path="/products/:id" element={<ProductDetail />} />
-            <Route path="/products/new" element={<ProductForm />} />
-            <Route path="/costs" element={<CostList />} />
-            <Route path="/costs/:id" element={<CostDetail />} />
-            <Route path="/costs/new" element={<CostForm />} />
-            <Route path="/reports" element={<ReportsList />} />
-            <Route path="/reports/:id" element={<ReportDetail />} />
-            <Route path="/reports/new" element={<ReportForm />} />
-            <Route path="/indicators" element={<IndicatorList />} />
-            <Route path="/indicators/:id" element={<IndicatorDetail />} />
-            <Route path="/indicators/new" element={<IndicatorForm />} />
+            {/* Rutas privadas (protegidas) */}
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/business"
+              element={
+                <PrivateRoute>
+                  <BusinessList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/business/:id"
+              element={
+                <PrivateRoute>
+                  <BusinessDetail />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/business/new"
+              element={
+                <PrivateRoute>
+                  <BusinessForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/sales"
+              element={
+                <PrivateRoute>
+                  <SalesList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/sales/:id"
+              element={
+                <PrivateRoute>
+                  <SalesDetail />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/sales/new"
+              element={
+                <PrivateRoute>
+                  <SalesForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/sales/projection"
+              element={
+                <PrivateRoute>
+                  <SalesProjection />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/products"
+              element={
+                <PrivateRoute>
+                  <ProductList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/products/:id"
+              element={
+                <PrivateRoute>
+                  <ProductDetail />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/products/new"
+              element={
+                <PrivateRoute>
+                  <ProductForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/costs"
+              element={
+                <PrivateRoute>
+                  <CostList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/costs/:id"
+              element={
+                <PrivateRoute>
+                  <CostDetail />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/costs/new"
+              element={
+                <PrivateRoute>
+                  <CostForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/reports"
+              element={
+                <PrivateRoute>
+                  <ReportsList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/reports/:id"
+              element={
+                <PrivateRoute>
+                  <ReportDetail />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/reports/new"
+              element={
+                <PrivateRoute>
+                  <ReportForm />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/indicators"
+              element={
+                <PrivateRoute>
+                  <IndicatorList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/indicators/:id"
+              element={
+                <PrivateRoute>
+                  <IndicatorDetail />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/indicators/new"
+              element={
+                <PrivateRoute>
+                  <IndicatorForm />
+                </PrivateRoute>
+              }
+            />
           </Routes>
         </Layout>
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   );
 };
 

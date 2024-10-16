@@ -1,21 +1,22 @@
 import React from 'react';
+import './Card.css';
 
-export const Card: React.FC<React.PropsWithChildren<{}>> = ({ children }) => (
-  <div className="border rounded-lg shadow p-4 bg-white">{children}</div>
-);
+export const Card: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    return <div className="card">{children}</div>;
+};
 
-export const CardHeader: React.FC<React.PropsWithChildren<{}>> = ({ children }) => (
-  <div className="mb-4 border-b pb-2">{children}</div>
-);
+export const CardHeader: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    return <div className="card-header">{children}</div>;
+};
 
-export const CardTitle: React.FC<React.PropsWithChildren<{}>> = ({ children }) => (
-  <h2 className="text-xl font-bold">{children}</h2>
-);
+export const CardTitle: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    return <div className="card-title">{children}</div>;
+};
 
-export const CardDescription: React.FC<React.PropsWithChildren<{}>> = ({ children }) => (
-  <p className="text-sm text-gray-600">{children}</p>
-);
+export const CardDescription: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    return <div className="card-description">{children}</div>;
+};
 
-export const CardContent: React.FC<React.PropsWithChildren<{}>> = ({ children }) => (
-  <div>{children}</div>
-);
+export const CardContent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    return <div className="card-content">{children}</div>;
+};

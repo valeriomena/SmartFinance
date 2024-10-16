@@ -1,9 +1,17 @@
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faBusinessTime, faCashRegister, faBoxOpen, faFileInvoiceDollar, faChartLine } from '@fortawesome/free-solid-svg-icons';
+import { useAuth } from '@components/Auth/AuthContext';
+//import { useAuth } from './AuthContext'; // Importa el contexto de autenticación
 import './Sidebar.css';
 
 const Sidebar = () => {
+  const { token } = useAuth(); // Obtén el token desde el contexto
+
+  if (!token) {
+    return null; // No mostrar la barra lateral si no hay token
+  }
+
   return (
     <div className="sidebar Seychelle-Islands-bg-5">
       <ul>

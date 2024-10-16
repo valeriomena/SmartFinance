@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@components/Indicators/Card';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@components/Indicators/Table';
-import './Dashboard.css'; // Importa los estilos para el dashboard
+import './Dashboard.css';
 
 const UserIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
@@ -27,9 +27,7 @@ const Dashboard: React.FC = () => {
     <div className="dashboard-container">
       <header className="header">
         <div className="header-content">
-          <Link to="/" className="logo">
-            SmartFinance
-          </Link>
+          <Link to="/" className="logo">SmartFinance</Link>
           <nav className="nav">
             <Link to="/dashboard">Dashboard</Link>
             <Link to="/products">Products</Link>
@@ -74,7 +72,7 @@ const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
         </div>
-        <div className="card-container mt-8">
+        <div className="card-container">
           <Card>
             <CardHeader>
               <CardTitle>Top Products</CardTitle>
@@ -129,46 +127,20 @@ const Dashboard: React.FC = () => {
                   </TableRow>
                   <TableRow>
                     <TableCell>Customer C</TableCell>
-                    <TableCell>$3,000</TableCell>
+                    <TableCell>$2,500</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Financial Indicators</CardTitle>
-              <CardDescription>View your key financial indicators.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="indicator-grid">
-                <div>
-                  <div className="indicator-value">25%</div>
-                  <div className="indicator-description">Profit Margin</div>
-                </div>
-                <div>
-                  <div className="indicator-value">1.5</div>
-                  <div className="indicator-description">Current Ratio</div>
-                </div>
-                <div>
-                  <div className="indicator-value">30 days</div>
-                  <div className="indicator-description">Average Collection Period</div>
-                </div>
-                <div>
-                  <div className="indicator-value">45 days</div>
-                  <div className="indicator-description">Average Payment Period</div>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </div>
       </main>
       <footer className="footer">
         <div className="footer-content">
-          <div>&copy; 2023 SmartFinance. All rights reserved.</div>
+          <div>© 2024 SmartFinance. All rights reserved.</div>
           <div className="footer-links">
-            <Link to="/terms">Terms of Service</Link>
             <Link to="/privacy">Privacy Policy</Link>
+            <Link to="/terms">Terms of Service</Link>
           </div>
         </div>
       </footer>

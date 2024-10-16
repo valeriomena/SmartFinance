@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '@components/Auth/AuthContext';
-import Login from '../Auth/Login'; 
-import Register from '../Auth/Register'; 
+import Login from '../Auth/Login';
+import Register from '../Auth/Register';
 import './Header.css';
 
 const Header: React.FC = () => {
@@ -10,22 +9,26 @@ const Header: React.FC = () => {
   const [showRegister, setShowRegister] = useState(false);
   const { token, logout } = useAuth(); // Usar el contexto de autenticación
 
+  // Función para cerrar sesión
   const handleLogout = () => {
     logout();
     setShowLogin(false);
     setShowRegister(false);
   };
 
+  // Mostrar el formulario de Login
   const handleShowLogin = () => {
     setShowLogin(!showLogin);
-    setShowRegister(false);
+    setShowRegister(false); // Ocultar el registro al abrir el login
   };
 
+  // Mostrar el formulario de Registro
   const handleShowRegister = () => {
     setShowRegister(!showRegister);
-    setShowLogin(false);
+    setShowLogin(false); // Ocultar el login al abrir el registro
   };
 
+  // Función para cerrar cualquier formulario
   const handleCloseForm = () => {
     setShowLogin(false);
     setShowRegister(false);
@@ -52,9 +55,11 @@ const Header: React.FC = () => {
           )}
         </div>
       </div>
+      {/* Contenedor para el formulario de Login */}
       <div className={`slide-form-container ${showLogin ? 'show' : ''}`}>
         {showLogin && !token && <Login onClose={handleCloseForm} />}
       </div>
+      {/* Contenedor para el formulario de Registro */}
       <div className={`slide-form-container ${showRegister ? 'show' : ''}`}>
         {showRegister && !token && <Register onClose={handleCloseForm} />}
       </div>

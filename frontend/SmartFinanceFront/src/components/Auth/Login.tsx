@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faTimes } from '@fortawesome/free-solid-svg-icons';
-import '../../styles/Form.css';
 import { AxiosError } from 'axios';
+import '../../styles/Form.css';
 import '../../styles/SlideForm.css';
 
 interface LoginProps {
@@ -18,6 +18,7 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     try {
       const response = await api.post('/api/users/login', { email, password });
 
@@ -25,13 +26,26 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
       console.log('Token:', response.data.token);
       console.log('User ID:', response.data.userId);
 
+      // Almacenar el token y el ID de usuario en localStorage
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userId', response.data.userId);
 
-      navigate('/');
+      // Redirigir al inicio o a la ruta deseada
+      navigate('/');  // Redirige al inicio
+
+      // Cerrar el componente después de la redirección
+      onClose();  // Cerrar solo después de la redirección
+
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.error('Error during login:', axiosError.response?.data || axiosError.message);
+      if (axiosError.response) {
+        console.error('Error status:', axiosError.response.status);
+        console.error('Error data:', axiosError.response.data);
+      } else if (axiosError.request) {
+        console.error('No response received:', axiosError.request);
+      } else {
+        console.error('Error message:', axiosError.message);
+      }
     }
   };
 

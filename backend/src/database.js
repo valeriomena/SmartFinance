@@ -1,18 +1,44 @@
 const env = require("dotenv");
-env.config(); // debe ir en este orden
+env.config(); // Cargar las variables de entorno
 const mongoose = require('mongoose');
 
-// cadena de conexion
-const URI = process.env.URI_CONEXION //esta variable de entorno es fundamental para el despliegue
-    ? process.env.URI_CONEXION // MongoDB Atlas se pone la cadena de conexion en esta variable en el .env
-    : 'mongodb://localhost/dbtest';
-const connection = mongoose.connect(URI);
+// Configuración de la cadena de conexión
+const URI = process.env.URI_CONEXION 
+    ? process.env.URI_CONEXION // MongoDB Atlas
+    : 'mongodb://localhost/dbtest'; // Base de datos local para desarrollo
+
+// Opciones de configuración para la conexión (sin useNewUrlParser y useUnifiedTopology)
+const options = {
+    maxPoolSize: 10, // Número máximo de conexiones simultáneas
+    retryWrites: true, // Reintenta escrituras fallidas automáticamente
+    connectTimeoutMS: 10000, // Tiempo de espera para conectar (10 segundos)
+};
+
+// Conectar a la base de datos
+const connection = mongoose.connect(URI, options);
+
+// Gestión de eventos de conexión y errores
+mongoose.connection.on('connected', () => {
+  console.log('Conectado a la base de datos con éxito');
+});
+
+mongoose.connection.on('error', (error) => {
+  console.error('Error en la conexión a la base de datos:', error);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('Desconectado de la base de datos. Intentando reconectar...');
+});
+
+// Intentar reconectar si hay desconexión
+mongoose.connection.on('reconnected', () => {
+  console.log('Reconexión exitosa a la base de datos');
+});
 
 connection.then(() => {
-  console.log('La base de datos ha sido conectada ');
+  console.log('La conexión a la base de datos se ha establecido correctamente');
 }).catch(error => {
   console.error('Error al conectar con la base de datos:', error);
 });
 
 module.exports = connection;
-

@@ -1,62 +1,24 @@
-/* Estilos generales */
-:root {
-    --background: var(--Seychelle-Islands-1);
-    /* Color de fondo del dashboard */
-    --foreground: var(--Seychelle-Islands-5);
-    /* Color del texto principal */
-    --primary: var(--Seychelle-Islands-4);
-    /* Color primario */
-    --primary-foreground: var(--Seychelle-Islands-1);
-    /* Color del texto sobre fondo primario */
-    --secondary: var(--Seychelle-Islands-3);
-    /* Color secundario */
-    --secondary-foreground: var(--Seychelle-Islands-1);
-    /* Color del texto sobre fondo secundario */
-    --accent: var(--Seychelle-Islands-4);
-    /* Color de acento */
-    --accent-foreground: var(--Seychelle-Islands-1);
-    /* Color del texto sobre fondo de acento */
-    --destructive: hsl(0, 98%, 44%);
-    /* Color destructivo (para botones de eliminación, etc.) */
-    --destructive-foreground: hsl(0, 0%, 100%);
-    /* Color del texto sobre fondo destructivo */
-    --muted: var(--Seychelle-Islands-3);
-    /* Color atenuado */
-    --muted-foreground: var(--Seychelle-Islands-1);
-    /* Color del texto sobre fondo atenuado */
-    --card: var(--Seychelle-Islands-bg-1);
-    /* Fondo de las tarjetas */
-    --card-foreground: var(--Seychelle-Islands-5);
-    /* Color del texto en las tarjetas */
-    --popover: var(--Seychelle-Islands-1);
-    /* Fondo del popover */
-    --popover-foreground: var(--Seychelle-Islands-5);
-    /* Color del texto en el popover */
-    --border: var(--Seychelle-Islands-3);
-    /* Color del borde */
-    --input: var(--Seychelle-Islands-bg-1);
-    /* Fondo de los inputs */
-    --ring: var(--Seychelle-Islands-4);
-    /* Color del anillo de enfoque */
-    --radius: 0.5rem;
-    /* Radio de borde de tarjetas */
-}
+/* src/styles/Dashboard.css */
 
-body {
-    font-family: var(--font-body, 'Space Mono', monospace);
+/* Estilos generales para la disposición del Dashboard */
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     background-color: var(--background);
     color: var(--foreground);
-    margin: 0;
-    padding: 0;
+    padding: 2rem;
 }
 
-.header {
+.header,
+.footer {
     background-color: var(--primary);
     color: var(--primary-foreground);
     padding: 1rem 2rem;
 }
 
-.header-content {
+.header-content,
+.footer-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -71,103 +33,42 @@ body {
 
 .nav {
     display: flex;
-    gap: 1rem;
+    gap: 2rem;
 }
 
-.nav a {
+.nav a,
+.footer-links a {
     color: var(--primary-foreground);
     text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
 }
 
-.nav a:hover {
-    text-decoration: underline;
+.nav a:hover,
+.footer-links a:hover {
+    color: var(--secondary);
 }
 
 .user-info {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 .user-icon {
-    width: 1.5rem;
-    height: 1.5rem;
-    color: var(--secondary-foreground);
+    width: 24px;
+    height: 24px;
 }
 
 .main-content {
-    padding: 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 }
 
 .card-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1rem;
-}
-
-.card-container .card {
-    background-color: var(--card);
-    color: var(--card-foreground);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.card-header {
-    margin-bottom: 1rem;
-}
-
-.card-title {
-    font-size: 1.25rem;
-    font-weight: bold;
-}
-
-.card-description {
-    font-size: 0.875rem;
-    color: var(--muted);
-}
-
-.card-value {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-
-.indicator-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1rem;
-    text-align: center;
-}
-
-.indicator-value {
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: var(--accent);
-}
-
-.indicator-description {
-    font-size: 0.875rem;
-    color: var(--muted);
-}
-
-.footer {
-    background-color: var(--secondary);
-    color: var(--secondary-foreground);
-    padding: 1rem 2rem;
-}
-
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.footer-links a {
-    color: var(--secondary-foreground);
-    text-decoration: none;
-}
-
-.footer-links a:hover {
-    text-decoration: underline;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
 }
