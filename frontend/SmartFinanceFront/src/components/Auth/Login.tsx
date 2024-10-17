@@ -8,50 +8,71 @@ import { useAuth } from '../Auth/AuthContext';
 import '../../styles/Form.css';
 import '../../styles/SlideForm.css';
 
+/**
+ * Props for the Login component.
+ */
 interface LoginProps {
+  /** Function to close the login form. */
   onClose: () => void;
 }
 
+/**
+ * Login component allows users to log into the application.
+ * It handles form submission, calls the API for login, and manages error states.
+ * 
+ * @component
+ * @example
+ * const handleClose = () => { console.log('Closed!'); }
+ * return (
+ *   <Login onClose={handleClose} />
+ * );
+ * 
+ * @param {LoginProps} props - The component props.
+ * @returns {JSX.Element} - Rendered Login component.
+ */
 const Login: React.FC<LoginProps> = ({ onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);  // Error state
   const navigate = useNavigate();
 
   // Obtener la función login del contexto
   const { login } = useAuth();
 
+  /**
+   * Handle form submission for login.
+   * This function sends the login data to the API and handles responses.
+   * 
+   * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
+   * @returns {Promise<void>}
+   */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrorMessage(null); // Reset previous error message
 
     try {
       const response = await api.post('/api/users/login', { email, password });
 
-      console.log('Response data:', response.data);
-      console.log('Token:', response.data.token);
-      console.log('User ID:', response.data.userId);
-
-      // Almacenar el token y el ID de usuario en localStorage
+      // Save token and user ID in localStorage
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userId', response.data.userId);
-      
-      // Actualizar el estado global del contexto
-      login(response.data.token, response.data.userId);  // Invocar el login del contexto
 
-      // Redirigir al inicio o a la ruta deseada
-      navigate('/');  // Redirige al inicio
+      // Update auth context
+      login(response.data.token, response.data.userId);
 
-      // Cerrar el componente después de la redirección
-      onClose();  // Cerrar solo después de la redirección
+      // Redirect and close the form
+      navigate('/');
+      onClose();
 
     } catch (error) {
       const axiosError = error as AxiosError;
       if (axiosError.response) {
-        console.error('Error status:', axiosError.response.status);
-        console.error('Error data:', axiosError.response.data);
+        // Handle specific errors
+        setErrorMessage('Error en el inicio de sesión. Verifica tus credenciales.');
       } else if (axiosError.request) {
-        console.error('No response received:', axiosError.request);
+        setErrorMessage('No se recibió respuesta del servidor.');
       } else {
-        console.error('Error message:', axiosError.message);
+        setErrorMessage('Ocurrió un error inesperado. Inténtalo nuevamente.');
       }
     }
   };
@@ -85,6 +106,9 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
           <FontAwesomeIcon icon={faTimes} /> 
         </button>
       </form>
+
+      {/* Show error message if exists */}
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
     </div>
   );
 };

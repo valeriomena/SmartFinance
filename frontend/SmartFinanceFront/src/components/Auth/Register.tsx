@@ -8,10 +8,30 @@ import { fetchCountries } from '../../services/countryService';
 import '../../styles/Form.css';
 import '../../styles/SlideForm.css';
 
+/**
+ * Props for the Register component.
+ * @typedef {Object} RegisterProps
+ * @property {function} onClose - Function to close the registration form.
+ */
 interface RegisterProps {
   onClose: () => void;
 }
 
+/**
+ * Register component allows users to sign up for the application.
+ * It manages the registration form, makes API calls to create a new user, 
+ * and displays error messages based on the result of the API call.
+ *
+ * @component
+ * @example
+ * const handleClose = () => { console.log('Closed!'); }
+ * return (
+ *   <Register onClose={handleClose} />
+ * );
+ * 
+ * @param {RegisterProps} props - The component props.
+ * @returns {JSX.Element} The rendered registration form component.
+ */
 const Register: React.FC<RegisterProps> = ({ onClose }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -19,14 +39,14 @@ const Register: React.FC<RegisterProps> = ({ onClose }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [role, setRole] = useState('user');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [phoneCountryCode, setPhoneCountryCode] = useState(''); // Código de país para teléfono
+  const [phoneCountryCode, setPhoneCountryCode] = useState(''); // Country code for phone
   const [whatsappCountryCode, setWhatsappCountryCode] = useState('');
-  const [countries, setCountries] = useState<any[]>([]); // Lista de países
-  const [selectedCountry, setSelectedCountry] = useState<any | null>(null); // País seleccionado
-  const [errorMessage, setErrorMessage] = useState<string | null>(null); // Estado para el mensaje de error
+  const [countries, setCountries] = useState<any[]>([]); // List of countries
+  const [selectedCountry, setSelectedCountry] = useState<any | null>(null); // Selected country
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // Error message state
   const navigate = useNavigate();
 
-  // Obtener los países al montar el componente
+  // Fetch countries on component mount
   useEffect(() => {
     const loadCountries = async () => {
       try {
@@ -40,17 +60,29 @@ const Register: React.FC<RegisterProps> = ({ onClose }) => {
     loadCountries();
   }, []);
 
-  // Manejar cambio de país
+  /**
+   * Handles the change of the selected country.
+   * Updates the phone country code based on the selected country.
+   * 
+   * @param {React.ChangeEvent<HTMLSelectElement>} e - The select change event.
+   */
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const countryCode = e.target.value;
-    const country = countries.find((c) => c.cca2 === countryCode); // Encuentra el país por su código alfa-2
+    const country = countries.find((c) => c.cca2 === countryCode); // Find country by its alpha-2 code
     setSelectedCountry(country);
-    setPhoneCountryCode(country ? country.idd.root + (country.idd.suffixes ? country.idd.suffixes[0] : '') : ''); // Asigna el código de llamada
+    setPhoneCountryCode(country ? country.idd.root + (country.idd.suffixes ? country.idd.suffixes[0] : '') : ''); // Set phone country code
   };
 
+  /**
+   * Handles the form submission for registration.
+   * It validates the form inputs and makes an API call to register the user.
+   * 
+   * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
+   * @returns {Promise<void>}
+   */
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setErrorMessage(null); // Limpiar cualquier mensaje de error previo
+    setErrorMessage(null); // Clear previous error message
 
     if (password !== confirmPassword) {
       setErrorMessage('Las contraseñas no coinciden');
@@ -75,16 +107,17 @@ const Register: React.FC<RegisterProps> = ({ onClose }) => {
         whatsapp_country_code: whatsappCountryCode,
       });
 
-      console.log('Response data:', response.data);
+      // Store token and user ID in localStorage
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userId', response.data.userId);
 
+      // Navigate and close the form
       navigate('/');
       onClose();
     } catch (error) {
       const axiosError = error as AxiosError;
       if (axiosError.response) {
-        const data = axiosError.response.data as { message: string }; // Aseguramos que 'data' tenga una propiedad 'message'
+        const data = axiosError.response.data as { message: string }; // Ensure 'data' has a 'message' property
         if (data.message.includes('duplicate key error')) {
           setErrorMessage('Este correo ya está registrado. Usa otro correo.');
         } else {
