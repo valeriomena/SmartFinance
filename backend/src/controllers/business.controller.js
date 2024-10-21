@@ -65,6 +65,28 @@ const getBusinesses = async (req, res, next) => {
 };
 
 /**
+ * Obtiene todos los negocios creados por un usuario específico.
+ * 
+ * @async
+ * @function getBusinessesByUserId
+ * @param {Object} req - El objeto de solicitud (request).
+ * @param {Object} res - El objeto de respuesta (response).
+ * @param {Function} next - El middleware para pasar el control al siguiente manejador en caso de error.
+ * @returns {Array} Respuesta con los negocios encontrados o mensaje de error si no se encuentran.
+ * @throws {Error} Si ocurre un error al buscar los negocios.
+ */
+const getBusinessesByUserId = async (req, res, next) => {
+    const { userId } = req.params; // Obtenemos el userId de los parámetros
+
+    try {
+        const businesses = await Business.find({ createdBy: userId }); // Busca negocios por createdBy
+        res.json(businesses); // Devuelve la lista de negocios
+    } catch (err) {
+        next(err);
+    }
+};
+
+/**
  * Elimina un negocio específico por su ID.
  * 
  * @async
@@ -114,6 +136,7 @@ module.exports = {
     createBusiness,
     getBusiness,
     getBusinesses,
+    getBusinessesByUserId, // Exporta el nuevo método
     deleteBusiness,
     updateBusiness
 };

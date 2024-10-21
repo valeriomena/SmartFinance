@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { AxiosError } from 'axios';
 import { useAuth } from '../Auth/AuthContext';  
 import '../../styles/Form.css';
 import '../../styles/SlideForm.css';
@@ -14,6 +13,14 @@ import '../../styles/SlideForm.css';
 interface LoginProps {
   /** Function to close the login form. */
   onClose: () => void;
+}
+
+/**
+ * Interface for the response from the login API.
+ */
+interface LoginResponse {
+  token: string;
+  userId: string;
 }
 
 /**
@@ -51,7 +58,7 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
     setErrorMessage(null); // Reset previous error message
 
     try {
-      const response = await api.post('/api/users/login', { email, password });
+      const response = await api.post<LoginResponse>('/api/users/login', { email, password });
 
       // Save token and user ID in localStorage
       localStorage.setItem('token', response.data.token);
@@ -64,14 +71,16 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
       navigate('/');
       onClose();
 
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      if (axiosError.response) {
-        // Handle specific errors
+    } catch (error: any) {
+      // Comprobamos las propiedades del error
+      if (error.response) {
+        // Error con respuesta del servidor
         setErrorMessage('Error en el inicio de sesión. Verifica tus credenciales.');
-      } else if (axiosError.request) {
+      } else if (error.request) {
+        // Error sin respuesta del servidor
         setErrorMessage('No se recibió respuesta del servidor.');
       } else {
+        // Otro tipo de error
         setErrorMessage('Ocurrió un error inesperado. Inténtalo nuevamente.');
       }
     }

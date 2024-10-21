@@ -1,220 +1,117 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './components/Auth/AuthContext';
-
-// Componentes públicos
-import Home from './components/Home';
-import Login from './components/Auth/Login';
-import Register from './components/Auth/Register';
-
-// Componentes privados
-import Dashboard from '@components/Indicators/Dashboard';
-import BusinessList from './components/Business/BusinessList';
-import BusinessDetail from './components/Business/BusinessDetail';
-import BusinessForm from './components/Business/BusinessForm';
-import SalesList from './components/Sales/SalesList';
-import SalesDetail from './components/Sales/SalesDetail';
-import SalesProjection from './components/Sales/SalesProjection';
-import SalesForm from './components/Sales/SalesForm';
-import ProductList from './components/Products/ProductList';
-import ProductDetail from './components/Products/ProductDetail';
-import ProductForm from './components/Products/ProductForm';
-import CostList from './components/Costs/CostList';
-import CostDetail from './components/Costs/CostDetail';
-import CostForm from './components/Costs/CostForm';
-import ReportsList from './components/Reports/ReportsList';
-import ReportDetail from './components/Reports/ReportDetail';
-import ReportForm from './components/Reports/ReportForm';
-import IndicatorList from './components/Indicators/IndicatorList';
-import IndicatorDetail from './components/Indicators/IndicatorDetail';
-import IndicatorForm from './components/Indicators/IndicatorForm';
-
-// Componentes de Layout y protección
 import Layout from './components/Layout/Layout';
-import PrivateRoute from '@components/Routes/PrivateRoute';
-
-import './App.css';
-
-const handleClose = () => {
-  console.log('Cerrar Login');
-};
+import PrivateRoute from './components/Routes/PrivateRoute';
+import ItemContainer from './components/Container/ItemContainer';  
 
 const App: React.FC = () => {
-  return (
-    <Router>
-      <AuthProvider>
-        <Layout>
-          <Routes>
-            {/* Rutas públicas */}
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login onClose={handleClose} />} />
-            <Route path="/register" element={<Register onClose={handleClose} />} />
+  const businessFields = [
+    { name: 'name', label: 'Nombre', type: 'text' as const, required: true, validationMessage: 'El nombre es obligatorio' },
+    { name: 'description', label: 'Descripción', type: 'text' as const, required: false, validationMessage: '' },
+  ];
 
-            {/* Rutas privadas (protegidas) */}
-            <Route
-              path="/dashboard"
-              element={
-                <PrivateRoute>
-                  <Dashboard />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/business"
-              element={
-                <PrivateRoute>
-                  <BusinessList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/business/:id"
-              element={
-                <PrivateRoute>
-                  <BusinessDetail />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/business/new"
-              element={
-                <PrivateRoute>
-                  <BusinessForm />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/sales"
-              element={
-                <PrivateRoute>
-                  <SalesList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/sales/:id"
-              element={
-                <PrivateRoute>
-                  <SalesDetail />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/sales/new"
-              element={
-                <PrivateRoute>
-                  <SalesForm />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/sales/projection"
-              element={
-                <PrivateRoute>
-                  <SalesProjection />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/products"
-              element={
-                <PrivateRoute>
-                  <ProductList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/products/:id"
-              element={
-                <PrivateRoute>
-                  <ProductDetail />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/products/new"
-              element={
-                <PrivateRoute>
-                  <ProductForm />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/costs"
-              element={
-                <PrivateRoute>
-                  <CostList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/costs/:id"
-              element={
-                <PrivateRoute>
-                  <CostDetail />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/costs/new"
-              element={
-                <PrivateRoute>
-                  <CostForm />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/reports"
-              element={
-                <PrivateRoute>
-                  <ReportsList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/reports/:id"
-              element={
-                <PrivateRoute>
-                  <ReportDetail />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/reports/new"
-              element={
-                <PrivateRoute>
-                  <ReportForm />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/indicators"
-              element={
-                <PrivateRoute>
-                  <IndicatorList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/indicators/:id"
-              element={
-                <PrivateRoute>
-                  <IndicatorDetail />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/indicators/new"
-              element={
-                <PrivateRoute>
-                  <IndicatorForm />
-                </PrivateRoute>
-              }
-            />
-          </Routes>
-        </Layout>
-      </AuthProvider>
-    </Router>
+  const indicatorFields = [
+    { name: 'businessId', label: 'ID del Negocio', type: 'text' as const, required: true, validationMessage: 'El ID es obligatorio' },
+    { name: 'fecha', label: 'Fecha', type: 'date' as const, required: true, validationMessage: 'La fecha es obligatoria' },
+    { name: 'beneficioBruto', label: 'Beneficio Bruto', type: 'number' as const, required: true, validationMessage: 'Campo requerido' },
+    { name: 'beneficioNeto', label: 'Beneficio Neto', type: 'number' as const, required: true, validationMessage: 'Campo requerido' },
+    { name: 'margenBeneficioBruto', label: 'Margen Beneficio Bruto', type: 'number' as const, required: true, validationMessage: 'Campo requerido' },
+    { name: 'margenBeneficioNeto', label: 'Margen Beneficio Neto', type: 'number' as const, required: true, validationMessage: 'Campo requerido' },
+  ];
+
+  const costFields = [
+  { name: 'businessId', label: 'ID del Negocio', type: 'text' as const, required: true, validationMessage: 'El ID del negocio es obligatorio' },
+  { name: 'tipoGasto', label: 'Tipo de Gasto', type: 'text' as const, required: true, validationMessage: 'El tipo de gasto es obligatorio' },
+  { name: 'monto', label: 'Monto', type: 'number' as const, required: true, validationMessage: 'El monto es obligatorio' }
+];
+
+const productFields = [
+  { name: 'name', label: 'Nombre', type: 'text' as const, required: true, validationMessage: 'El nombre es obligatorio' },
+  { name: 'description', label: 'Descripción', type: 'text' as const, required: false, validationMessage: '' },
+  { name: 'price', label: 'Precio', type: 'number' as const, required: true, validationMessage: 'El precio es obligatorio' },
+  { name: 'businessId', label: 'ID del Negocio', type: 'text' as const, required: true, validationMessage: 'El ID del negocio es obligatorio' }
+];
+
+const reportFields = [
+  { name: 'businessId', label: 'ID del Negocio', type: 'text' as const, required: true, validationMessage: 'El ID del negocio es obligatorio' },
+  { name: 'periodo', label: 'Periodo', type: 'text' as const, required: true, validationMessage: 'El periodo es obligatorio' },
+  { name: 'ingresos', label: 'Ingresos', type: 'number' as const, required: true, validationMessage: 'Los ingresos son obligatorios' },
+  { name: 'costos', label: 'Costos', type: 'number' as const, required: true, validationMessage: 'Los costos son obligatorios' },
+  { name: 'gastosOperativos', label: 'Gastos Operativos', type: 'number' as const, required: true, validationMessage: 'Los gastos operativos son obligatorios' },
+  { name: 'gastosFinancieros', label: 'Gastos Financieros', type: 'number' as const, required: true, validationMessage: 'Los gastos financieros son obligatorios' },
+  { name: 'beneficioBruto', label: 'Beneficio Bruto', type: 'number' as const, required: true, validationMessage: 'El beneficio bruto es obligatorio' },
+  { name: 'beneficioNeto', label: 'Beneficio Neto', type: 'number' as const, required: true, validationMessage: 'El beneficio neto es obligatorio' }
+];
+
+const salesFields = [
+  { name: 'businessId', label: 'ID del Negocio', type: 'text' as const, required: true, validationMessage: 'El ID del negocio es obligatorio' },
+  { name: 'productServiceId', label: 'Producto/Servicio', type: 'text' as const, required: true, validationMessage: 'El producto/servicio es obligatorio' },
+  { name: 'fecha', label: 'Fecha', type: 'date' as const, required: true, validationMessage: 'La fecha es obligatoria' },
+  { name: 'precioVenta', label: 'Precio de Venta', type: 'number' as const, required: true, validationMessage: 'El precio de venta es obligatorio' },
+  { name: 'cantidadVendida', label: 'Cantidad Vendida', type: 'number' as const, required: true, validationMessage: 'La cantidad vendida es obligatoria' },
+  { name: 'ingresoTotal', label: 'Ingreso Total', type: 'number' as const, required: true, validationMessage: 'El ingreso total es obligatorio' }
+];
+
+
+  return (
+   <Router>
+  <AuthProvider>
+    <Layout>
+      <Routes>
+        <Route
+          path="/business"
+          element={
+            <PrivateRoute>
+              <ItemContainer endpoint="/api/businesses" itemName="Negocio" fields={businessFields} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/indicators"
+          element={
+            <PrivateRoute>
+              <ItemContainer endpoint="/api/indicators" itemName="Indicador" fields={indicatorFields} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/costs"
+          element={
+            <PrivateRoute>
+              <ItemContainer endpoint="/api/costs" itemName="Costo" fields={costFields} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/products"
+          element={
+            <PrivateRoute>
+              <ItemContainer endpoint="/api/products" itemName="Producto" fields={productFields} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/reports"
+          element={
+            <PrivateRoute>
+              <ItemContainer endpoint="/api/reports" itemName="Reporte" fields={reportFields} />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/sales"
+          element={
+            <PrivateRoute>
+              <ItemContainer endpoint="/api/sales" itemName="Venta" fields={salesFields} />
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+    </Layout>
+  </AuthProvider>
+</Router>
+
   );
 };
 

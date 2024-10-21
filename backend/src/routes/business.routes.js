@@ -13,6 +13,7 @@ const {
     createBusiness,
     getBusiness,
     getBusinesses,
+    getBusinessesByUserId, // Importa el nuevo método
     deleteBusiness,
     updateBusiness
 } = require('../controllers/business.controller');
@@ -88,5 +89,23 @@ router.route('/:id')
      * @see module:controllers/business.controller#deleteBusiness
      */
     .delete(deleteBusiness);
+
+/**
+ * Ruta para obtener negocios creados por un usuario específico.
+ * 
+ * - `GET /business/user/:userId`: Obtiene todos los negocios creados por el usuario con el ID especificado.
+ * 
+ * @name GET /business/user/:userId
+ */
+router.route('/user/:userId')
+    /**
+     * Maneja la obtención de negocios creados por un usuario específico.
+     * 
+     * @function
+     * @name getBusinessesByUserId
+     * @memberof module:routes/businessRoutes
+     * @see module:controllers/business.controller#getBusinessesByUserId
+     */
+    .get(getBusinessesByUserId);
 
 module.exports = router;

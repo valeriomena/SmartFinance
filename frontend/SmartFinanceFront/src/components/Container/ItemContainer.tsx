@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import ItemList from './ItemList';
 import ItemDetail from './ItemDetail';
 import ItemForm from './ItemForm';
+import './ItemContainer.css'; // Importamos los estilos
 
 interface Field {
   name: string;
   label: string;
-  type: 'text' | 'number' | 'date'; // Puedes expandir esto con más tipos
+  type: 'text' | 'number' | 'date';
   required: boolean;
   validationMessage: string;
 }
@@ -15,33 +15,56 @@ interface Field {
 interface ItemContainerProps {
   endpoint: string;
   itemName: string;
-  fields: Field[]; // Recibimos los campos dinámicamente
+  fields: Field[];
 }
 
 const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, fields }) => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const [userId, setUserId] = useState<string | null>(null);
+
+  // Al montar el componente, obtener el userId del localStorage
+  useEffect(() => {
+    const storedUserId = localStorage.getItem('userId');
+    const storedToken = localStorage.getItem('token');
+    
+    console.log(storedUserId); // Verificación del userId
+    console.log(storedToken); // Verificación del token
+
+    if (storedUserId) {
+      setUserId(storedUserId);
+    }
+  }, []);
 
   const handleItemSelect = (itemId: string) => {
     setSelectedItem(itemId);
   };
 
   return (
-    <div style={{ display: 'flex', gap: '20px' }}>
-      {/* Listado de elementos */}
-      <div style={{ width: '30%', padding: '10px', borderRight: '2px solid #ccc' }}>
-        <ItemList endpoint={endpoint} itemName={itemName} onSelectItem={handleItemSelect} />
+    <div className="item-container">
+      <div className="form-container">
+        {userId && (
+          <ItemForm 
+            endpoint={endpoint} 
+            itemName={itemName} 
+            fields={fields} 
+            userId={userId} // Asegúrate de pasar el userId aquí
+          />
+        )}
       </div>
-
-      {/* Detalle de un elemento (si existe un elemento seleccionado) */}
-      <div style={{ width: '30%', padding: '10px', borderRight: '2px solid #ccc' }}>
-        {selectedItem ? <ItemDetail endpoint={endpoint} itemName={itemName} /> : <p>Seleccione un {itemName.toLowerCase()} para ver los detalles.</p>}
-      </div>
-
-      {/* Formulario para agregar o editar un elemento */}
-      <div style={{ width: '30%', padding: '10px' }}>
-        <ItemForm endpoint={endpoint} itemName={itemName} fields={fields} />
+      <div className="list-container">
+        {userId && ( // Verificamos que userId esté disponible
+          <ItemList 
+            endpoint={endpoint} 
+            itemName={itemName} 
+            userId={userId} // Pasar userId al componente ItemList
+            onSelectItem={handleItemSelect} 
+          />
+        )}
+        {selectedItem && (
+          <div className="detail-container">
+            <ItemDetail endpoint={endpoint} itemName={itemName} />
+          </div>
+        )}
       </div>
     </div>
   );

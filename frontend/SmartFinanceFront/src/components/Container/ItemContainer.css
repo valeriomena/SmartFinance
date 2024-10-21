@@ -1,0 +1,89 @@
+/* src/styles/ItemContainer.css */
+
+/* Centrado del contenedor principal en la página */
+.item-container {
+    display: flex;
+    justify-content: center;
+    
+    /* Centra horizontalmente */
+    gap: 20px;
+    /* Espacio entre los elementos */
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    /* Centrado de todo el contenedor */
+    box-sizing: border-box;
+}
+
+/* Estilo para el formulario */
+.form-container {
+    padding: 2px;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para la lista y los detalles */
+.list-container {
+    width: 50%;
+    /* Ocupa el otro 50% */
+    position: relative;
+    /* Permite la superposición de los detalles */
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-left: 2px solid #ccc;
+}
+
+/* Estilos de la sección de detalles */
+.detail-container {
+    position: absolute;
+    /* Se posiciona sobre la lista */
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* Ocupa todo el ancho de la lista */
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    /* Fondo semitransparente */
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 10;
+    /* Asegura que esté sobre la lista */
+    border-left: 2px solid #ccc;
+    border-right: 2px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Estilo para cuando no hay detalles seleccionados */
+.detail-container p {
+    font-size: 1.1rem;
+    color: #888;
+    text-align: center;
+}
+
+/* Responsividad para pantallas más pequeñas */
+@media (max-width: 768px) {
+    .item-container {
+        flex-direction: column;
+        /* Apila los elementos en columna */
+        align-items: center;
+        /* Centra los elementos en dispositivos pequeños */
+    }
+
+    .form-container,
+    .list-container {
+        width: 90%;
+        /* Hace que los elementos ocupen más espacio en pantallas pequeñas */
+        margin-bottom: 15px;
+    }
+
+    .detail-container {
+        position: static;
+        /* Desactiva la posición absoluta en pantallas pequeñas */
+        width: 100%;
+        height: auto;
+    }
+}

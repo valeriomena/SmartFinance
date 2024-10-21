@@ -52,14 +52,10 @@ const loginUser = async (req, res, next) => {
         let isMatch = false;
         // Verifica si el hash almacenado es de bcrypt (inicia con "$2b$")
         if (user.password.startsWith('$2b$')) {
-            console.log('Usando bcrypt para verificar la contraseña');
-            isMatch = await bcrypt.compare(password, user.password); // Verificar usando bcrypt
+              isMatch = await bcrypt.compare(password, user.password); // Verificar usando bcrypt
         } else {
-            console.log('Usando argon2 para verificar la contraseña');
             isMatch = await argon2.verify(user.password, password); // Verificar usando argon2
         }
-
-        console.log('¿Coinciden las contraseñas?:', isMatch);
 
         if (!isMatch) {
             return res.status(401).json({ message: 'Invalid credentials' });
@@ -71,7 +67,7 @@ const loginUser = async (req, res, next) => {
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
-
+        console.log(token)
         res.json({ token, userId: user._id, role: user.role });
     } catch (err) {
         next(err);
