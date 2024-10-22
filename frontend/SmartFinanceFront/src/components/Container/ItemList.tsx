@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../../services/api';
-import axios from 'axios';
+import api from '../../services/api'; 
 
 interface Item {
   _id: string;
@@ -11,7 +10,7 @@ interface Item {
 interface ItemListProps {
   endpoint: string;
   itemName: string;
-  userId: string | null; // Recibe el userId como prop
+  userId: string | null;
   onSelectItem: (id: string) => void;
 }
 
@@ -21,35 +20,22 @@ const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName, userId, onSelec
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log('User ID:', userId);
     const token = localStorage.getItem('token');
-    console.log('Token de ItemList:', token);
 
     const fetchItems = async () => {
       if (userId) {
         try {
           const url = `${endpoint}?userId=${userId}`;
-          console.log('Fetching items from:', url);
-
           const headers = {
             Authorization: `Bearer ${token}`,
           };
 
           const response = await api.get<Item[]>(url, { headers });
-          console.log('Data recibida:', response.data);
           setItems(response.data);
-        } catch (error) {
-          console.error('Error al obtener los elementos:', error);
-          
-          // Manejo del error como unknown
-          if (axios.isAxiosError(error)) {
-            // Manejar el error de Axios
-            const errorMessage = error.response?.data?.message || 'Hubo un error al cargar los elementos.';
-            setError(errorMessage);
-          } else {
-            // Manejar cualquier otro tipo de error
-            setError('Hubo un error al cargar los elementos.');
-          }
+        } catch (err) {
+          // Manejo genérico de errores
+          const errorMessage = 'Hubo un error al cargar los elementos.';
+          setError(errorMessage);
         } finally {
           setLoading(false);
         }

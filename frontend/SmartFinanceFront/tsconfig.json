@@ -1,21 +1,21 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "CommonJS",  // Cambiado de "ESNext" a "CommonJS"
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "baseUrl": "./src",
-    "paths": {
+    "target": "ESNext",                           // Define el nivel de ECMAScript
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],    // Bibliotecas a incluir
+    "allowJs": true,                              // Permitir archivos .js
+    "skipLibCheck": true,                         // Omite la verificación de tipos en las bibliotecas
+    "esModuleInterop": true,                      // Habilita la interop de módulos ES
+    "allowSyntheticDefaultImports": true,         // Permitir importaciones por defecto sintéticas
+    "strict": true,                               // Habilita todas las verificaciones estrictas
+    "forceConsistentCasingInFileNames": true,    // Asegura consistencia en los nombres de archivos
+    "module": "CommonJS",                         // Módulo a usar
+    "moduleResolution": "node",                   // Resolución de módulos
+    "resolveJsonModule": true,                    // Permitir importaciones de módulos JSON
+    "isolatedModules": true,                      // Aislar módulos (útil para Babel)
+    "noEmit": true,                               // No emitir archivos .js
+    "jsx": "react-jsx",                          // Configuración de JSX para React
+    "baseUrl": "./src",                          // Base URL para resolver módulos
+    "paths": {                                   // Rutas para importar módulos
       "@components/*": ["components/*"],
       "contexts/*": ["components/Auth/*"],
       "@assets/*": ["assets/*"],
@@ -23,6 +23,6 @@
       "@pages/*": ["pages/*"]
     }
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src"],                            // Directorios a incluir
+  "exclude": ["node_modules", "dist"]           // Directorios a excluir
 }
