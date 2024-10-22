@@ -54,7 +54,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ endpoint, itemName, fields, userId 
 
   return (
     <div className="form-container">
-      <h2>{id ? `Editar ${itemName}` : `Crear Nuevo ${itemName}`}</h2>
+      <h2>{id ? `Editar ${itemName}` : `Nuevo ${itemName}`}</h2>
       {errorMessage && <p className="info-error">{errorMessage}</p>}
       {loading ? (
         <p>Cargando...</p>

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../../services/api'; 
+import api from '../../services/api';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
 
 interface Item {
   _id: string;
@@ -33,7 +35,6 @@ const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName, userId, onSelec
           const response = await api.get<Item[]>(url, { headers });
           setItems(response.data);
         } catch (err) {
-          // Manejo genérico de errores
           const errorMessage = 'Hubo un error al cargar los elementos.';
           setError(errorMessage);
         } finally {
@@ -48,21 +49,41 @@ const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName, userId, onSelec
     fetchItems();
   }, [endpoint, userId]);
 
+  const handleDelete = async (id: string) => {
+    try {
+      const token = localStorage.getItem('token');
+      await api.delete(`${endpoint}/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      // Actualiza la lista después de eliminar
+      setItems((prevItems) => prevItems.filter(item => item._id !== id));
+    } catch (err) {
+      setError('Error al eliminar el elemento.');
+    }
+  };
+
   if (loading) return <p>Cargando...</p>;
   if (error) return <p className="info-error">{error}</p>;
 
   return (
     <div>
       <h2>Lista de {itemName}</h2>
-      <Link to={`/${itemName.toLowerCase()}/new`}>Crear Nuevo {itemName}</Link>
       <ul>
         {items.map((item) => (
-          <li
-            key={item._id}
-            onClick={() => onSelectItem(item._id)}
-            style={{ cursor: 'pointer', padding: '8px', border: '1px solid #ddd', marginBottom: '5px' }}
-          >
-            <Link to={`/${itemName.toLowerCase()}/${item._id}`}>{item.name}</Link>
+          <li key={item._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px', border: '1px solid #ddd', marginBottom: '5px' }}>
+            <Link to={`/${itemName.toLowerCase()}/${item._id}`} style={{ flex: 1 }}>{item.name}</Link>
+            <div style={{ marginLeft: '10px' }}>
+              <Link to={`/${itemName.toLowerCase()}/edit/${item._id}`}>
+                <FontAwesomeIcon icon={faEdit} style={{ marginRight: '10px', cursor: 'pointer' }} />
+              </Link>
+              <FontAwesomeIcon 
+                icon={faTrash} 
+                onClick={() => handleDelete(item._id)} 
+                style={{ cursor: 'pointer', color: 'red' }} 
+              />
+            </div>
           </li>
         ))}
       </ul>
