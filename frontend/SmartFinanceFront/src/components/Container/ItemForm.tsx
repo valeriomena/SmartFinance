@@ -1,81 +1,73 @@
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
-import api from '../../services/api';
-import '../../styles/Form.css';
-
-interface Field {
-  name: string;
-  label: string;
-  type: 'text' | 'number' | 'date';
-  required: boolean;
-  validationMessage: string;
-}
+import { useParams } from 'react-router-dom';
+import { useItemManager } from '../../hooks/useItemManager';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSave } from '@fortawesome/free-solid-svg-icons';
+import '../../styles/Form.css'; // Importa los estilos del formulario
 
 interface ItemFormProps {
   endpoint: string;
   itemName: string;
-  fields: Field[];
-  userId: string | null; // Se añade la propiedad userId aquí
+  fields: any[];
+  userId: string | null;
+  onRefresh: () => void; // Añadir la prop de refresco
 }
 
-const ItemForm: React.FC<ItemFormProps> = ({ endpoint, itemName, fields, userId }) => {
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+const ItemForm: React.FC<ItemFormProps> = ({ endpoint, itemName, fields, userId, onRefresh }) => {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { itemData, loading, errorMessage, submitItem, fetchItemById } = useItemManager({
+    endpoint,
+    itemName,
+    userId
+  });
+
+  const [formData, setFormData] = useState<any>({});
 
   useEffect(() => {
-    console.log('User ID in ItemForm:', userId); // Verificar en la consola
-  }, [userId]);
-
-  const onSubmit = async (data: any) => {
-    setLoading(true);
-    setErrorMessage(null);
-    try {
-      const token = localStorage.getItem('token'); // Asegúrate de que el token se esté obteniendo correctamente
-      console.log('token in ItemForm:', token);
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      const requestData = { ...data, createdBy: userId }; // Incluir userId en los datos
-      console.log(requestData);
-      if (id) {
-        await api.put(`${endpoint}/${id}`, requestData, config);
-      } else {
-        await api.post(endpoint, requestData, config);
-      }
-      navigate(`/${itemName.toLowerCase()}`);
-    } catch (error) {
-      setErrorMessage('Hubo un error al guardar los datos');
-    } finally {
-      setLoading(false);
+    if (id) {
+      fetchItemById(id);
     }
+  }, [id, fetchItemById]);
+
+  useEffect(() => {
+    if (itemData) {
+      setFormData(itemData);
+    }
+  }, [itemData]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData: any) => ({ ...prevData, [name]: value }));
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await submitItem(formData, id, false); // No navegar después de la actualización
+    onRefresh(); // Llamar a la función de refresco
+  };
+
+  if (loading) return <p>Cargando...</p>;
+  if (errorMessage) return <p className="info-error">{errorMessage}</p>;
+
   return (
-    <div className="form-container">
-      <h2>{id ? `Editar ${itemName}` : `Nuevo ${itemName}`}</h2>
-      {errorMessage && <p className="info-error">{errorMessage}</p>}
-      {loading ? (
-        <p>Cargando...</p>
-      ) : (
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {fields.map((field) => (
-            <div className="input-group" key={field.name}>
-              <label>{field.label}:</label>
-              <input
-                type={field.type}
-                {...register(field.name, {
-                  required: field.required ? field.validationMessage : false
-                })}
-              />
-              {errors[field.name] && <p className="info-error">{errors[field.name]?.message?.toString() || ''}</p>}
-            </div>
-          ))}
-          <button type="submit">{id ? 'Actualizar' : 'Crear'}</button>
-        </form>
-      )}
-    </div>
+    <form onSubmit={handleSubmit}>
+      {fields.map((field) => (
+        <div key={field.name}>
+          <label htmlFor={field.name}>{field.label}</label>
+          <input
+            type={field.type}
+            name={field.name}
+            value={formData[field.name] || ''}
+            onChange={handleInputChange}
+            required={field.required}
+          />
+          {field.required && !formData[field.name] && <p>{field.validationMessage}</p>}
+        </div>
+      ))}
+      <button type="submit">
+        <FontAwesomeIcon icon={faSave} />
+      </button>
+    </form>
   );
 };
 

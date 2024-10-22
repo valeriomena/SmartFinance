@@ -21,15 +21,11 @@ interface ItemContainerProps {
 const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, fields }) => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [refresh, setRefresh] = useState(false); // Estado para controlar la actualización de la lista
 
   // Al montar el componente, obtener el userId del localStorage
   useEffect(() => {
     const storedUserId = localStorage.getItem('userId');
-    const storedToken = localStorage.getItem('token');
-    
-    console.log(storedUserId); // Verificación del userId
-    console.log(storedToken); // Verificación del token
-
     if (storedUserId) {
       setUserId(storedUserId);
     }
@@ -37,6 +33,11 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, field
 
   const handleItemSelect = (itemId: string) => {
     setSelectedItem(itemId);
+  };
+
+  // Función para refrescar la lista
+  const handleRefresh = () => {
+    setRefresh(prev => !prev); // Cambiar el estado para forzar la re-renderización
   };
 
   return (
@@ -47,17 +48,19 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, field
             endpoint={endpoint} 
             itemName={itemName} 
             fields={fields} 
-            userId={userId} // Asegúrate de pasar el userId aquí
+            userId={userId} 
+            onRefresh={handleRefresh} // Pasar la función de refresco
           />
         )}
       </div>
       <div className="list-container">
-        {userId && ( // Verificamos que userId esté disponible
+        {userId && (
           <ItemList 
             endpoint={endpoint} 
             itemName={itemName} 
-            userId={userId} // Pasar userId al componente ItemList
+            userId={userId} 
             onSelectItem={handleItemSelect} 
+            refresh={refresh} // Pasar el estado de refresco
           />
         )}
         {selectedItem && (
