@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import api from '../../services/api';
 
 interface ItemDetailProps {
   endpoint: string;
-  itemId: string; // Asegúrate de que esta propiedad esté definida
+  itemId: string;
   itemName: string;
 }
 
@@ -12,20 +11,26 @@ const ItemDetail: React.FC<ItemDetailProps> = ({ endpoint, itemId, itemName }) =
   const [item, setItem] = useState<any>(null);
 
   useEffect(() => {
-    api.get(`${endpoint}/${itemId}`) // Usa itemId en lugar de useParams
-      .then(response => setItem(response.data))
-      .catch(error => console.error(error));
-  }, [itemId, endpoint]);
+    const fetchItem = async () => {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await api.get(`${endpoint}/${itemId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setItem(response.data);
+      } catch (error) {
+        console.error('Error al cargar los detalles del ítem:', error);
+      }
+    };
+    fetchItem();
+  }, [endpoint, itemId]);
 
-  if (!item) return <div>Cargando...</div>;
+  if (!item) {
+    return <p>Cargando detalles del {itemName.toLowerCase()}...</p>;
+  }
 
   return (
-    <div>
-      <h2>Detalles de {itemName}</h2>
-      <p><strong>Nombre:</strong> {item.name}</p>
-      <p><strong>Descripción:</strong> {item.description}</p>
-      {/* Otros detalles */}
-    </div>
+     <h2>{item.name}</h2>
   );
 };
 
