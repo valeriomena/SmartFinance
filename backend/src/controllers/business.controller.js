@@ -136,7 +136,7 @@ module.exports = {
     createBusiness,
     getBusiness,
     getBusinesses,
-    getBusinessesByUserId, // Exporta el nuevo método
+    getBusinessesByUserId,
     deleteBusiness,
     updateBusiness
 };

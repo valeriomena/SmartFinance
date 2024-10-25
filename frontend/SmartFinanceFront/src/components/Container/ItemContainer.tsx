@@ -21,21 +21,24 @@ interface ItemContainerProps {
 
 const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, fields }) => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  const userId = localStorage.getItem('userId'); // Obtener el userId de localStorage
-  const { state } = useAuth(); // Obtener el estado del contexto
+  const [businessName, setBusinessName] = useState<string | null>(null);
+  const userId = localStorage.getItem('userId');
+  const { state } = useAuth();
 
   // Manejar la selección de un ítem
-  const handleItemSelect = (itemId: string, itemName: string) => {
+  const handleItemSelect = (itemId: string, businessName: string) => {
     setSelectedItem(itemId);
-    localStorage.setItem('selectedItem', itemId);
+    setBusinessName(businessName);  // Guardar el nombre del negocio seleccionado
+    localStorage.setItem('selectedBusinessId', itemId);
+    localStorage.setItem('selectedBusinessName', businessName);
   };
 
   useEffect(() => {
-    // Validar si hay un negocio seleccionado
-    if (!state.selectedBusinessId) {
-      console.warn('No se ha seleccionado ningún negocio.'); // Mensaje de advertencia
-    }
-  }, [state.selectedBusinessId]);
+    const storedBusinessName = localStorage.getItem('selectedBusinessName');
+    const storedBusinessId = localStorage.getItem('selectedBusinessId');
+    if (storedBusinessId) setSelectedItem(storedBusinessId);
+    if (storedBusinessName) setBusinessName(storedBusinessName);
+  }, []);
 
   return (
     <div className="item-container">
@@ -44,23 +47,22 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, field
           endpoint={endpoint} 
           itemName={itemName} 
           fields={fields} 
-          userId={userId} // Pasar userId
-          onRefresh={() => setSelectedItem(null)} // Función para refrescar el estado de selección
+          userId={userId} 
+          onRefresh={() => setSelectedItem(null)} 
         />
       </div>
       <div className="list-container">
         <ItemList 
           endpoint={endpoint} 
           itemName={itemName} 
-          userId={userId} // Pasar userId
+          userId={userId} 
           onSelectItem={handleItemSelect} 
         />
       </div>
-      {selectedItem && (
-        <div className="detail-container">
-          <ItemDetail itemId={selectedItem} endpoint={endpoint} itemName={itemName} />
-        </div>
-      )}
+      <div className="detail-container">
+        <label>{businessName || 'No seleccionado'}</label>
+        <label> ID: {selectedItem || 'No seleccionado'}</label>
+      </div>
     </div>
   );
 };

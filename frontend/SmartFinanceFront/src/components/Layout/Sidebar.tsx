@@ -1,3 +1,4 @@
+// Sidebar.tsx
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faBusinessTime, faCashRegister, faBoxOpen, faFileInvoiceDollar, faChartLine } from '@fortawesome/free-solid-svg-icons';
@@ -22,7 +23,7 @@ const Sidebar = () => {
           </Link>
         </li>
         <li>
-          <Link to="/business" className={!selectedBusinessId ? 'disabled' : ''}>
+          <Link to="/business">
             <FontAwesomeIcon icon={faBusinessTime} className="icon" />
             <span className="text">Negocios</span>
           </Link>

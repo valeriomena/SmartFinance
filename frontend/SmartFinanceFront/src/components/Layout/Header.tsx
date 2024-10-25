@@ -1,17 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../Auth/AuthContext';
 import Login from '../Auth/Login';
 import Register from '../Auth/Register';
 import './Header.css';
 
-interface HeaderProps {
-  businessName: string | null;
-}
-
-const Header: React.FC<HeaderProps> = ({ businessName }) => {
+const Header: React.FC = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-  const [showBusinessName, setShowBusinessName] = useState(false); // Nuevo estado
   const { state, logout } = useAuth();
 
   const handleLogout = () => {
@@ -35,24 +30,11 @@ const Header: React.FC<HeaderProps> = ({ businessName }) => {
     setShowRegister(false);
   };
 
-  useEffect(() => {
-    if (businessName) {
-      setShowBusinessName(true); // Mostrar el nombre del negocio si está disponible
-    } else {
-      setShowBusinessName(false); // Ocultar si no hay nombre
-    }
-  }, [businessName]); // Dependencia para verificar cambios en el nombre del negocio
-
   return (
     <header className="header">
       <div className="header-content">
         <div className="header-left">
           <h1 className="header-title">SmartFinance</h1>
-        </div>
-        <div className="header-center">
-          {showBusinessName && ( // Condición para mostrar el nombre
-            <span className="business-name fade-in">- {businessName}</span>
-          )}
         </div>
         <div className="header-right">
           {state.token ? (
