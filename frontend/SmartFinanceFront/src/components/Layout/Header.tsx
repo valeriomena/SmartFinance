@@ -4,7 +4,11 @@ import Login from '../Auth/Login';
 import Register from '../Auth/Register';
 import './Header.css';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  businessName: string | null; // Prop para el nombre del negocio
+}
+
+const Header: React.FC<HeaderProps> = ({ businessName }) => {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const { state, logout } = useAuth(); // Usar `state.token` en lugar de `token`
@@ -38,7 +42,9 @@ const Header: React.FC = () => {
     <header className="header">
       <div className="header-content">
         <div className="header-left">
-          <h1>SmartFinance</h1>
+          <h1>
+            SmartFinance {businessName && `- ${businessName}`} {/* Mostrar el nombre del negocio */}
+          </h1>
         </div>
         <div className="header-right">
           {state.token ? (  // Aquí usamos state.token

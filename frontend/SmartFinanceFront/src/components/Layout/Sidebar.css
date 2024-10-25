@@ -1,14 +1,13 @@
 /* Sidebar.css */
 .sidebar {
     width: 60px;
-    /* Ancho por defecto */
     position: fixed;
     top: 0;
     left: 0;
     height: 100%;
     background-color: rgba(59, 47, 128, 0.5);
-    transition: width 0.3s ease, background-color 0.3s ease;
-    z-index: 1000;
+    transition: width 0.3s ease;
+    z-index: 999;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -16,7 +15,6 @@
 
 .sidebar:hover {
     width: 200px;
-    /* Ancho visible al pasar el mouse */
 }
 
 .sidebar ul {
@@ -43,50 +41,24 @@
 .sidebar a .text {
     margin-left: 10px;
     display: none;
-    /* Ocultar el texto por defecto */
 }
 
 .sidebar:hover a .text {
     display: inline;
-    /* Mostrar el texto al pasar el mouse */
 }
 
 .sidebar a:hover {
     color: #AEE8CA;
-    /* Cambio de color al pasar el mouse */
 }
 
+/* Reducir el tamaño de los íconos cuando el sidebar es compacto */
 .sidebar .icon {
+    font-size: 1.2em;
+    /* Tamaño más pequeño para los íconos en el estado compacto */
+}
+
+/* Aumentar el tamaño de los íconos cuando el sidebar está expandido */
+.sidebar:hover .icon {
     font-size: 1.5em;
-}
-
-@media (max-width: 768px) {
-    .sidebar {
-        width: 40px;
-        /* Ancho más pequeño en dispositivos móviles */
-    }
-
-    .sidebar:hover {
-        width: 150px;
-        /* Ancho visible al pasar el mouse en dispositivos móviles */
-    }
-}
-
-/* Layout.css */
-.layout {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
-
-.main-content {
-    display: flex;
-    margin-left: 60px;
-    /* Ajusta el margen para dar espacio al sidebar */
-    padding: 1rem;
-    flex: 1;
-}
-
-.content {
-    flex: 1;
+    /* Tamaño más grande cuando el sidebar está expandido */
 }

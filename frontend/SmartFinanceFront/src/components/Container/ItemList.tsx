@@ -15,7 +15,7 @@ interface ItemListProps {
   itemName: string;
   userId: string | null;
   refresh: boolean; // Añadir prop para controlar la actualización
-  onSelectItem: (itemId: string) => void; // Añadir la prop para manejar la selección de un ítem
+  onSelectItem: (itemId: string, itemName: string) => void; // Añadir la prop para manejar la selección de un ítem
 }
 
 const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName, userId, refresh, onSelectItem }) => {
@@ -46,6 +46,14 @@ const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName, userId, refresh
     setItems(prevItems => prevItems.filter(item => item._id !== id)); // Actualizar la lista localmente
   };
 
+  const handleSelect = (id: string, name: string) => {
+    // Guardar el ID y nombre del negocio en localStorage
+    localStorage.setItem('selectedBusinessId', id);
+    localStorage.setItem('selectedBusinessName', name);
+    // Notificar al componente padre sobre la selección
+    onSelectItem(id, name);
+  };
+
   if (loading) return <p>Cargando...</p>;
   if (errorMessage) return <p className="info-error">{errorMessage}</p>;
 
@@ -54,8 +62,17 @@ const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName, userId, refresh
       <h2>Lista de {itemName}</h2>
       <ul>
         {items.map((item) => (
-          <li key={item._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px', border: '1px solid #ddd', marginBottom: '5px' }}>
-            <Link to={`/${itemName.toLowerCase()}/${item._id}`} onClick={() => onSelectItem(item._id)} style={{ flex: 1 }}>{item.name}</Link>
+          <li 
+            key={item._id} 
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px', border: '1px solid #ddd', marginBottom: '5px' }}
+          >
+            <Link 
+              to={`/${itemName.toLowerCase()}/${item._id}`} 
+              onClick={() => handleSelect(item._id, item.name)} // Actualizar aquí
+              style={{ flex: 1 }}
+            >
+              {item.name}
+            </Link>
             <div style={{ marginLeft: '10px' }}>
               <Link to={`/${itemName.toLowerCase()}/edit/${item._id}`}>
                 <FontAwesomeIcon icon={faEdit} />

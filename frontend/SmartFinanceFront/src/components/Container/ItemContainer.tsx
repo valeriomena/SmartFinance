@@ -31,8 +31,12 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, field
     }
   }, []);
 
-  const handleItemSelect = (itemId: string) => {
+  // Manejar la selección de un ítem
+  const handleItemSelect = (itemId: string, itemName: string) => {
     setSelectedItem(itemId);
+    // Guardar el nombre del negocio en localStorage
+    localStorage.setItem('selectedBusinessId', itemId);
+    localStorage.setItem('selectedBusinessName', itemName);
   };
 
   // Función para refrescar la lista
@@ -59,13 +63,13 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, field
             endpoint={endpoint} 
             itemName={itemName} 
             userId={userId} 
-            onSelectItem={handleItemSelect} 
             refresh={refresh} // Pasar el estado de refresco
+            onSelectItem={handleItemSelect} // Pasar el manejador de selección
           />
         )}
         {selectedItem && (
           <div className="detail-container">
-            <ItemDetail endpoint={endpoint} itemName={itemName} />
+            <ItemDetail endpoint={endpoint} itemName={itemName} itemId={selectedItem} /> {/* Asegúrate de pasar el ID del ítem */}
           </div>
         )}
       </div>
