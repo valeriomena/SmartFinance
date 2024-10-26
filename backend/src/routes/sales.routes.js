@@ -18,6 +18,16 @@ const {
 } = require('../controllers/sales.controller');
 
 /**
+ * Middleware para verificar que el ID de negocio esté presente en la solicitud.
+ */
+const checkBusinessId = (req, res, next) => {
+    if (!req.query.businessId) {
+        return res.status(400).json({ message: 'Business ID is required' });
+    }
+    next();
+};
+
+/**
  * Ruta para obtener todas las ventas y crear una nueva venta.
  * 
  * - `GET /`: Obtiene una lista de todas las ventas en el sistema.
@@ -27,25 +37,8 @@ const {
  * @name POST /sales
  */
 router.route('/')
-    /**
-     * Maneja la obtención de todas las ventas.
-     * 
-     * @function
-     * @name getSales
-     * @memberof module:routes/salesRoutes
-     * @see module:controllers/sales.controller#getSales
-     */
-    .get(getSales)
-    
-    /**
-     * Maneja la creación de una nueva venta.
-     * 
-     * @function
-     * @name createSale
-     * @memberof module:routes/salesRoutes
-     * @see module:controllers/sales.controller#createSale
-     */
-    .post(createSale);
+    .get(checkBusinessId, getSales)  // Aplicar middleware para verificar el ID de negocio
+    .post(checkBusinessId, createSale); // Aplicar middleware para verificar el ID de negocio
 
 /**
  * Ruta para obtener, eliminar o actualizar una venta específica por su ID.
@@ -59,34 +52,8 @@ router.route('/')
  * @name DELETE /sales/:id
  */
 router.route('/:id')
-    /**
-     * Maneja la obtención de una venta específica por su ID.
-     * 
-     * @function
-     * @name getSale
-     * @memberof module:routes/salesRoutes
-     * @see module:controllers/sales.controller#getSale
-     */
     .get(getSale)
-    
-    /**
-     * Maneja la actualización de una venta específica por su ID.
-     * 
-     * @function
-     * @name updateSale
-     * @memberof module:routes/salesRoutes
-     * @see module:controllers/sales.controller#updateSale
-     */
     .put(updateSale)
-    
-    /**
-     * Maneja la eliminación de una venta específica por su ID.
-     * 
-     * @function
-     * @name deleteSale
-     * @memberof module:routes/salesRoutes
-     * @see module:controllers/sales.controller#deleteSale
-     */
     .delete(deleteSale);
 
 module.exports = router;

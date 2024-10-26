@@ -26,7 +26,7 @@ interface ValidationErrors {
 }
 
 const ItemForm: React.FC<ItemFormProps> = ({ endpoint, itemName, fields, userId, onRefresh }) => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const { state } = useAuth();
   const { selectedBusinessId } = state;
   const { itemData, loading, errorMessage, submitItem, fetchItemById } = useItemManager({ endpoint, itemName, userId });
@@ -46,7 +46,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ endpoint, itemName, fields, userId,
     } else if (selectedBusinessId) {
       setFormData((prevData) => ({ ...prevData, businessId: selectedBusinessId }));
     }
-  }, [itemData, selectedBusinessId, userId]);
+  }, [itemData, selectedBusinessId]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

@@ -21,12 +21,35 @@ interface ItemContainerProps {
 
 const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, fields }) => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [businessName, setBusinessName] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(localStorage.getItem('userId'));
+  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const { state } = useAuth();
 
+  const handleItemSelect = (itemId: string, businessName: string) => {
+    setSelectedItem(itemId);
+    setBusinessName(businessName);
+    localStorage.setItem('selectedBusinessId', itemId);
+    localStorage.setItem('selectedBusinessName', businessName);
+  };
+
   useEffect(() => {
-    // Reiniciar el item seleccionado cuando cambie el ID del negocio
-    setSelectedItem(null);
-  }, [state.selectedBusinessId]);
+    const storedBusinessName = localStorage.getItem('selectedBusinessName');
+    const storedBusinessId = localStorage.getItem('selectedBusinessId');
+    if (storedBusinessId) setSelectedItem(storedBusinessId);
+    if (storedBusinessName) setBusinessName(storedBusinessName);
+  }, []);
+
+  useEffect(() => {
+    // Actualiza userId y token cuando cambien en localStorage
+    const handleStorageChange = () => {
+      setUserId(localStorage.getItem('userId'));
+      setToken(localStorage.getItem('token'));
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   return (
     <div className="item-container">
@@ -35,7 +58,7 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, field
           endpoint={endpoint} 
           itemName={itemName} 
           fields={fields} 
-          userId={state.userId} 
+          userId={userId} 
           onRefresh={() => setSelectedItem(null)} 
         />
       </div>
@@ -43,12 +66,13 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, field
         <ItemList 
           endpoint={endpoint} 
           itemName={itemName} 
-          userId={state.userId} 
-          onSelectItem={(id, name) => setSelectedItem(id)}
+          userId={userId} 
+          onSelectItem={handleItemSelect} 
         />
       </div>
       <div className="detail-container">
-        <label>{state.selectedBusinessId ? `ID de negocio: ${state.selectedBusinessId}` : 'Negocio no seleccionado'}</label>
+        <label>{businessName || 'No seleccionado'}</label>
+        <label> ID: {selectedItem || 'No seleccionado'}</label>
       </div>
     </div>
   );

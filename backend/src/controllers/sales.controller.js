@@ -13,7 +13,10 @@ const Sale = require('../models/Sale');
  */
 const createSale = async (req, res, next) => {
     try {
-        const sale = new Sale(req.body);
+        const sale = new Sale({
+            ...req.body,
+            businessId: req.query.businessId // Asignar el ID del negocio a la venta
+        });
         await sale.save();
         res.status(201).json(sale);
     } catch (err) {
@@ -34,7 +37,7 @@ const createSale = async (req, res, next) => {
  */
 const getSale = async (req, res, next) => {
     try {
-        const sale = await Sale.findById(req.params.id);
+        const sale = await Sale.findOne({ _id: req.params.id, businessId: req.query.businessId }); // Filtrar por businessId
         if (!sale) {
             return res.status(404).json({ message: 'Sale not found' });
         }
@@ -57,7 +60,7 @@ const getSale = async (req, res, next) => {
  */
 const getSales = async (req, res, next) => {
     try {
-        const sales = await Sale.find();
+        const sales = await Sale.find({ businessId: req.query.businessId }); // Filtrar por businessId
         res.json(sales);
     } catch (err) {
         next(err);
@@ -77,7 +80,7 @@ const getSales = async (req, res, next) => {
  */
 const deleteSale = async (req, res, next) => {
     try {
-        const sale = await Sale.findByIdAndDelete(req.params.id);
+        const sale = await Sale.findOneAndDelete({ _id: req.params.id, businessId: req.query.businessId }); // Filtrar por businessId
         if (!sale) {
             return res.status(404).json({ message: 'Sale not found' });
         }
@@ -100,7 +103,11 @@ const deleteSale = async (req, res, next) => {
  */
 const updateSale = async (req, res, next) => {
     try {
-        const sale = await Sale.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        const sale = await Sale.findOneAndUpdate(
+            { _id: req.params.id, businessId: req.query.businessId },
+            req.body,
+            { new: true, runValidators: true }
+        ); // Filtrar por businessId
         if (!sale) {
             return res.status(404).json({ message: 'Sale not found' });
         }
