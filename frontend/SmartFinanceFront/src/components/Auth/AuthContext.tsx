@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 type AuthAction = 
   | { type: 'LOGIN'; token: string; userId: string; selectedBusinessId?: string | null }
-  | { type: 'LOGOUT' };
+  | { type: 'LOGOUT' }
+  | { type: 'SET_BUSINESS'; selectedBusinessId: string | null };
 
 interface AuthState {
   token: string | null;
@@ -12,9 +13,9 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  token: localStorage.getItem('token'), // Puede ser null
-  userId: localStorage.getItem('userId'), // Puede ser null
-  selectedBusinessId: localStorage.getItem('selectedBusinessId'), // Obtener del localStorage
+  token: localStorage.getItem('token'),
+  userId: localStorage.getItem('userId'),
+  selectedBusinessId: localStorage.getItem('selectedBusinessId'),
 };
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
@@ -23,17 +24,15 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
       localStorage.setItem('token', action.token);
       localStorage.setItem('userId', action.userId);
       localStorage.setItem('selectedBusinessId', action.selectedBusinessId || '');
-      return { 
-        ...state, 
-        token: action.token, 
-        userId: action.userId, 
-        selectedBusinessId: action.selectedBusinessId || null 
-      };
+      return { ...state, token: action.token, userId: action.userId, selectedBusinessId: action.selectedBusinessId || null };
     case 'LOGOUT':
       localStorage.removeItem('token');
       localStorage.removeItem('userId');
-      localStorage.removeItem('selectedBusinessId'); // Eliminar el ID de negocio seleccionado
+      localStorage.removeItem('selectedBusinessId');
       return { token: null, userId: null, selectedBusinessId: null };
+    case 'SET_BUSINESS':
+      localStorage.setItem('selectedBusinessId', action.selectedBusinessId || '');
+      return { ...state, selectedBusinessId: action.selectedBusinessId };
     default:
       return state;
   }
@@ -43,6 +42,7 @@ const AuthContext = createContext<{
   state: AuthState;
   login: (token: string, userId: string, selectedBusinessId?: string | null) => void;
   logout: () => void;
+  setSelectedBusinessId: (businessId: string | null) => void;
 } | undefined>(undefined);
 
 export const useAuth = () => {
@@ -60,7 +60,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     const storedUserId = localStorage.getItem('userId');
-    const storedBusinessId = localStorage.getItem('selectedBusinessId'); // Cargar ID de negocio
+    const storedBusinessId = localStorage.getItem('selectedBusinessId');
 
     if (storedToken && storedUserId) {
       dispatch({ type: 'LOGIN', token: storedToken, userId: storedUserId, selectedBusinessId: storedBusinessId });
@@ -77,8 +77,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     navigate('/login');
   };
 
+  const setSelectedBusinessId = (businessId: string | null) => {
+    dispatch({ type: 'SET_BUSINESS', selectedBusinessId: businessId });
+  };
+
   return (
-    <AuthContext.Provider value={{ state, login, logout }}>
+    <AuthContext.Provider value={{ state, login, logout, setSelectedBusinessId }}>
       {children}
     </AuthContext.Provider>
   );

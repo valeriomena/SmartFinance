@@ -84,7 +84,7 @@ const App: React.FC = () => {
               path="/products"
               element={
                 <PrivateRoute>
-                  <ItemContainer endpoint="/api/products" itemName="Producto" fields={fields.product} />
+                  <ItemContainer endpoint="/api/productServices" itemName="Producto" fields={fields.product} />
                 </PrivateRoute>
               }
             />

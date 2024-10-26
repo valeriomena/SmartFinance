@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBox, faTag, faDollarSign, faStore, faCalculator } from '@fortawesome/free-solid-svg-icons';
-import SetPrice from './SetPrice';
+import SetPrice from '../Calculators/SetPrice';
 import '../../styles/Form.css';
 import '../../styles/SlideForm.css';
 

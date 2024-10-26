@@ -7,9 +7,9 @@ import './Sidebar.css';
 
 const Sidebar = () => {
   const { state } = useAuth();
-  const selectedBusinessId = localStorage.getItem('selectedBusinessId');
+  const { token, selectedBusinessId } = state;
 
-  if (!state.token) {
+  if (!token) {
     return null; // No mostrar la barra lateral si no hay token
   }
 

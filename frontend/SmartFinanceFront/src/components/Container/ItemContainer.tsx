@@ -21,24 +21,12 @@ interface ItemContainerProps {
 
 const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, fields }) => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  const [businessName, setBusinessName] = useState<string | null>(null);
-  const userId = localStorage.getItem('userId');
   const { state } = useAuth();
 
-  // Manejar la selección de un ítem
-  const handleItemSelect = (itemId: string, businessName: string) => {
-    setSelectedItem(itemId);
-    setBusinessName(businessName);  // Guardar el nombre del negocio seleccionado
-    localStorage.setItem('selectedBusinessId', itemId);
-    localStorage.setItem('selectedBusinessName', businessName);
-  };
-
   useEffect(() => {
-    const storedBusinessName = localStorage.getItem('selectedBusinessName');
-    const storedBusinessId = localStorage.getItem('selectedBusinessId');
-    if (storedBusinessId) setSelectedItem(storedBusinessId);
-    if (storedBusinessName) setBusinessName(storedBusinessName);
-  }, []);
+    // Reiniciar el item seleccionado cuando cambie el ID del negocio
+    setSelectedItem(null);
+  }, [state.selectedBusinessId]);
 
   return (
     <div className="item-container">
@@ -47,7 +35,7 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, field
           endpoint={endpoint} 
           itemName={itemName} 
           fields={fields} 
-          userId={userId} 
+          userId={state.userId} 
           onRefresh={() => setSelectedItem(null)} 
         />
       </div>
@@ -55,13 +43,12 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, field
         <ItemList 
           endpoint={endpoint} 
           itemName={itemName} 
-          userId={userId} 
-          onSelectItem={handleItemSelect} 
+          userId={state.userId} 
+          onSelectItem={(id, name) => setSelectedItem(id)}
         />
       </div>
       <div className="detail-container">
-        <label>{businessName || 'No seleccionado'}</label>
-        <label> ID: {selectedItem || 'No seleccionado'}</label>
+        <label>{state.selectedBusinessId ? `ID de negocio: ${state.selectedBusinessId}` : 'Negocio no seleccionado'}</label>
       </div>
     </div>
   );
