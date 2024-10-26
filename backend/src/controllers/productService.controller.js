@@ -45,7 +45,7 @@ const getProductService = async (req, res, next) => {
 };
 
 /**
- * Obtiene todos los productos y servicios.
+ * Obtiene todos los productos y servicios, o filtra por ID de negocio.
  * 
  * @async
  * @function getProductServices
@@ -57,7 +57,10 @@ const getProductService = async (req, res, next) => {
  */
 const getProductServices = async (req, res, next) => {
     try {
-        const productServices = await ProductService.find();
+        const { businessId } = req.query; // Obtener businessId de la consulta
+        const filter = businessId ? { businessId } : {}; // Filtrar solo por businessId
+
+        const productServices = await ProductService.find(filter);
         res.json(productServices);
     } catch (err) {
         next(err);

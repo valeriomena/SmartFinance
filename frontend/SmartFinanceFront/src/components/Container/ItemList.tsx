@@ -27,8 +27,24 @@ const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName, userId, onSelec
   useEffect(() => {
     const fetchItems = async () => {
       const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('Token no encontrado');
+        return;
+      }
+
+      // Define los parámetros de consulta según la disponibilidad de selectedBusinessId y userId
+      let queryEndpoint = endpoint;
+      if (selectedBusinessId) {
+        queryEndpoint += `?businessId=${selectedBusinessId}`;
+      } else if (userId) {
+        queryEndpoint += `?userId=${userId}`;
+      } else {
+        setItems([]); // No hay información si no hay ni selectedBusinessId ni userId
+        return;
+      }
+
       try {
-        const response = await api.get<Item[]>(endpoint, {
+        const response = await api.get<Item[]>(queryEndpoint, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setItems(response.data);
@@ -78,6 +94,9 @@ const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName, userId, onSelec
           </li>
         ))}
       </ul>
+      {items.length === 0 && !loading && !selectedBusinessId && !userId && (
+        <p>No hay información disponible.</p>
+      )}
     </div>
   );
 };
