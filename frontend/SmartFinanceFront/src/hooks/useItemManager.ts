@@ -1,92 +1,110 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { useAuth } from '@components/Auth/AuthContext';
 
-interface UseItemManagerProps {
-  endpoint: string;
-  itemName: string;
-  userId: string | null;
-}
-
-export const useItemManager = ({ endpoint, itemName, userId }: UseItemManagerProps) => {
+export const useItemManager = (itemName: string, endpoint: string) => {
+  const { state } = useAuth();
+  const { userId, selectedBusinessId, token } = state;
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [itemData, setItemData] = useState<Record<string, any> | null>(null);
-  const [itemId, setItemId] = useState<string | null>(null);  // Almacenar ID del ítem
+  const [itemId, setItemId] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Función para cargar un ítem por ID
   const fetchItemById = async (id: string) => {
     setLoading(true);
     setErrorMessage(null);
-    const token = localStorage.getItem('token');
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
+    console.log(`Fetching item by ID: ${id}`);
+    
     try {
-      const response = await api.get<Record<string, any>>(`${endpoint}/${id}`, config);
-      setItemData(response.data);  // Guardar datos del ítem
+      const response = await api.get<Record<string, any>>(
+        `${selectedBusinessId ? `/api/business/${selectedBusinessId}` : ''}/${endpoint}/${id}`, 
+        config
+      );
+      setItemData(response.data);
+      console.log('Item data retrieved:', response.data);
     } catch (error) {
       setErrorMessage('Hubo un error al cargar los datos del ítem.');
+      console.error('Error al cargar datos del ítem:', error);
     } finally {
       setLoading(false);
+      console.log('Loading después de fetch:', loading);
     }
   };
 
-  // Función para crear o actualizar un ítem
   const submitItem = async (data: any, id?: string, shouldNavigate = true): Promise<boolean> => {
     setLoading(true);
     setErrorMessage(null);
-    const token = localStorage.getItem('token');
     const config = { headers: { Authorization: `Bearer ${token}` } };
-    const requestData = { ...data, createdBy: userId };  // Asegurar que se añade el userId en cada petición
+    const requestData = { ...data, createdBy: userId };
+
+    console.log('Submit item data:', requestData);
 
     try {
       let response;
       if (id) {
-        // Actualización de ítem
-        response = await api.put<Record<string, any>>(`${endpoint}/${id}`, requestData, config);
-        setItemId(id);  // Guardar el ID del ítem actualizado
+        response = await api.put<Record<string, any>>(
+          `${selectedBusinessId ? `/api/business/${selectedBusinessId}` : ''}/${endpoint}/${id}`, 
+          requestData, 
+          config
+        );
+        setItemId(id);
+        console.log(`Updated item ID: ${id}`);
       } else {
-        // Creación de nuevo ítem
-        response = await api.post<Record<string, any>>(`${endpoint}`, requestData, config);
-        setItemId(response.data._id);  // Guardar ID del nuevo ítem
+        response = await api.post<Record<string, any>>(
+          `${selectedBusinessId ? `/api/business/${selectedBusinessId}` : ''}/${endpoint}`, 
+          requestData, 
+          config
+        );
+        setItemId(response.data._id);
+        console.log('Created new item ID:', response.data._id);
       }
-      // Redirigir sólo si `shouldNavigate` es verdadero
       if (shouldNavigate) {
         navigate(`/${itemName.toLowerCase()}`);
       }
-      return true; // Retornar true si la operación es exitosa
+      return true;
     } catch (error) {
       setErrorMessage('Hubo un error al guardar los datos.');
-      return false; // Retornar false si hay un error
+      console.error('Error al guardar datos del ítem:', error);
+      return false;
     } finally {
       setLoading(false);
+      console.log('Loading después de submit:', loading);
     }
   };
 
-  // Función para eliminar un ítem
   const deleteItem = async (id: string) => {
     setLoading(true);
-    const token = localStorage.getItem('token');
     const config = { headers: { Authorization: `Bearer ${token}` } };
+
+    console.log(`Deleting item with ID: ${id}`);
 
     try {
       await api.delete(`${endpoint}/${id}`, config);
-      // Aquí podrías realizar una actualización adicional o manejar el estado después de la eliminación
+/*      await api.delete(
+        `${selectedBusinessId ? `/api/business/${selectedBusinessId}` : ''}/${endpoint}/${id}`, 
+        config
+      );*/
+      console.log('Item deleted successfully');
     } catch (error) {
       setErrorMessage('Hubo un error al eliminar el ítem.');
+      console.error('Error al eliminar ítem:', error);
     } finally {
       setLoading(false);
+      console.log('Loading después de delete:', loading);
     }
   };
 
   return {
     itemData,
-    itemId,  // Retornar el ID del ítem creado o actualizado
+    itemId,
     loading,
     errorMessage,
-    fetchItemById,  // Función para cargar datos por ID
-    submitItem,  // Función para crear o actualizar ítems
-    deleteItem,  // Función para eliminar ítems
+    fetchItemById,
+    submitItem,
+    deleteItem,
   };
 };

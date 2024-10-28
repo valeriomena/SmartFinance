@@ -1,9 +1,11 @@
+// ItemContainer.tsx
 import React, { useState, useEffect } from 'react';
 import ItemList from './ItemList';
 import ItemDetail from './ItemDetail';
 import ItemForm from './ItemForm';
 import './ItemContainer.css';
 import { useAuth } from '../Auth/AuthContext';
+import { useProductFilter } from '../../hooks/useProductFilter';
 
 interface Field {
   name: string;
@@ -22,34 +24,29 @@ interface ItemContainerProps {
 const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, fields }) => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [businessName, setBusinessName] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(localStorage.getItem('userId'));
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
-  const { state } = useAuth();
+  const { state, setSelectedBusinessId } = useAuth();
+  const { products: fetchedProducts, error: productError } = useProductFilter({ endpoint });
+
+  useEffect(() => {
+    console.log("ItemContainer rendered with:", { endpoint, itemName, fields, selectedItem, businessName });
+
+    // Manejo de selección de negocio desde el contexto
+    const storedBusinessId = state.selectedBusinessId;
+    if (storedBusinessId) {
+      setSelectedItem(storedBusinessId);
+    }
+
+    // Verifica productos cuando el endpoint es 'sales'
+    if (endpoint === 'sales') {
+      console.log("Productos obtenidos para ventas:", { fetchedProducts, productError });
+    }
+  }, [endpoint, state.selectedBusinessId, fetchedProducts, productError]);
 
   const handleItemSelect = (itemId: string, businessName: string) => {
     setSelectedItem(itemId);
     setBusinessName(businessName);
-    localStorage.setItem('selectedBusinessId', itemId);
-    localStorage.setItem('selectedBusinessName', businessName);
+    setSelectedBusinessId(itemId); // Actualiza `selectedBusinessId` en el contexto
   };
-
-  useEffect(() => {
-    const storedBusinessName = localStorage.getItem('selectedBusinessName');
-    const storedBusinessId = localStorage.getItem('selectedBusinessId');
-    if (storedBusinessId) setSelectedItem(storedBusinessId);
-    if (storedBusinessName) setBusinessName(storedBusinessName);
-  }, []);
-
-  useEffect(() => {
-    // Actualiza userId y token cuando cambien en localStorage
-    const handleStorageChange = () => {
-      setUserId(localStorage.getItem('userId'));
-      setToken(localStorage.getItem('token'));
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
 
   return (
     <div className="item-container">
@@ -58,15 +55,14 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, field
           endpoint={endpoint} 
           itemName={itemName} 
           fields={fields} 
-          userId={userId} 
           onRefresh={() => setSelectedItem(null)} 
+          {...(endpoint === 'sales' && fetchedProducts ? { products: fetchedProducts, productError } : {})}
         />
       </div>
       <div className="list-container">
         <ItemList 
           endpoint={endpoint} 
           itemName={itemName} 
-          userId={userId} 
           onSelectItem={handleItemSelect} 
         />
       </div>

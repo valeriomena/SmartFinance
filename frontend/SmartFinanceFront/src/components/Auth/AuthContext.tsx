@@ -1,21 +1,26 @@
+// AuthProvider.tsx
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 
-type AuthAction = 
+type AuthAction =
   | { type: 'LOGIN'; token: string; userId: string; selectedBusinessId?: string | null }
   | { type: 'LOGOUT' }
-  | { type: 'SET_BUSINESS'; selectedBusinessId: string | null };
+  | { type: 'SET_BUSINESS'; selectedBusinessId: string | null }
+  | { type: 'SET_ENDPOINT'; endpoint: string };
 
 interface AuthState {
   token: string | null;
   userId: string | null;
   selectedBusinessId: string | null;
+  endpoint: string;
 }
 
 const initialState: AuthState = {
   token: localStorage.getItem('token'),
   userId: localStorage.getItem('userId'),
   selectedBusinessId: localStorage.getItem('selectedBusinessId'),
+  endpoint: '/api/productServices',
 };
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
@@ -23,16 +28,24 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     case 'LOGIN':
       localStorage.setItem('token', action.token);
       localStorage.setItem('userId', action.userId);
-      localStorage.setItem('selectedBusinessId', action.selectedBusinessId || '');
-      return { ...state, token: action.token, userId: action.userId, selectedBusinessId: action.selectedBusinessId || null };
+      if (action.selectedBusinessId) localStorage.setItem('selectedBusinessId', action.selectedBusinessId);
+      return {
+        ...state,
+        token: action.token,
+        userId: action.userId,
+        selectedBusinessId: action.selectedBusinessId || null,
+      };
     case 'LOGOUT':
       localStorage.removeItem('token');
       localStorage.removeItem('userId');
       localStorage.removeItem('selectedBusinessId');
-      return { token: null, userId: null, selectedBusinessId: null };
+      return { token: null, userId: null, selectedBusinessId: null, endpoint: state.endpoint };
     case 'SET_BUSINESS':
-      localStorage.setItem('selectedBusinessId', action.selectedBusinessId || '');
+      if (action.selectedBusinessId) localStorage.setItem('selectedBusinessId', action.selectedBusinessId);
+      else localStorage.removeItem('selectedBusinessId');
       return { ...state, selectedBusinessId: action.selectedBusinessId };
+    case 'SET_ENDPOINT':
+      return { ...state, endpoint: action.endpoint };
     default:
       return state;
   }
@@ -43,6 +56,7 @@ const AuthContext = createContext<{
   login: (token: string, userId: string, selectedBusinessId?: string | null) => void;
   logout: () => void;
   setSelectedBusinessId: (businessId: string | null) => void;
+  setEndpoint: (endpoint: string) => void;
 } | undefined>(undefined);
 
 export const useAuth = () => {
@@ -56,16 +70,6 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedUserId = localStorage.getItem('userId');
-    const storedBusinessId = localStorage.getItem('selectedBusinessId');
-
-    if (storedToken && storedUserId) {
-      dispatch({ type: 'LOGIN', token: storedToken, userId: storedUserId, selectedBusinessId: storedBusinessId });
-    }
-  }, []);
 
   const login = (token: string, userId: string, selectedBusinessId?: string | null) => {
     dispatch({ type: 'LOGIN', token, userId, selectedBusinessId });
@@ -81,8 +85,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     dispatch({ type: 'SET_BUSINESS', selectedBusinessId: businessId });
   };
 
+  const setEndpoint = (endpoint: string) => {
+    dispatch({ type: 'SET_ENDPOINT', endpoint });
+  };
+
   return (
-    <AuthContext.Provider value={{ state, login, logout, setSelectedBusinessId }}>
+    <AuthContext.Provider value={{ state, login, logout, setSelectedBusinessId, setEndpoint }}>
       {children}
     </AuthContext.Provider>
   );

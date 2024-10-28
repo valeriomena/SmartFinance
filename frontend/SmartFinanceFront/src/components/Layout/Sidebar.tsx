@@ -5,49 +5,60 @@ import { faTachometerAlt, faBusinessTime, faCashRegister, faBoxOpen, faFileInvoi
 import { useAuth } from '@components/Auth/AuthContext';
 import './Sidebar.css';
 
-const Sidebar = () => {
+interface SidebarProps {
+  onEndpointChange: (endpoint: string) => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ onEndpointChange }) => {
   const { state } = useAuth();
   const { token, selectedBusinessId } = state;
 
+  console.log('Sidebar rendered - token:', token, 'selectedBusinessId:', selectedBusinessId);
+
   if (!token) {
+    console.log('Sidebar hidden due to missing token');
     return null; // No mostrar la barra lateral si no hay token
   }
+
+  const handleClick = (endpoint: string) => {
+    onEndpointChange(endpoint);
+  };
 
   return (
     <div className="sidebar Seychelle-Islands-bg-5">
       <ul>
         <li>
-          <Link to="/" className={!selectedBusinessId ? 'disabled' : ''}>
+          <Link to="/" className={!selectedBusinessId ? 'disabled' : ''} onClick={() => handleClick('/api/dashboard')}>
             <FontAwesomeIcon icon={faTachometerAlt} className="icon" />
             <span className="text">Dashboard</span>
           </Link>
         </li>
         <li>
-          <Link to="/business">
+          <Link to="/business" onClick={() => handleClick('/api/business')}>
             <FontAwesomeIcon icon={faBusinessTime} className="icon" />
             <span className="text">Negocios</span>
           </Link>
         </li>
         <li>
-          <Link to="/sales" className={!selectedBusinessId ? 'disabled' : ''}>
+          <Link to="/sales" className={!selectedBusinessId ? 'disabled' : ''} onClick={() => handleClick('/api/sales')}>
             <FontAwesomeIcon icon={faCashRegister} className="icon" />
             <span className="text">Ventas</span>
           </Link>
         </li>
         <li>
-          <Link to="/products" className={!selectedBusinessId ? 'disabled' : ''}>
+          <Link to="/products" className={!selectedBusinessId ? 'disabled' : ''} onClick={() => handleClick('/api/products')}>
             <FontAwesomeIcon icon={faBoxOpen} className="icon" />
             <span className="text">Productos</span>
           </Link>
         </li>
         <li>
-          <Link to="/costs" className={!selectedBusinessId ? 'disabled' : ''}>
+          <Link to="/costs" className={!selectedBusinessId ? 'disabled' : ''} onClick={() => handleClick('/api/costs')}>
             <FontAwesomeIcon icon={faFileInvoiceDollar} className="icon" />
             <span className="text">Costos</span>
           </Link>
         </li>
         <li>
-          <Link to="/reports" className={!selectedBusinessId ? 'disabled' : ''}>
+          <Link to="/reports" className={!selectedBusinessId ? 'disabled' : ''} onClick={() => handleClick('/api/reports')}>
             <FontAwesomeIcon icon={faChartLine} className="icon" />
             <span className="text">Reportes</span>
           </Link>

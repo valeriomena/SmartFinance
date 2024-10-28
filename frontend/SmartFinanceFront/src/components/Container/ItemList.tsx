@@ -14,19 +14,18 @@ interface Item {
 interface ItemListProps {
   endpoint: string;
   itemName: string;
-  userId: string | null;
   onSelectItem: (itemId: string, itemName: string) => void;
 }
 
-const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName, userId, onSelectItem }) => {
+const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName, onSelectItem }) => {
   const [items, setItems] = useState<Item[]>([]);
-  const { loading, errorMessage, deleteItem } = useItemManager({ endpoint, itemName, userId });
-  const { state, login } = useAuth();
-  const { selectedBusinessId } = state;
+  const { loading, errorMessage, deleteItem } = useItemManager(itemName, endpoint);
+  const { state } = useAuth();
+  const { selectedBusinessId, token, userId } = state; // Obtener el token y userId desde el contexto
 
   useEffect(() => {
+    console.log('ItemList rendered', state.selectedBusinessId);
     const fetchItems = async () => {
-      const token = localStorage.getItem('token');
       if (!token) {
         console.error('Token no encontrado');
         return;
@@ -54,7 +53,7 @@ const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName, userId, onSelec
     };
 
     fetchItems();
-  }, [endpoint, userId, selectedBusinessId]);
+  }, [endpoint, userId, selectedBusinessId, token]);
 
   const handleDelete = (id: string) => {
     deleteItem(id);
@@ -62,10 +61,8 @@ const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName, userId, onSelec
   };
 
   const handleSelectItem = (itemId: string, itemName: string) => {
-    const token = localStorage.getItem('token');
     if (token) {
-      onSelectItem(itemId, itemName); // Llamada al padre
-      login(state.token!, state.userId!, itemId); // Actualiza selectedBusinessId
+      onSelectItem(itemId, itemName); 
     } else {
       console.error('Token no encontrado');
     }

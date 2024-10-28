@@ -1,14 +1,17 @@
+// Login.tsx
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { useAuth } from '../Auth/AuthContext';  
+import { useAuth } from '../Auth/AuthContext';
 import '../../styles/Form.css';
 import '../../styles/SlideForm.css';
 
 /**
  * Props for the Login component.
+ * @interface
  */
 interface LoginProps {
   /** Function to close the login form. */
@@ -17,39 +20,48 @@ interface LoginProps {
 
 /**
  * Interface for the response from the login API.
+ * @interface
  */
 interface LoginResponse {
+  /** Token received from the server upon successful login. */
   token: string;
+  /** User ID of the authenticated user. */
   userId: string;
 }
 
 /**
- * Login component allows users to log into the application.
- * It handles form submission, calls the API for login, and manages error states.
- * 
+ * The Login component renders a login form that allows users to authenticate
+ * themselves by entering their email and password. On submission, it communicates
+ * with the API, retrieves a token, and updates the authentication context.
+ * Additionally, it handles error states and displays messages for failed login attempts.
+ *
  * @component
  * @example
- * const handleClose = () => { console.log('Closed!'); }
+ * const handleClose = () => { console.log('Closed!'); };
  * return (
  *   <Login onClose={handleClose} />
  * );
- * 
+ *
  * @param {LoginProps} props - The component props.
- * @returns {JSX.Element} - Rendered Login component.
+ * @param {() => void} props.onClose - Function to close the login form.
+ * @returns {JSX.Element} Rendered Login component.
  */
 const Login: React.FC<LoginProps> = ({ onClose }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);  // Error state
+  const [email, setEmail] = useState('');          // State to manage the email input
+  const [password, setPassword] = useState('');     // State to manage the password input
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);  // State for error message
   const navigate = useNavigate();
 
-  // Obtener la función login del contexto
+  // Retrieve login function from the authentication context
   const { login } = useAuth();
 
   /**
-   * Handle form submission for login.
-   * This function sends the login data to the API and handles responses.
-   * 
+   * Handles the form submission for login. This function sends the login data
+   * (email and password) to the API, saves the token and user ID in localStorage,
+   * updates the authentication context, and redirects the user.
+   *
+   * @async
+   * @function
    * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
    * @returns {Promise<void>}
    */
@@ -72,15 +84,12 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
       onClose();
 
     } catch (error: any) {
-      // Comprobamos las propiedades del error
+      // Set specific error message based on error type
       if (error.response) {
-        // Error con respuesta del servidor
         setErrorMessage('Error en el inicio de sesión. Verifica tus credenciales.');
       } else if (error.request) {
-        // Error sin respuesta del servidor
         setErrorMessage('No se recibió respuesta del servidor.');
       } else {
-        // Otro tipo de error
         setErrorMessage('Ocurrió un error inesperado. Inténtalo nuevamente.');
       }
     }
@@ -112,11 +121,11 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
         </div>
         <button type="submit">Entrar</button>
         <button type="button" className="close-button" onClick={onClose}>
-          <FontAwesomeIcon icon={faTimes} /> 
+          <FontAwesomeIcon icon={faTimes} />
         </button>
       </form>
 
-      {/* Show error message if exists */}
+      {/* Error message displayed if login fails */}
       {errorMessage && <p className="error-message">{errorMessage}</p>}
     </div>
   );
