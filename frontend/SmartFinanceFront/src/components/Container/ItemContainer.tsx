@@ -1,7 +1,6 @@
 // ItemContainer.tsx
 import React, { useState, useEffect } from 'react';
 import ItemList from './ItemList';
-import ItemDetail from './ItemDetail';
 import ItemForm from './ItemForm';
 import './ItemContainer.css';
 import { useAuth } from '../Auth/AuthContext';
@@ -30,13 +29,11 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, field
   useEffect(() => {
     console.log("ItemContainer rendered with:", { endpoint, itemName, fields, selectedItem, businessName });
 
-    // Manejo de selección de negocio desde el contexto
     const storedBusinessId = state.selectedBusinessId;
     if (storedBusinessId) {
       setSelectedItem(storedBusinessId);
     }
 
-    // Verifica productos cuando el endpoint es 'sales'
     if (endpoint === 'sales') {
       console.log("Productos obtenidos para ventas:", { fetchedProducts, productError });
     }
@@ -45,7 +42,7 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, field
   const handleItemSelect = (itemId: string, businessName: string) => {
     setSelectedItem(itemId);
     setBusinessName(businessName);
-    setSelectedBusinessId(itemId); // Actualiza `selectedBusinessId` en el contexto
+    setSelectedBusinessId(itemId);
   };
 
   return (

@@ -2,7 +2,7 @@
 import React from 'react';
 import { FieldError } from 'react-hook-form';
 import useItemForm from '../../hooks/useItemForm'; 
-import '../../styles/Form.css'; // Asegúrate de importar los estilos
+import '../../styles/Form.css';
 
 interface Field {
   name: string;
@@ -16,11 +16,11 @@ interface ItemFormProps {
   endpoint: string;
   itemName: string;
   fields: Field[];
-  onRefresh: () => void; // Función para refrescar la lista de ítems
+  onRefresh: () => void;
 }
 
 const ItemForm: React.FC<ItemFormProps> = ({ endpoint, itemName, fields, onRefresh }) => {
-  const { register, handleSubmit, onSubmit, errors } = useItemForm({ endpoint, fields, onRefresh, itemName });
+  const { register, handleSubmit, onSubmit, errors, successMessage, formError } = useItemForm({ endpoint, fields, onRefresh, itemName });
 
   return (
     <div className="form-container"> 
@@ -47,7 +47,8 @@ const ItemForm: React.FC<ItemFormProps> = ({ endpoint, itemName, fields, onRefre
         ))}
         <button type="submit" className="submit-button">{itemName === 'Actualizar' ? 'Actualizar' : 'Crear'}</button> 
       </form>
-      {errors.root && <p className="error-message">{errors.root.message}</p>}
+      {formError && <p className="error-message">{formError}</p>}
+      {successMessage && <p className="success-message">{successMessage}</p>}
     </div>
   );
 };
