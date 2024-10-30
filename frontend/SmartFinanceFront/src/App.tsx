@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './components/Auth/AuthContext';
+import { EndpointProvider } from './contexts/EndpointContext';
 import Layout from './components/Layout/Layout';
 import PrivateRoute from './components/Routes/PrivateRoute';
 import ItemContainer from './components/Container/ItemContainer';
@@ -54,6 +55,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <AuthProvider>
+        <EndpointProvider>
         <Layout>
           <Routes>
             <Route
@@ -113,7 +115,8 @@ const App: React.FC = () => {
               }
             />
           </Routes>
-        </Layout>
+          </Layout>
+        </EndpointProvider>  
       </AuthProvider>
     </Router>
   );
