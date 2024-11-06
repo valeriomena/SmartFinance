@@ -4,15 +4,14 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faBusinessTime, faCashRegister, faBoxOpen, faFileInvoiceDollar, faChartLine } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '@components/Auth/AuthContext';
-import { useEndpoint } from '../../contexts/EndpointContext'; // Asegúrate de que la ruta sea correcta
+import { useEndpoint } from '../../contexts/EndpointContext'; 
 import './Sidebar.css';
 
 const Sidebar: React.FC = () => {
   const { state } = useAuth();
   const { token, selectedBusinessId } = state;
-  const { setEndpoint } = useEndpoint(); // Obtener setEndpoint del contexto
-
-  console.log('Sidebar rendered - token:', token, 'selectedBusinessId:', selectedBusinessId);
+  const { setEndpoint } = useEndpoint(); 
+  console.log('selectedBusinessId:', selectedBusinessId);
 
   if (!token) {
     console.log('Sidebar hidden due to missing token');

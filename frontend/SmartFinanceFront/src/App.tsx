@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './components/Auth/AuthContext';
 import { EndpointProvider } from './contexts/EndpointContext';
 import Layout from './components/Layout/Layout';
 import PrivateRoute from './components/Routes/PrivateRoute';
 import ItemContainer from './components/Container/ItemContainer';
+import { ItemsProvider } from './contexts/ListContext';
 
 const App: React.FC = () => {
   // Definición de campos para los diferentes tipos de ítems
@@ -51,71 +52,33 @@ const App: React.FC = () => {
       { name: 'ingresoTotal', label: 'Ingreso Total', type: 'number' as const, required: true, validationMessage: 'El ingreso total es obligatorio' },
     ],
   };
+  
+  useEffect(() => {
+    console.log("App montado");
+  }, []);
+
+  console.log("AuthProvider montado");
+  console.log("EndpointProvider montado");
+  console.log("ItemsProvider montado");
 
   return (
     <Router>
       <AuthProvider>
         <EndpointProvider>
-        <Layout>
-          <Routes>
-            <Route
-              path="/business"
-              element={
-                <PrivateRoute>
-                  <ItemContainer endpoint="/api/businesses" itemName="Negocio" fields={fields.business} />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/indicators"
-              element={
-                <PrivateRoute>
-                  <ItemContainer endpoint="/api/indicators" itemName="Indicador" fields={fields.indicator} />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/costs"
-              element={
-                <PrivateRoute>
-                  <ItemContainer endpoint="/api/costs" itemName="Costo" fields={fields.cost} />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/products"
-              element={
-                <PrivateRoute>
-                  <ItemContainer endpoint="/api/productServices" itemName="Producto" fields={fields.product} />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/reports"
-              element={
-                <PrivateRoute>
-                  <ItemContainer endpoint="/api/reports" itemName="Reporte" fields={fields.report} />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/sales"
-              element={
-                <PrivateRoute>
-                  <ItemContainer endpoint="/api/sales" itemName="Venta" fields={fields.sales} />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/negocio/:businessId" // Ruta para un negocio específico
-              element={
-                <PrivateRoute>
-                  <ItemContainer endpoint="/api/businesses" itemName="Negocio" fields={fields.business} />
-                </PrivateRoute>
-              }
-            />
-          </Routes>
-          </Layout>
+          <ItemsProvider>
+            <Layout>
+              <Routes>
+                <Route path="/" element={<div>Home</div>} /> {/* Ruta por defecto */}
+                <Route path="/business" element={<PrivateRoute><ItemContainer endpoint="/api/businesses" itemName="Negocio" fields={fields.business} /></PrivateRoute>} />
+                <Route path="/indicators" element={<PrivateRoute><ItemContainer endpoint="/api/indicators" itemName="Indicador" fields={fields.indicator} /></PrivateRoute>}/>
+                <Route path="/costs" element={<PrivateRoute><ItemContainer endpoint="/api/costs" itemName="Costo" fields={fields.cost} /></PrivateRoute>}/>
+                <Route path="/products" element={<PrivateRoute><ItemContainer endpoint="/api/productServices" itemName="Producto" fields={fields.product} /></PrivateRoute>}/>
+                <Route path="/reports" element={<PrivateRoute><ItemContainer endpoint="/api/reports" itemName="Reporte" fields={fields.report} /></PrivateRoute>}/>
+                <Route path="/sales" element={<PrivateRoute><ItemContainer endpoint="/api/sales" itemName="Venta" fields={fields.sales} /></PrivateRoute>}/>
+                <Route path="/negocio/:businessId" element={<PrivateRoute><ItemContainer endpoint="/api/businesses" itemName="Negocio" fields={fields.business} /></PrivateRoute>}/>
+              </Routes>
+            </Layout>
+          </ItemsProvider>
         </EndpointProvider>  
       </AuthProvider>
     </Router>

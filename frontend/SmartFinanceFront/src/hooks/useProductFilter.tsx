@@ -9,7 +9,7 @@ export const useProductFilter = ({ endpoint }: ProductFilterProps) => {
   const { state } = useAuth();
   const [products, setProducts] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
-
+/*
   useEffect(() => {
     const { token, selectedBusinessId: businessId } = state;
 
@@ -50,6 +50,6 @@ export const useProductFilter = ({ endpoint }: ProductFilterProps) => {
 
     fetchProducts();
   }, [endpoint, state.token, state.selectedBusinessId]);
-
+*/
   return { products, error };
 };

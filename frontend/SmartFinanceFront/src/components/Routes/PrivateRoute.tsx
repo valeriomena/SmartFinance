@@ -3,17 +3,18 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../Auth/AuthContext';
 
 interface PrivateRouteProps {
-  children: React.ReactNode; // Asegura que 'children' sea del tipo adecuado
+  children: React.ReactNode;
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const { state } = useAuth(); // Accede al estado para obtener el token
+  const { state } = useAuth();
+  console.log("PrivateRoute montado, autenticado:", state.token);
 
-  if (!state.token) { // Si no hay token, redirige al login
+  if (!state.token) {
     return <Navigate to="/login" />;
   }
 
-  return <>{children}</>; // Si el token está presente, renderiza los children
+  return <>{children}</>;
 };
 
 export default PrivateRoute;

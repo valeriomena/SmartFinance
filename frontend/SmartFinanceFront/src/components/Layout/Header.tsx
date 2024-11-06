@@ -4,7 +4,11 @@ import Login from '../Auth/Login';
 import Register from '../Auth/Register';
 import './Header.css';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  businessName: string;
+}
+
+const Header: React.FC<HeaderProps> = ({ businessName }) => {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const { state, logout } = useAuth();
@@ -34,7 +38,7 @@ const Header: React.FC = () => {
     <header className="header">
       <div className="header-content">
         <div className="header-left">
-          <h1 className="header-title">SmartFinance</h1>
+          <h1 className="header-title">{businessName}</h1>
         </div>
         <div className="header-right">
           {state.token ? (

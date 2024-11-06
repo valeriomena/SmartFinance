@@ -1,5 +1,5 @@
 // Layout.tsx
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import Footer from './Footer';
@@ -13,6 +13,12 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { state } = useAuth();  // Acceder al token desde el contexto global
   const businessName = localStorage.getItem('businessName') || ''; // Obtener businessName de localStorage
+
+  useEffect(() => {
+    console.log("Layout montado");
+    console.log("Estado de autenticación:", state);
+    console.log("Nombre del negocio:", businessName);
+  }, [state, businessName]);
 
   return (
     <div className="layout">

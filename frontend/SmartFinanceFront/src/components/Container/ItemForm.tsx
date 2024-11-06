@@ -1,4 +1,3 @@
-// ../../components/ItemForm.tsx
 import React from 'react';
 import { FieldError } from 'react-hook-form';
 import useItemForm from '../../hooks/useItemForm'; 
@@ -17,9 +16,10 @@ interface ItemFormProps {
   itemName: string;
   fields: Field[];
   onRefresh: () => void;
+  disabled: boolean; // Nueva prop para habilitar/deshabilitar
 }
 
-const ItemForm: React.FC<ItemFormProps> = ({ endpoint, itemName, fields, onRefresh }) => {
+const ItemForm: React.FC<ItemFormProps> = ({ endpoint, itemName, fields, onRefresh, disabled }) => {
   const { register, handleSubmit, onSubmit, errors, successMessage, formError } = useItemForm({ endpoint, fields, onRefresh, itemName });
 
   return (
@@ -38,17 +38,16 @@ const ItemForm: React.FC<ItemFormProps> = ({ endpoint, itemName, fields, onRefre
                   ? (value) => Number(value) >= 0 || 'El precio debe ser un número positivo.'
                   : undefined,
               })}
-              className="form-control"
+              className={errors[field.name] ? 'error' : ''}
+              disabled={disabled} // Deshabilitar campos si no hay businessId
             />
-            {errors[field.name] && (
-              <p className="info-error">{(errors[field.name] as FieldError)?.message || ''}</p>
-            )}
+            {errors[field.name] && <p className="error-message">{(errors[field.name] as FieldError)?.message || 'Error en el campo'}</p>}
           </div>
         ))}
-        <button type="submit" className="submit-button">{itemName === 'Actualizar' ? 'Actualizar' : 'Crear'}</button> 
+        <button type="submit" disabled={disabled}>Enviar</button> 
       </form>
-      {formError && <p className="error-message">{formError}</p>}
-      {successMessage && <p className="success-message">{successMessage}</p>}
+      {formError && <p className="info-error">{formError}</p>}
+      {successMessage && <p className="success">{successMessage}</p>}
     </div>
   );
 };
