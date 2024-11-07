@@ -4,7 +4,6 @@ import ItemList from './ItemList';
 import ItemForm from './ItemForm';
 import './ItemContainer.css';
 import { useAuth } from '../Auth/AuthContext';
-import { useProductFilter } from '../../hooks/useProductFilter';
 
 interface Field {
   name: string;
@@ -24,20 +23,13 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, field
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [businessName, setBusinessName] = useState<string | null>(null);
   const { state, setSelectedBusinessId } = useAuth();
-  const { products: fetchedProducts, error: productError } = useProductFilter({ endpoint });
-
+  
   useEffect(() => {
-    console.log("ItemContainer rendered with:", { endpoint, itemName, fields, selectedItem, businessName });
-
     const storedBusinessId = state.selectedBusinessId;
     if (storedBusinessId) {
       setSelectedItem(storedBusinessId);
     }
-
-    if (endpoint === 'sales') {
-      console.log("Productos obtenidos para ventas:", { fetchedProducts, productError });
-    }
-  }, [endpoint, state.selectedBusinessId, fetchedProducts, productError]);
+  }, [endpoint, state.selectedBusinessId]);
 
   const handleItemSelect = (itemId: string, businessName: string) => {
     setSelectedItem(itemId);
@@ -52,15 +44,15 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, field
           endpoint={endpoint} 
           itemName={itemName} 
           fields={fields} 
-          onRefresh={() => setSelectedItem(null)} 
-          {...(endpoint === 'sales' && fetchedProducts ? { products: fetchedProducts, productError } : {})}
+          onRefresh={() => setSelectedItem(null)}
+          selectedItem={selectedItem} // Pasamos selectedItem
         />
       </div>
       <div className="list-container">
         <ItemList 
           endpoint={endpoint} 
           itemName={itemName} 
-          onSelectItem={handleItemSelect} 
+          onSelectItem={handleItemSelect} // Pasamos onSelectItem
         />
       </div>
       <div className="detail-container">
