@@ -5,6 +5,7 @@ import { EndpointProvider } from './contexts/EndpointContext';
 import Layout from './components/Layout/Layout';
 import PrivateRoute from './components/Routes/PrivateRoute';
 import ItemContainer from './components/Container/ItemContainer';
+import ItemDetail from '@components/Container/ItemDetail';
 
 const App: React.FC = () => {
   // Definición de campos para los diferentes tipos de ítems
@@ -113,7 +114,15 @@ const App: React.FC = () => {
                   <ItemContainer endpoint="/api/businesses" itemName="Negocio" fields={fields.business} />
                 </PrivateRoute>
               }
-            />
+              />
+            <Route
+                path="/detalle/:itemId"
+                element={
+                  <PrivateRoute>
+                    <ItemDetail item={{ name: "Producto A", description: "Descripción del producto", price: 200 }} />
+                  </PrivateRoute>
+                }
+              />
           </Routes>
           </Layout>
         </EndpointProvider>  

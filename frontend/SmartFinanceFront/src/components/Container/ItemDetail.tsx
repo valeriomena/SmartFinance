@@ -1,36 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import api from '../../services/api';
+// ../../components/ItemDetail.tsx
+import React from 'react';
 
 interface ItemDetailProps {
-  endpoint: string;
-  itemId: string;
-  itemName: string;
+  item: {
+    name: string;
+    description?: string;
+    price?: number;
+    [key: string]: any; // Permite otros campos dinámicos
+  };
 }
 
-const ItemDetail: React.FC<ItemDetailProps> = ({ endpoint, itemId, itemName }) => {
-  const [item, setItem] = useState<any>(null);
-
-  useEffect(() => {
-    const fetchItem = async () => {
-      const token = localStorage.getItem('token');
-      try {
-        const response = await api.get(`${endpoint}/${itemId}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setItem(response.data);
-      } catch (error) {
-        console.error('Error al cargar los detalles del ítem:', error);
-      }
-    };
-    fetchItem();
-  }, [endpoint, itemId]);
-
+const ItemDetail: React.FC<ItemDetailProps> = ({ item }) => {
   if (!item) {
-    return <p>Cargando detalles del {itemName.toLowerCase()}...</p>;
+    return <p>Selecciona un ítem para ver sus detalles.</p>;
   }
 
   return (
-     <h2>{item.name}</h2>
+    <div className="item-detail">
+      <h2>Detalles de {item.name}</h2>
+      <p>ID: {item._id}</p>
+      {item.description && <p>Descripción: {item.description}</p>}
+      {item.price && <p>Precio: {item.price}</p>}
+      {/* Agrega aquí más campos según el esquema del ítem */}
+      {Object.keys(item).map((key) =>
+        key !== "_id" && key !== "name" && key !== "description" && key !== "price" ? (
+          <p key={key}>{`${key}: ${item[key]}`}</p>
+        ) : null
+      )}
+    </div>
   );
 };
 

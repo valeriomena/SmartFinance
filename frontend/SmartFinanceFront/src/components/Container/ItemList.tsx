@@ -1,71 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { useItemManager } from '../../hooks/useItemManager';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
-import api from '../../services/api';
-import { useAuth } from '@components/Auth/AuthContext';
-
-interface Item {
-  _id: string;
-  name: string;
-}
+import ItemDetail from './ItemDetail';
 
 interface ItemListProps {
   endpoint: string;
   itemName: string;
-  onSelectItem: (itemId: string, itemName: string) => void;
 }
 
-const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName, onSelectItem }) => {
-  const [items, setItems] = useState<Item[]>([]);
-  const { loading, errorMessage, deleteItem } = useItemManager(itemName, endpoint);
-  const { state } = useAuth();
-  const { selectedBusinessId, token, userId } = state; // Obtener el token y userId desde el contexto
+const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName }) => {
+  const { items, selectedItem, loading, errorMessage, fetchItems, fetchItemById, deleteItem } = useItemManager(itemName, endpoint);
 
   useEffect(() => {
-    console.log('ItemList rendered', state.selectedBusinessId);
-    const fetchItems = async () => {
-      if (!token) {
-        console.error('Token no encontrado');
-        return;
-      }
-
-      // Define los parámetros de consulta según la disponibilidad de selectedBusinessId y userId
-      let queryEndpoint = endpoint;
-      if (selectedBusinessId) {
-        queryEndpoint += `?businessId=${selectedBusinessId}`;
-      } else if (userId) {
-        queryEndpoint += `?userId=${userId}`;
-      } else {
-        setItems([]); // No hay información si no hay ni selectedBusinessId ni userId
-        return;
-      }
-
-      try {
-        const response = await api.get<Item[]>(queryEndpoint, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setItems(response.data);
-      } catch (err) {
-        console.error('Hubo un error al cargar los elementos.', err);
-      }
-    };
-
     fetchItems();
-  }, [endpoint, userId, selectedBusinessId, token]);
+  }, [endpoint]);
 
-  const handleDelete = (id: string) => {
-    deleteItem(id);
-    setItems((prevItems) => prevItems.filter((item) => item._id !== id));
-  };
-
-  const handleSelectItem = (itemId: string, itemName: string) => {
-    if (token) {
-      onSelectItem(itemId, itemName); 
-    } else {
-      console.error('Token no encontrado');
-    }
+  const handleSelectItem = (itemId: string) => {
+    fetchItemById(itemId); // Llama para obtener detalles del ítem
   };
 
   return (
@@ -73,27 +25,20 @@ const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName, onSelectItem })
       <h2>Lista de {itemName}</h2>
       <ul>
         {loading && <p>Cargando...</p>}
-        {errorMessage && <p className="info-error">{errorMessage}</p>}
+        {errorMessage && <p>{errorMessage}</p>}
         {items.length === 0 && !loading && <p>No hay {itemName.toLowerCase()} disponibles.</p>}
         {items.map((item) => (
-          <li key={item._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px', border: '1px solid #ddd', marginBottom: '5px' }}>
-            <Link to={`/${itemName.toLowerCase()}/${item._id}`} onClick={() => handleSelectItem(item._id, item.name)} style={{ flex: 1 }}>
+          <li key={item._id} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px' }}>
+            <span onClick={() => handleSelectItem(item._id)} style={{ cursor: 'pointer' }}>
               {item.name}
-            </Link>
-            <div style={{ marginLeft: '10px' }}>
-              <Link to={`/${itemName.toLowerCase()}/edit/${item._id}`}>
-                <FontAwesomeIcon icon={faEdit} />
-              </Link>
-              <button onClick={() => handleDelete(item._id)} style={{ marginLeft: '10px' }}>
-                <FontAwesomeIcon icon={faTrash} />
-              </button>
-            </div>
+            </span>
+            <button onClick={() => deleteItem(item._id)}>
+              <FontAwesomeIcon icon={faTrash} />
+            </button>
           </li>
         ))}
       </ul>
-      {items.length === 0 && !loading && !selectedBusinessId && !userId && (
-        <p>No hay información disponible.</p>
-      )}
+      {selectedItem && <ItemDetail item={selectedItem} />} {/* Mostrar detalles */}
     </div>
   );
 };
