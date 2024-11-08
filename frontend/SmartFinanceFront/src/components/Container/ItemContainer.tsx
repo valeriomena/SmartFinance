@@ -1,9 +1,8 @@
-// ItemContainer.tsx
 import React, { useState, useEffect } from 'react';
 import ItemList from './ItemList';
 import ItemForm from './ItemForm';
 import './ItemContainer.css';
-import { useAuth } from '../Auth/AuthContext';
+import { useEndpoint } from '../../contexts/EndpointContext';
 
 interface Field {
   name: string;
@@ -22,19 +21,19 @@ interface ItemContainerProps {
 const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, fields }) => {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [businessName, setBusinessName] = useState<string | null>(null);
-  const { state, setSelectedBusinessId } = useAuth();
-  
+  const { selectedBusinessId, setSelectedBusinessId } = useEndpoint();
+
+  // Al seleccionar un negocio, se actualiza el selectedItem y el endpoint
   useEffect(() => {
-    const storedBusinessId = state.selectedBusinessId;
-    if (storedBusinessId) {
-      setSelectedItem(storedBusinessId);
+    if (selectedBusinessId) {
+      setSelectedItem(selectedBusinessId);
     }
-  }, [endpoint, state.selectedBusinessId]);
+  }, [selectedBusinessId]);
 
   const handleItemSelect = (itemId: string, businessName: string) => {
     setSelectedItem(itemId);
     setBusinessName(businessName);
-    setSelectedBusinessId(itemId);
+    setSelectedBusinessId(itemId);  // Aquí usamos el setSelectedBusinessId del EndpointContext
   };
 
   return (

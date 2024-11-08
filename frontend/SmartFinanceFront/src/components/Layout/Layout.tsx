@@ -12,11 +12,10 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { state } = useAuth();  // Acceder al token desde el contexto global
-  const businessName = localStorage.getItem('businessName') || ''; // Obtener businessName de localStorage
-
+  
   return (
     <div className="layout">
-      <Header businessName={businessName} /> {/* Pasar businessName al Header */}
+      <Header /> 
 
       <div className="main-content">
         {state.token && (

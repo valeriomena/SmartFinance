@@ -1,114 +1,65 @@
-// Login.tsx
-
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { useAuth } from '../Auth/AuthContext';
+import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
+import Register from './Register';
 import '../../styles/Form.css';
 import '../../styles/SlideForm.css';
 
-/**
- * Props for the Login component.
- * @interface
- */
 interface LoginProps {
-  /** Function to close the login form. */
-  onClose: () => void;
+  onLoginSuccess: (token: string, userId: string) => void;
 }
 
-/**
- * Interface for the response from the login API.
- * @interface
- */
-interface LoginResponse {
-  /** Token received from the server upon successful login. */
-  token: string;
-  /** User ID of the authenticated user. */
-  userId: string;
-}
-
-/**
- * The Login component renders a login form that allows users to authenticate
- * themselves by entering their email and password. On submission, it communicates
- * with the API, retrieves a token, and updates the authentication context.
- * Additionally, it handles error states and displays messages for failed login attempts.
- *
- * @component
- * @example
- * const handleClose = () => { console.log('Closed!'); };
- * return (
- *   <Login onClose={handleClose} />
- * );
- *
- * @param {LoginProps} props - The component props.
- * @param {() => void} props.onClose - Function to close the login form.
- * @returns {JSX.Element} Rendered Login component.
- */
-const Login: React.FC<LoginProps> = ({ onClose }) => {
-  const [email, setEmail] = useState('');          // State to manage the email input
-  const [password, setPassword] = useState('');     // State to manage the password input
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);  // State for error message
+const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showRegister, setShowRegister] = useState(false);
   const navigate = useNavigate();
 
-  // Retrieve login function from the authentication context
-  const { login } = useAuth();
-
-  /**
-   * Handles the form submission for login. This function sends the login data
-   * (email and password) to the API, saves the token and user ID in localStorage,
-   * updates the authentication context, and redirects the user.
-   *
-   * @async
-   * @function
-   * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
-   * @returns {Promise<void>}
-   */
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setErrorMessage(null); // Reset previous error message
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setErrorMessage(null); // Clear any previous errors
 
     try {
-      const response = await api.post<LoginResponse>('/api/users/login', { email, password });
+      // Aquí se haría la solicitud al backend para autenticar
+      const token = 'dummyToken';
+      const userId = 'dummyUserId';
 
-      // Save token and user ID in localStorage
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('userId', response.data.userId);
-
-      // Update auth context
-      login(response.data.token, response.data.userId);
-
-      // Redirect and close the form
+      // Simulación de inicio de sesión exitoso
+      onLoginSuccess(token, userId);
       navigate('/');
-      onClose();
-
-    } catch (error: any) {
-      // Set specific error message based on error type
-      if (error.response) {
-        setErrorMessage('Error en el inicio de sesión. Verifica tus credenciales.');
-      } else if (error.request) {
-        setErrorMessage('No se recibió respuesta del servidor.');
-      } else {
-        setErrorMessage('Ocurrió un error inesperado. Inténtalo nuevamente.');
-      }
+    } catch (error) {
+      setErrorMessage('Error al iniciar sesión. Verifica tus credenciales.');
+      console.error('Error al iniciar sesión:', error);
     }
+  };
+
+  const handleOpenRegister = () => {
+    setShowRegister(true);
+  };
+
+  const handleCloseRegister = () => {
+    setShowRegister(false);
   };
 
   return (
     <div className="slide-form login-container">
       <h2>Iniciar Sesión</h2>
       <form onSubmit={handleSubmit}>
+        {/* Email */}
         <div className="input-group">
           <FontAwesomeIcon icon={faEnvelope} />
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Correo electrónico"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Usuario"
             required
           />
         </div>
+
+        {/* Contraseña */}
         <div className="input-group">
           <FontAwesomeIcon icon={faLock} />
           <input
@@ -119,14 +70,20 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
             required
           />
         </div>
-        <button type="submit">Entrar</button>
-        <button type="button" className="close-button" onClick={onClose}>
-          <FontAwesomeIcon icon={faTimes} />
+
+        <button type="submit">Iniciar Sesión</button>
+
+        {/* Mostrar el mensaje de error si existe */}
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
+
+        {/* Botón para abrir el formulario de registro */}
+        <button type="button" className="register-button" onClick={handleOpenRegister}>
+          Registrarse
         </button>
       </form>
 
-      {/* Error message displayed if login fails */}
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {/* Renderizar el formulario de registro si showRegister es true */}
+      {showRegister && <Register onClose={handleCloseRegister} />}
     </div>
   );
 };

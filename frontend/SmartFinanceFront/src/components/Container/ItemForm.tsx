@@ -40,7 +40,8 @@ const ItemForm: React.FC<ItemFormProps> = ({ endpoint, itemName, fields, onRefre
   useEffect(() => {
     if (selectedItem) {
       // Establecer valores iniciales en el formulario si se selecciona un ítem
-      setValue('name', selectedItem); // Ejemplo: setear el campo 'name' con el valor de selectedItem
+      setValue('name', selectedItem);// Ejemplo: setear el campo 'name' con el valor de selectedItem
+      console.log('Item seleccionado : ', selectedItem);
     }
   }, [selectedItem, setValue]);
 

@@ -1,8 +1,7 @@
-// ../../hooks/useItemForm.tsx
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useAuth } from '@components/Auth/AuthContext';
+import { useEndpoint } from '../contexts/EndpointContext';  // Cambiar importación
 import api from '../services/api';
 
 interface Product {
@@ -46,39 +45,33 @@ const useItemForm = ({ endpoint, fields, onRefresh, itemName, products, productE
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<ItemData>();
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
-  const { state } = useAuth();
+  const { endpoint: contextEndpoint, selectedBusinessId } = useEndpoint();  // Usamos el contexto de Endpoint
 
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (id) {
-      api.get<ItemData>(`${endpoint}/${id}`)
+      api.get<ItemData>(`${contextEndpoint}/${id}`)
         .then(response => {
           fields.forEach(field => setValue(field.name, response.data[field.name]));
         })
         .catch((error) => {
           console.error('Error al cargar los datos:', error instanceof Error ? error.message : error);
         });
-    } else if (state.selectedBusinessId) {
-      setValue('businessId', state.selectedBusinessId);
+    } else if (selectedBusinessId) {
+      setValue('businessId', selectedBusinessId);
     }
-  }, [id, endpoint, fields, setValue, state.selectedBusinessId]);
+  }, [id, contextEndpoint, fields, setValue, selectedBusinessId]);
 
   const onSubmit = async (data: ItemData) => {
     console.log('Formulario enviado con datos:', data);
     try {
       if (endpoint === '/api/businesses') {
-        if (!state.userId || !isValidObjectId(state.userId)) {
-          throw new Error('El ID del usuario es necesario y debe ser un ObjectId válido.');
-        }
-        data.createdBy = state.userId;
-        delete data.businessId;
-      } else if (endpoint === '/api/productServices') {
-        if (!state.selectedBusinessId) {
+        if (!selectedBusinessId) {
           throw new Error('El ID del negocio es necesario.');
         }
-        data.businessId = state.selectedBusinessId;
+        data.businessId = selectedBusinessId;
         delete data.createdBy;
       }
 
@@ -88,9 +81,9 @@ const useItemForm = ({ endpoint, fields, onRefresh, itemName, products, productE
       }
 
       if (id) {
-        await api.put(`${endpoint}/${id}`, data);
+        await api.put(`${contextEndpoint}/${id}`, data);
       } else {
-        await api.post(endpoint, data);
+        await api.post(contextEndpoint, data);
       }
 
       onRefresh();
