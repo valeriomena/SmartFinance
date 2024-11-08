@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../services/api'; // Asegúrate de importar la instancia de Axios configurada
 import { fetchCountries } from '../../services/countryService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faTimes, faPhone, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -66,7 +66,8 @@ const Register: React.FC<RegisterProps> = ({ onClose }) => {
     }
 
     try {
-      const response = await axios.post<RegisterResponse>('/api/users', {
+      // Usando la instancia personalizada `api` en lugar de `axios`
+      const response = await api.post<RegisterResponse>('/api/users', {
         name,
         email,
         password,
@@ -83,9 +84,9 @@ const Register: React.FC<RegisterProps> = ({ onClose }) => {
       navigate('/');
       onClose();
     } catch (error: any) {
-      if (axios.isAxiosError(error) && error.response) {
+      if (error.response) {
         const data = error.response?.data;
-        setErrorMessage(data?.message.includes('duplicate key error') ?
+        setErrorMessage(data?.message.includes('duplicate key error') ? 
           'Este correo ya está registrado. Usa otro correo.' :
           'Error en el registro. Intenta nuevamente.');
       } else {
@@ -95,10 +96,9 @@ const Register: React.FC<RegisterProps> = ({ onClose }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="register-container">
       <h2>Registrar</h2>
 
-      {/* Nombre */}
       <div className="input-group">
         <FontAwesomeIcon icon={faUser} />
         <input
@@ -110,7 +110,6 @@ const Register: React.FC<RegisterProps> = ({ onClose }) => {
         />
       </div>
 
-      {/* Correo */}
       <div className="input-group">
         <FontAwesomeIcon icon={faEnvelope} />
         <input
@@ -122,7 +121,6 @@ const Register: React.FC<RegisterProps> = ({ onClose }) => {
         />
       </div>
 
-      {/* Contraseña */}
       <div className="input-group">
         <FontAwesomeIcon icon={faLock} />
         <input
@@ -134,19 +132,17 @@ const Register: React.FC<RegisterProps> = ({ onClose }) => {
         />
       </div>
 
-      {/* Confirmar Contraseña */}
       <div className="input-group">
         <FontAwesomeIcon icon={faLock} />
         <input
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="Confirmar Contraseña"
+          placeholder="Confirmar contraseña"
           required
         />
       </div>
 
-      {/* Teléfono */}
       <div className="input-group">
         <FontAwesomeIcon icon={faPhone} />
         <input
@@ -170,13 +166,12 @@ const Register: React.FC<RegisterProps> = ({ onClose }) => {
         </select>
       </div>
 
-      {/* Mensaje de error */}
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      <div className="error-message">
+        {errorMessage && <p>{errorMessage}</p>}
+      </div>
 
-      <button type="submit">Registrarse</button>
-      <button type="button" className="close-button" onClick={onClose}>
-        <FontAwesomeIcon icon={faTimes} />
-      </button>
+      <button type="submit">Registrar</button>
+      <span className="close-button" onClick={onClose}><FontAwesomeIcon icon={faTimes} /></span>
     </form>
   );
 };

@@ -1,3 +1,4 @@
+/* Estilo para el contenedor del formulario deslizante */
 .slide-form-container {
     position: fixed;
     right: -100%;
@@ -11,10 +12,12 @@
     overflow: auto;
 }
 
+/* Activador de la clase para mostrar el formulario */
 .slide-form-container.show {
     right: 0;
 }
 
+/* Estilo del encabezado del formulario deslizante */
 .slide-form-header {
     display: flex;
     justify-content: space-between;
@@ -24,15 +27,18 @@
     border-bottom: 1px solid #ddd;
 }
 
+/* Estilo del icono de cerrar */
 .close-icon {
     cursor: pointer;
     font-size: 1.5rem;
 }
 
+/* Estilo para los mensajes calculados */
 .calculated-price label span {
     color: #ff0000;
     /* Color llamativo */
     font-size: 1.2rem;
     /* Tamaño de letra grande */
     font-weight: bold;
+    /* Texto en negrita */
 }
