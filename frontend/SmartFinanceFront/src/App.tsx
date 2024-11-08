@@ -1,5 +1,4 @@
-// src/App.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from './components/Auth/AuthContext';
 import { useEndpoint } from './contexts/EndpointContext';
@@ -8,21 +7,18 @@ import Login from './components/Auth/Login';
 import AppRoutes from './components/Routes/AppRoutes';
 
 const App: React.FC = () => {
-  const [showLogin, setShowLogin] = useState(false);
-  const { state, login } = useAuth();
+  const { state } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const { endpoint, setEndpoint } = useEndpoint();
+  const { setEndpoint } = useEndpoint();
 
   useEffect(() => {
-    // Redirigir a la página principal si el usuario tiene un token
-    if (state.token) {
-      navigate('/');
-    } else {
-      setShowLogin(true);
+    // Redirige si no hay token al intentar acceder a otra ruta
+    if (!state.token && location.pathname !== '/login') {
+      navigate('/login');
     }
 
-    // Configura el endpoint según la ruta
+    // Configurar el endpoint según la ruta
     let newEndpoint = '/api/businesses';
     if (location.pathname.includes('/indicators')) newEndpoint = '/api/indicators';
     else if (location.pathname.includes('/costs')) newEndpoint = '/api/costs';
@@ -32,22 +28,12 @@ const App: React.FC = () => {
     setEndpoint(newEndpoint);
   }, [location, setEndpoint, state.token, navigate]);
 
-  const handleLoginSuccess = (token: string, userId: string) => {
-    login(token, userId);
-    setShowLogin(false);
-    navigate('/');
-  };
-
-  return (
-    <>
-      {showLogin ? (
-        <Login onLoginSuccess={handleLoginSuccess} />
-      ) : (
-        <Layout>
-          <AppRoutes />
-        </Layout>
-      )}
-    </>
+  return state.token ? (
+    <Layout>
+      <AppRoutes />
+    </Layout>
+  ) : (
+    <Login />
   );
 };
 

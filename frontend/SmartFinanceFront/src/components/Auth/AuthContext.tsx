@@ -1,5 +1,4 @@
-// AuthProvider.tsx
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 type AuthAction = { type: 'LOGIN'; token: string; userId: string } | { type: 'LOGOUT' };
@@ -56,6 +55,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     dispatch({ type: 'LOGOUT' });
     navigate('/login');
   };
+
+  // Redirigir al login si no hay token al cargar la app
+  useEffect(() => {
+    if (!state.token) {
+      navigate('/login');
+    }
+  }, [state.token, navigate]);
 
   return (
     <AuthContext.Provider value={{ state, login, logout }}>
