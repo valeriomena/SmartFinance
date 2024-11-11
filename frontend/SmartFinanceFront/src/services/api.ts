@@ -29,13 +29,20 @@ const api = axios.create({
  */
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token'); // Retrieves the token from localStorage
+    const token = localStorage.getItem('token');
+    console.log('== Interceptor - Token from localStorage:', token); // Log 1: Verificar si el token está presente
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('== Interceptor - Authorization Header set:', config.headers.Authorization); // Log 2
+    } else {
+      console.warn('== Interceptor - No token found, request may be rejected');
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    console.error('== Interceptor Error:', error); // Log 3
+    return Promise.reject(error);
+  }
 );
 
 export default api;

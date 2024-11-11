@@ -67,7 +67,7 @@ const loginUser = async (req, res, next) => {
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
-        console.log(token)
+        console.log('Token del servidor: ',token)
         res.json({ token, userId: user._id, role: user.role });
     } catch (err) {
         next(err);

@@ -20,35 +20,43 @@ const jwt = require('jsonwebtoken');
  * - **403** si el token es inválido o ha expirado.
  */
 const authenticateToken = (req, res, next) => {
-    // Verifica si el encabezado de autorización está presente
     const authHeader = req.headers['authorization'];
 
-    if (!authHeader) {
-        return res.status(401).json({ message: 'Authorization header is missing' });
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'Authorization header missing or malformed' });
     }
 
-    // Dividir el encabezado para extraer el token
     const token = authHeader.split(' ')[1];
-
     if (!token) {
         return res.status(401).json({ message: 'Token is missing' });
     }
 
-    // Verificar el token
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
-            // Verificar si el error es por expiración del token
             if (err.name === 'TokenExpiredError') {
                 return res.status(403).json({ message: 'Token has expired' });
             }
-            // Otros errores relacionados con el token
             return res.status(403).json({ message: 'Invalid token' });
         }
 
-        // Si el token es válido, guarda la información del usuario en la solicitud
-        req.user = user;
+        req.user = user; // Guarda la información del usuario para su uso en controladores
         next();
     });
 };
 
-module.exports = authenticateToken;
+/**
+ * Middleware para autorizar roles específicos.
+ */
+const authorizeRoles = (roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            return res.status(403).json({
+                message: `Access denied. Role '${req.user.role}' is not authorized.`,
+            });
+        }
+        next();
+    };
+};
+
+module.exports = { authenticateToken, authorizeRoles };
+

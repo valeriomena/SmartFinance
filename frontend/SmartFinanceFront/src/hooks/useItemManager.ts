@@ -1,8 +1,8 @@
-// useItemManager.ts
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '@components/Auth/AuthContext';
+import { useEndpoint } from '../contexts/EndpointContext';
 
 interface Item {
   _id: string;
@@ -11,15 +11,17 @@ interface Item {
   price?: number;
 }
 
-export const useItemManager = (itemName: string, endpoint: string) => {
+export const useItemManager = (itemName: string) => {
   const { state } = useAuth();
-  const { userId, selectedBusinessId, token } = state;
+  const { userId, token } = state;
+  const { endpoint, selectedBusinessId } = useEndpoint();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [items, setItems] = useState<Item[]>([]);
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null); // Ajuste en el tipo de selectedItem
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const navigate = useNavigate();
 
+  // Método para obtener ítems
   const fetchItems = async () => {
     setLoading(true);
     const config = { headers: { Authorization: `Bearer ${token}` } };
@@ -35,6 +37,12 @@ export const useItemManager = (itemName: string, endpoint: string) => {
       return;
     }
 
+    // Log para depurar los valores antes de hacer la solicitud
+    console.log('== Fetch Items =='); // Log 10
+    console.log('Token:', token); // Log 11
+    console.log('UserID:', userId); // Log 12
+    console.log('Endpoint:', endpoint); // Log 13
+
     try {
       const response = await api.get<Item[]>(queryEndpoint, config);
       setItems(response.data);
@@ -45,6 +53,7 @@ export const useItemManager = (itemName: string, endpoint: string) => {
     }
   };
 
+  // Método para obtener un ítem por ID
   const fetchItemById = async (id: string) => {
     const existingItem = items.find((item) => item._id === id);
     if (existingItem) {
@@ -66,6 +75,7 @@ export const useItemManager = (itemName: string, endpoint: string) => {
     }
   };
 
+  // Método para eliminar un ítem
   const deleteItem = async (id: string) => {
     setLoading(true);
     const config = { headers: { Authorization: `Bearer ${token}` } };

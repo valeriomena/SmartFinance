@@ -12,7 +12,8 @@ interface ItemListProps {
 }
 
 const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName, onSelectItem }) => {
-  const { items, selectedItem, loading, errorMessage, fetchItems, fetchItemById, deleteItem } = useItemManager(itemName, endpoint);
+  
+  const { items, selectedItem, loading, errorMessage, fetchItems, fetchItemById, deleteItem } = useItemManager(itemName);
 
   useEffect(() => {
     fetchItems();

@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-type AuthAction = { type: 'LOGIN'; token: string; userId: string } | { type: 'LOGOUT' };
+type AuthAction = 
+  | { type: 'LOGIN'; token: string; userId: string }
+  | { type: 'LOGOUT' };
 
 interface AuthState {
   token: string | null;
@@ -56,7 +58,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     navigate('/login');
   };
 
-  // Redirigir al login si no hay token al cargar la app
   useEffect(() => {
     if (!state.token) {
       navigate('/login');
