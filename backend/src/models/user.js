@@ -49,7 +49,9 @@ const userSchema = new Schema({
         number: { type: String, required: true },
         country_code: { type: String, required: true }
     },
-    whatsapp_country_code: { type: String, required: false }
+    whatsapp_country_code: { type: String, required: false },
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
 }, { timestamps: true });
 
 /**
@@ -81,6 +83,15 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.comparePassword = async function (candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password);
 };
+
+// Hash de contraseñas antes de guardar
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next();
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+});
+
 
 /**
  * Modelo para los usuarios (User).

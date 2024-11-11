@@ -13,6 +13,7 @@ const cors = require('cors');
 const errorHandler = require('./middleware/errorHandler');
 const connectDB = require('./database');
 const { authenticateToken, authorizeRoles } = require('./middleware/authenticateToken'); // Importar middlewares de autenticación
+const forgotPasswordRouter = require('./routes/forgotPasswordRouter');
 
 const app = express();
 

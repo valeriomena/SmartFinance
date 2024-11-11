@@ -1,63 +1,41 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faLock, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../Auth/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import api from '../../services/api';
+import ForgotPassword from '../Auth/ForgotPassword';
 import '../../styles/Form.css';
 import '../../styles/SlideForm.css';
 
-interface LoginProps {
-  onClose: () => void;
-}
-
-interface LoginResponse {
-  token: string;
-  userId: string;
-}
-
-const Login: React.FC<LoginProps> = ({ onClose }) => {
+const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { login } = useAuth();
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setErrorMessage(null);
 
     try {
-      // Realiza la solicitud de autenticación al servidor
-      const response = await api.post<LoginResponse>('/api/users/login', { email, password });
+      const response = await api.post('/api/users/login', { email, password });
       const { token, userId } = response.data;
-
-      // Guardar el token y userId en localStorage junto con la fecha de expiración
-      const expirationDate = new Date();
-      expirationDate.setDate(expirationDate.getDate() + 1); // Expira en 1 día
-      localStorage.setItem('token', token);
-      localStorage.setItem('userId', userId);
-      localStorage.setItem('tokenExpiration', expirationDate.toISOString());
-
-      // Actualizar el contexto de autenticación
       login(token, userId);
-
-      // Redirigir al usuario a la página principal y cerrar el formulario
       navigate('/');
-      onClose();
     } catch (error: any) {
-      if (error.response) {
-        setErrorMessage('Error en el inicio de sesión. Verifica tus credenciales.');
-      } else if (error.request) {
-        setErrorMessage('No se recibió respuesta del servidor.');
-      } else {
-        setErrorMessage('Ocurrió un error inesperado. Inténtalo nuevamente.');
-      }
+      setErrorMessage('Credenciales incorrectas.');
     }
   };
 
+  const handleRegisterRedirect = () => {
+    navigate('/register');
+  };
+
   return (
-    <div className="slide-form login-container">
+    <div className="login-container">
       <h2>Iniciar Sesión</h2>
       <form onSubmit={handleSubmit}>
         <div className="input-group">
@@ -81,11 +59,18 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
           />
         </div>
         <button type="submit">Entrar</button>
-        <button type="button" className="close-button" onClick={onClose}>
-          <FontAwesomeIcon icon={faTimes} />
+        <button type="button" onClick={handleRegisterRedirect}>
+          ¿No tienes una cuenta? Regístrate
         </button>
+        <button type="button" onClick={() => setShowForgotPassword(true)}>
+          ¿Olvidaste tu contraseña?
+        </button>
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
       </form>
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+
+      {showForgotPassword && (
+        <ForgotPassword onClose={() => setShowForgotPassword(false)} />
+      )}
     </div>
   );
 };
