@@ -31,9 +31,11 @@ const ItemContainer: React.FC<ItemContainerProps> = ({ endpoint, itemName, field
   }, [selectedBusinessId]);
 
   const handleItemSelect = (itemId: string, businessName: string) => {
-    setSelectedItem(itemId);
-    setBusinessName(businessName);
-    setSelectedBusinessId(itemId);  // Aquí usamos el setSelectedBusinessId del EndpointContext
+    console.log('Seleccionando ítem:', itemId, businessName);
+    setSelectedItem(itemId);  // Establecemos el ítem seleccionado
+    setBusinessName(businessName); // Establecemos el nombre del negocio
+    setSelectedBusinessId(itemId); // Actualizamos el selectedBusinessId
+    console.log('selectedBusinessId actualizado:', itemId);
   };
 
   return (

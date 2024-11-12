@@ -24,3 +24,7 @@
     color: red;
     font-weight: bold;
 }
+.placeholder {
+    color: #888;
+    font-style: italic;
+}

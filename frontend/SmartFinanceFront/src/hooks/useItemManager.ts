@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useAuth } from '@components/Auth/AuthContext';
 import { useEndpoint } from '../contexts/EndpointContext';
@@ -13,11 +13,13 @@ interface Item {
 export const useItemManager = (itemName: string) => {
   const { state } = useAuth();
   const { userId, token } = state;
-  const { endpoint, selectedBusinessId } = useEndpoint();
+  const { endpoint, selectedBusinessId, setEndpoint, setSelectedBusinessId } = useEndpoint();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [items, setItems] = useState<Item[]>([]);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+
+  console.log("Endpoint:", endpoint, "BusinessId:", selectedBusinessId);
 
   // Método para obtener ítems
   const fetchItems = async () => {
@@ -25,7 +27,8 @@ export const useItemManager = (itemName: string) => {
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
     let queryEndpoint = endpoint;
-    if (selectedBusinessId) {
+    // Solo agrega el `businessId` si está seleccionado
+    if (selectedBusinessId && endpoint === '/api/businesses') {
       queryEndpoint += `?businessId=${selectedBusinessId}`;
     } else if (userId) {
       queryEndpoint += `?userId=${userId}`;
@@ -76,6 +79,18 @@ export const useItemManager = (itemName: string) => {
     }
   };
 
+  // useEffect para recargar los datos cuando cambia el endpoint o el selectedBusinessId
+  useEffect(() => {
+    fetchItems();
+  }, [endpoint, selectedBusinessId]); // Dependemos de endpoint y selectedBusinessId
+
+  // Actualiza el endpoint si el endpoint es 'business' y no se ha seleccionado un negocio
+  useEffect(() => {
+    if (endpoint === '/api/businesses' && !selectedBusinessId) {
+      setEndpoint('/api/businesses'); // Cambiar a '/api/businesses' si es necesario
+    }
+  }, [endpoint, selectedBusinessId, setEndpoint]);
+
   return {
     items,
     selectedItem,
@@ -84,6 +99,6 @@ export const useItemManager = (itemName: string) => {
     fetchItems,
     fetchItemById,
     deleteItem,
-    setSelectedItem // Exponemos setSelectedItem aquí
+    setSelectedItem, // Exponemos setSelectedItem aquí
   };
 };

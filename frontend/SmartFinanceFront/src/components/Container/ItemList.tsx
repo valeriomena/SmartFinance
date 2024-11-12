@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useItemManager } from '../../hooks/useItemManager';
+import { useEndpoint } from '../../contexts/EndpointContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import ItemDetail from './ItemDetail';
@@ -7,17 +8,25 @@ import ItemDetail from './ItemDetail';
 interface ItemListProps {
   endpoint: string;
   itemName: string;
+  onSelectItem: (itemId: string, businessName: string) => void; // Aquí se define onSelectItem
 }
 
-const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName }) => {
+const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName, onSelectItem }) => {
   const { items, selectedItem, loading, errorMessage, fetchItems, fetchItemById, deleteItem, setSelectedItem } = useItemManager(itemName);
+  const { setSelectedBusinessId } = useEndpoint(); 
 
   useEffect(() => {
     fetchItems();
   }, [endpoint]);
 
-  const handleSelectItem = (itemId: string) => {
-    fetchItemById(itemId); // Obtén los detalles del ítem
+  const handleSelectItem = (itemId: string, businessName: string) => {
+    // Verifica si el endpoint es '/api/businesses' antes de actualizar el ID del negocio
+    if (endpoint === '/api/businesses') {
+      setSelectedBusinessId(itemId);  // Guarda el ID del negocio seleccionado
+      fetchItemById(itemId); // Obtiene los detalles del negocio
+    }
+    // Llamar la función onSelectItem si se pasa a través de props
+    onSelectItem(itemId, businessName);
   };
 
   const handleClearSelection = () => {
@@ -33,7 +42,7 @@ const ItemList: React.FC<ItemListProps> = ({ endpoint, itemName }) => {
         {items.length === 0 && !loading && <p>No hay {itemName.toLowerCase()} disponibles.</p>}
         {items.map((item) => (
           <li key={item._id} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px' }}>
-            <span onClick={() => handleSelectItem(item._id)} style={{ cursor: 'pointer' }}>
+            <span onClick={() => handleSelectItem(item._id, item.name)} style={{ cursor: 'pointer' }}>
               {item.name}
             </span>
             <button onClick={() => deleteItem(item._id)}>

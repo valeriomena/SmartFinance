@@ -19,29 +19,44 @@ interface ItemDetailProps {
 const ItemDetail: React.FC<ItemDetailProps> = ({ selectedItem }) => {
   const { endpoint } = useEndpoint();
 
-  // Obtener el tipo de ítem basado en el endpoint actual
+  // Determinar el tipo de ítem basado en el endpoint actual
   const itemType = useMemo(() => {
-    if (endpoint.includes('/businesses')) return 'business';
-    if (endpoint.includes('/indicators')) return 'indicator';
-    if (endpoint.includes('/costs')) return 'cost';
-    if (endpoint.includes('/productServices')) return 'product';
-    if (endpoint.includes('/reports')) return 'report';
-    if (endpoint.includes('/sales')) return 'sales';
-    return null;
+    switch (true) {
+      case endpoint.includes('/businesses'):
+        return 'business';
+      case endpoint.includes('/indicators'):
+        return 'indicator';
+      case endpoint.includes('/costs'):
+        return 'cost';
+      case endpoint.includes('/productServices'):
+        return 'product';
+      case endpoint.includes('/reports'):
+        return 'report';
+      case endpoint.includes('/sales'):
+        return 'sales';
+      default:
+        return null;
+    }
   }, [endpoint]);
 
-  // Obtener los campos según el tipo de ítem
-  const itemFields: Field[] | undefined = itemType ? fields[itemType] : [];
+  // Obtener los campos correspondientes al tipo de ítem
+  const itemFields: Field[] = itemType ? fields[itemType] : [];
 
   if (!selectedItem) return <p>Selecciona un ítem para ver sus detalles.</p>;
+  if (!itemType) return <p>No se pudo determinar el tipo de ítem.</p>;
 
   return (
     <div className="item-detail">
       <h2>Detalles de {selectedItem.name}</h2>
-      <p><strong>ID:</strong> {selectedItem._id}</p>
-      {itemFields?.map((field) => (
+      <p>
+        <strong>ID:</strong> {selectedItem._id}
+      </p>
+
+      {/* Renderizar dinámicamente los campos definidos en `formFields.ts` */}
+      {itemFields.map((field) => (
         <div key={field.name} className="item-detail-field">
-          <strong>{field.label}:</strong> {selectedItem[field.name] ?? 'N/A'}
+          <strong>{field.label}:</strong>{' '}
+          {selectedItem[field.name] ?? <span className="placeholder">N/A</span>}
         </div>
       ))}
     </div>
