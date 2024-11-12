@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '@components/Auth/AuthContext';
 import { useEndpoint } from '../contexts/EndpointContext';
@@ -19,7 +18,6 @@ export const useItemManager = (itemName: string) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [items, setItems] = useState<Item[]>([]);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
-  const navigate = useNavigate();
 
   // Método para obtener ítems
   const fetchItems = async () => {
@@ -37,12 +35,6 @@ export const useItemManager = (itemName: string) => {
       return;
     }
 
-    // Log para depurar los valores antes de hacer la solicitud
-    console.log('== Fetch Items =='); // Log 10
-    console.log('Token:', token); // Log 11
-    console.log('UserID:', userId); // Log 12
-    console.log('Endpoint:', endpoint); // Log 13
-
     try {
       const response = await api.get<Item[]>(queryEndpoint, config);
       setItems(response.data);
@@ -55,12 +47,6 @@ export const useItemManager = (itemName: string) => {
 
   // Método para obtener un ítem por ID
   const fetchItemById = async (id: string) => {
-    const existingItem = items.find((item) => item._id === id);
-    if (existingItem) {
-      setSelectedItem(existingItem);
-      return;
-    }
-
     setLoading(true);
     setErrorMessage(null);
     const config = { headers: { Authorization: `Bearer ${token}` } };
@@ -98,5 +84,6 @@ export const useItemManager = (itemName: string) => {
     fetchItems,
     fetchItemById,
     deleteItem,
+    setSelectedItem // Exponemos setSelectedItem aquí
   };
 };

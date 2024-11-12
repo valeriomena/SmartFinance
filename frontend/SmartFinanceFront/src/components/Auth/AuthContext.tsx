@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useEndpoint } from '../../contexts/EndpointContext';
 
 type AuthAction = 
   | { type: 'LOGIN'; token: string; userId: string }
@@ -22,8 +23,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
       localStorage.setItem('userId', action.userId);
       return { token: action.token, userId: action.userId };
     case 'LOGOUT':
-      localStorage.removeItem('token');
-      localStorage.removeItem('userId');
+      localStorage.clear();
       return { token: null, userId: null };
     default:
       return state;
@@ -46,6 +46,7 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  const { setSelectedBusinessId, setEndpoint } = useEndpoint();
   const navigate = useNavigate();
 
   const login = (token: string, userId: string) => {
@@ -55,6 +56,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const logout = () => {
     dispatch({ type: 'LOGOUT' });
+    setSelectedBusinessId(null);
+    setEndpoint('/api/businesses');
     navigate('/login');
   };
 

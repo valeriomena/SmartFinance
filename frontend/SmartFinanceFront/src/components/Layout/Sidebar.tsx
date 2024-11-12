@@ -11,7 +11,7 @@ const Sidebar: React.FC = () => {
   const { token } = state;
   const { selectedBusinessId, setEndpoint } = useEndpoint();
 
-  console.log('Sidebar rendered - token:', token, 'selectedBusinessId:', selectedBusinessId);
+  console.log('selectedBusinessId:', selectedBusinessId);
 
   if (!token) {
     console.log('Sidebar hidden due to missing token');

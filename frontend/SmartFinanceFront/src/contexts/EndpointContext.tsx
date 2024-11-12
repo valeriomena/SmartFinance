@@ -1,4 +1,3 @@
-// EndpointContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface EndpointContextType {
@@ -46,7 +45,6 @@ export const EndpointProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   );
 };
 
-// Hook personalizado para acceder al contexto
 export const useEndpoint = () => {
   const context = useContext(EndpointContext);
   if (!context) {
