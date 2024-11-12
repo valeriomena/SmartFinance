@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FormEvent } from 'react';
 import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -9,27 +9,42 @@ interface ForgotPasswordProps {
 }
 
 const ForgotPassword: React.FC<ForgotPasswordProps> = ({ onClose }) => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState<string>('');
   const [message, setMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setMessage(null);
-    setErrorMessage(null);
+  // Especifica que el tipo del parámetro es string
+  const handleForgotPassword = async (e: FormEvent) => {
+    e.preventDefault(); // Prevenir el envío del formulario
 
     try {
-      const response = await api.post('/api/users/forgot-password', { email });
-      setMessage(response.data.message);
-    } catch (error: any) {
-      setErrorMessage('No se pudo enviar el correo. Intenta nuevamente.');
+      const response = await fetch('http://localhost:4000/api/users/forgot-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage('Correo de restablecimiento enviado.');
+        setErrorMessage(null);
+      } else {
+        setErrorMessage(data.message || 'Hubo un error al enviar el correo.');
+        setMessage(null);
+      }
+    } catch (error) {
+      setErrorMessage('Error al solicitar restablecimiento de contraseña');
+      console.error(error);
     }
   };
 
   return (
     <div className="forgot-password-container">
       <h2>Recuperar Contraseña</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleForgotPassword}>
         <div className="input-group">
           <FontAwesomeIcon icon={faEnvelope} />
           <input

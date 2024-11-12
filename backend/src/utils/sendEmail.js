@@ -43,4 +43,19 @@ const sendEmail = async ({ to, subject, text, html }) => {
     }
 };
 
-module.exports = sendEmail;
+const handleUserRegistration = async (req, res) => {
+  const { email } = req.body;
+  
+  try {
+    await sendEmail(
+      email,
+      'Bienvenido a SmartFinance',
+      'Gracias por registrarte en nuestra plataforma.'
+    );
+    res.status(200).send('Correo enviado exitosamente');
+  } catch (error) {
+    res.status(500).send('Error al enviar el correo');
+  }
+};
+
+module.exports = sendEmail, handleUserRegistration;

@@ -46,6 +46,7 @@ app.use(express.json());
  * @name /api/users
  */
 app.use('/api/users', require('./routes/user.routes')); // La ruta para registro y login no requiere autenticación
+app.use('/api/users', forgotPasswordRouter); // Ruta para el cambio de contraseña
 
 /**
  * Rutas protegidas por autenticación y roles.

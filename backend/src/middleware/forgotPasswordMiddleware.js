@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { forgotPassword } = require('../controllers/user.controller');
+const { forgotPassword } = require('../controllers/forgotPassword.controller');
 const { authenticateToken, authorizeRoles } = require('../middleware/authenticateToken');
 const { body, validationResult } = require('express-validator');  // Para validación
 const router = Router();
