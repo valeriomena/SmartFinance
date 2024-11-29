@@ -1,4 +1,3 @@
-// ItemForm.tsx
 import React, { useEffect } from 'react';
 import { FieldError, useForm } from 'react-hook-form';
 import useItemForm from '../../hooks/useItemForm'; 
@@ -12,11 +11,11 @@ interface Field {
   validationMessage: string;
 }
 
-// Define aquí ItemData con las propiedades que necesitas en el formulario
+// Definir el tipo de datos del formulario (ItemData)
 interface ItemData {
   name: string;
   description?: string;
-  // Agrega otras propiedades según tus campos de formulario
+  // Agrega otras propiedades según los campos del formulario
 }
 
 interface ItemFormProps {
@@ -28,7 +27,7 @@ interface ItemFormProps {
 }
 
 const ItemForm: React.FC<ItemFormProps> = ({ endpoint, itemName, fields, onRefresh, selectedItem }) => {
-  // Especifica ItemData como el tipo para useForm
+  // Desestructuración de useForm
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<ItemData>(); 
   const { onSubmit, successMessage, formError } = useItemForm({
     endpoint,
@@ -37,11 +36,12 @@ const ItemForm: React.FC<ItemFormProps> = ({ endpoint, itemName, fields, onRefre
     itemName,
   });
 
+  // Usar useEffect para establecer valores iniciales cuando se selecciona un ítem
   useEffect(() => {
     if (selectedItem) {
-      // Establecer valores iniciales en el formulario si se selecciona un ítem
-      setValue('name', selectedItem);// Ejemplo: setear el campo 'name' con el valor de selectedItem
-      console.log('Item seleccionado : ', selectedItem);
+      // Aquí deberías configurar los valores iniciales del formulario
+      setValue('name', selectedItem); // Establecer el valor para el campo 'name'
+      console.log('Item seleccionado:', selectedItem);
     }
   }, [selectedItem, setValue]);
 
@@ -55,13 +55,15 @@ const ItemForm: React.FC<ItemFormProps> = ({ endpoint, itemName, fields, onRefre
             <input
               id={field.name}
               type={field.type}
-              {...register(field.name as keyof ItemData, { 
+              {...register(field.name as keyof ItemData, { // Uso de keyof ItemData para asegurar que los nombres de campo sean válidos
                 required: field.required ? field.validationMessage : false,
               })}
               className="form-control"
             />
-            {errors[field.name as keyof ItemData] && (
-              <p className="info-error">{(errors[field.name as keyof ItemData] as FieldError)?.message || ''}</p>
+            {errors[field.name as keyof ItemData] && ( // Acceso a los errores usando keyof ItemData
+              <p className="info-error">
+                {(errors[field.name as keyof ItemData] as FieldError)?.message || ''}
+              </p>
             )}
           </div>
         ))}

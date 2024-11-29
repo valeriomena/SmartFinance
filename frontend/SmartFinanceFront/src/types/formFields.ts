@@ -1,4 +1,4 @@
-// file: src/types/formFields.ts
+// src/types/formFields.ts
 
 export type FieldType = 'text' | 'number' | 'date';
 
@@ -19,6 +19,7 @@ export interface FormFields {
   sales: Field[];
 }
 
+// Mantenemos el objeto de campos como está.
 export const fields: FormFields = {
   business: [
     { name: 'name', label: 'Nombre', type: 'text', required: true, validationMessage: 'El nombre es obligatorio' },

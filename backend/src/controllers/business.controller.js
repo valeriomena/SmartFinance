@@ -13,7 +13,12 @@ const Business = require('../models/Business');
  */
 const createBusiness = async (req, res, next) => {
     try {
-        const business = new Business(req.body);
+
+        // Asignamos el usuario logueado al negocio
+        const business = new Business({
+            ...req.body,
+            createdBy: req.user.id // Asegura que el negocio se asocie al usuario logueado
+        });
         await business.save();
         res.status(201).json(business);
     } catch (err) {
@@ -35,9 +40,12 @@ const createBusiness = async (req, res, next) => {
 const getBusiness = async (req, res, next) => {
     try {
         const business = await Business.findById(req.params.id);
-        if (!business) {
-            return res.status(404).json({ message: 'Business not found' });
+
+        // Verifica que el negocio pertenece al usuario logueado
+        if (!business || business.createdBy.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'Access denied to this business' });
         }
+
         res.json(business);
     } catch (err) {
         next(err);
@@ -57,6 +65,7 @@ const getBusiness = async (req, res, next) => {
  */
 const getBusinesses = async (req, res, next) => {
     try {
+        console.log("Solicitando todos los negocios"); // Imprime que se está solicitando la lista de todos los negocios
         const businesses = await Business.find();
         res.json(businesses);
     } catch (err) {
@@ -76,11 +85,14 @@ const getBusinesses = async (req, res, next) => {
  * @throws {Error} Si ocurre un error al buscar los negocios.
  */
 const getBusinessesByUserId = async (req, res, next) => {
-    const { userId } = req.params; // Obtenemos el userId de los parámetros
-
     try {
-        const businesses = await Business.find({ createdBy: userId }); // Busca negocios por createdBy
-        res.json(businesses); // Devuelve la lista de negocios
+ 
+        const businesses = await Business.find({ createdBy: req.user.id });
+        if (!businesses.length) {
+            return res.status(404).json({ message: 'No businesses found for this user.' });
+        }
+
+        res.json(businesses);
     } catch (err) {
         next(err);
     }
@@ -99,10 +111,15 @@ const getBusinessesByUserId = async (req, res, next) => {
  */
 const deleteBusiness = async (req, res, next) => {
     try {
-        const business = await Business.findByIdAndDelete(req.params.id);
-        if (!business) {
-            return res.status(404).json({ message: 'Business not found' });
+
+        const business = await Business.findById(req.params.id);
+
+        // Verifica si el negocio pertenece al usuario logueado
+        if (!business || business.createdBy.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'Access denied to delete this business' });
         }
+
+        await Business.findByIdAndDelete(req.params.id);
         res.status(204).end();
     } catch (err) {
         next(err);
@@ -122,11 +139,20 @@ const deleteBusiness = async (req, res, next) => {
  */
 const updateBusiness = async (req, res, next) => {
     try {
-        const business = await Business.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-        if (!business) {
-            return res.status(404).json({ message: 'Business not found' });
+        console.log("Solicitando actualización del negocio con ID:", req.params.id); // Imprime el ID del negocio a actualizar
+        console.log("Datos de la actualización:", req.body); // Imprime los datos que se intentan actualizar
+        console.log("Usuario logueado (ID):", req.user.id); // Imprime el ID del usuario logueado
+
+        const business = await Business.findById(req.params.id);
+
+        // Verifica si el negocio pertenece al usuario logueado
+        if (!business || business.createdBy.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'Access denied to update this business' });
         }
-        res.json(business);
+
+        // Si el negocio es del usuario, se actualiza
+        const updatedBusiness = await Business.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        res.json(updatedBusiness);
     } catch (err) {
         next(err);
     }

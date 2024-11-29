@@ -63,6 +63,5 @@ export const useEndpoint = () => {
   if (!context) {
     throw new Error('useEndpoint must be used within an EndpointProvider');
   }
-  console.log("Contexto de Endpoint:", context); // Verifica si el contexto se está proporcionando correctamente
   return context;
 };

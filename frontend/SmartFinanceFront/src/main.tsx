@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { AuthProvider } from './components/Auth/AuthContext';
 import { EndpointProvider } from './contexts/EndpointContext';
+import { ItemsProvider } from './contexts/ListContext';
 import './index.css';
 
 const rootElement = document.getElementById('root') as HTMLElement;
@@ -15,7 +16,9 @@ root.render(
     <BrowserRouter>
       <EndpointProvider>
         <AuthProvider>
-          <App />
+          <ItemsProvider> {/* Agregar ItemsProvider aquí */}
+            <App />
+          </ItemsProvider>
         </AuthProvider>
       </EndpointProvider>
     </BrowserRouter>

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import api from '../services/api';
+import { useItems } from '../contexts/ListContext'; // Importamos el contexto de Items
 import { useAuth } from '@components/Auth/AuthContext';
 import { useEndpoint } from '../contexts/EndpointContext';
+import api from '../services/api';  // Asegúrate de que esta ruta es correcta.
+
 
 interface Item {
   _id: string;
@@ -14,44 +16,36 @@ export const useItemManager = (itemName: string) => {
   const { state } = useAuth();
   const { userId, token } = state;
   const { endpoint, selectedBusinessId, setEndpoint, setSelectedBusinessId } = useEndpoint();
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [items, setItems] = useState<Item[]>([]);
+  
+  // Usamos el hook useItems para acceder a los ítems del contexto
+  const { items, refreshItems, loading, error, deleteItem } = useItems();
+
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  console.log("Endpoint:", endpoint, "BusinessId:", selectedBusinessId);
-
-  // Método para obtener ítems
+  // Método para obtener ítems. Ahora verificamos si ya tenemos los ítems del contexto.
   const fetchItems = async () => {
-    setLoading(true);
-    const config = { headers: { Authorization: `Bearer ${token}` } };
-
-    let queryEndpoint = endpoint;
-    // Solo agrega el `businessId` si está seleccionado
-    if (selectedBusinessId && endpoint === '/api/businesses') {
-      queryEndpoint += `?businessId=${selectedBusinessId}`;
-    } else if (userId) {
-      queryEndpoint += `?userId=${userId}`;
-    } else {
-      setItems([]);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await api.get<Item[]>(queryEndpoint, config);
-      setItems(response.data);
-    } catch (err) {
-      setErrorMessage('Hubo un error al cargar los elementos.');
-    } finally {
-      setLoading(false);
+    setErrorMessage(null); // Limpiamos errores previos
+    if (!items[endpoint]) {
+      // Si no hay ítems en el contexto, hacemos la llamada a la API
+      try {
+        await refreshItems(endpoint);
+      } catch (error) {
+        setErrorMessage('Hubo un error al cargar los ítems.');
+      }
     }
   };
 
-  // Método para obtener un ítem por ID
+  // Método para obtener un ítem por ID (únicamente si no está en el estado de selectedItem)
   const fetchItemById = async (id: string) => {
-    setLoading(true);
     setErrorMessage(null);
+    const currentItem = items[endpoint]?.find(item => item._id === id);
+    if (currentItem) {
+      setSelectedItem(currentItem); // Si el ítem ya está en el contexto, lo usamos directamente.
+      return;
+    }
+
+    // Si no está, hacemos la solicitud para cargarlo.
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
     try {
@@ -59,30 +53,25 @@ export const useItemManager = (itemName: string) => {
       setSelectedItem(response.data);
     } catch (error) {
       setErrorMessage('Hubo un error al cargar los datos del ítem.');
-    } finally {
-      setLoading(false);
     }
   };
 
   // Método para eliminar un ítem
-  const deleteItem = async (id: string) => {
-    setLoading(true);
+  const deleteItemHandler = async (id: string) => {
     const config = { headers: { Authorization: `Bearer ${token}` } };
 
     try {
       await api.delete(`${endpoint}/${id}`, config);
-      setItems((prevItems) => prevItems.filter((item) => item._id !== id));
+      deleteItem(endpoint, id); // Usamos deleteItem del contexto para actualizar los ítems
     } catch (error) {
       setErrorMessage('Hubo un error al eliminar el ítem.');
-    } finally {
-      setLoading(false);
     }
   };
 
   // useEffect para recargar los datos cuando cambia el endpoint o el selectedBusinessId
   useEffect(() => {
     fetchItems();
-  }, [endpoint, selectedBusinessId]); // Dependemos de endpoint y selectedBusinessId
+  }, [endpoint, selectedBusinessId]); // Solo dependemos de endpoint y selectedBusinessId
 
   // Actualiza el endpoint si el endpoint es 'business' y no se ha seleccionado un negocio
   useEffect(() => {
@@ -92,13 +81,13 @@ export const useItemManager = (itemName: string) => {
   }, [endpoint, selectedBusinessId, setEndpoint]);
 
   return {
-    items,
+    items: items[endpoint] || [], // Pasamos los ítems del contexto
     selectedItem,
     loading,
     errorMessage,
     fetchItems,
     fetchItemById,
-    deleteItem,
+    deleteItemHandler, // Usamos deleteItemHandler aquí para eliminar el ítem
     setSelectedItem, // Exponemos setSelectedItem aquí
   };
 };
