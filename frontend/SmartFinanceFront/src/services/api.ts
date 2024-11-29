@@ -1,12 +1,47 @@
-// api.js
+// api.ts
+
 import axios from 'axios';
 
-//console.log('API Base URL:', process.env.REACT_APP_API_BASE_URL); // Línea de depuración
-
+/**
+ * Axios instance for making HTTP requests to the backend API.
+ * Configured with a base URL, default headers, and a request timeout.
+ * Adds an Authorization token to each request if it exists in localStorage.
+ *
+ * @constant
+ * @type {AxiosInstance}
+ */
 const api = axios.create({
-    baseURL: 'http://localhost:4000', // Usando la variable de entorno
-    timeout: 1000,
-    headers: {'Content-Type': 'application/json'}
+  baseURL: 'http://localhost:4000', // Base URL for the API requests
+  timeout: 1000,                    // Request timeout in milliseconds
+  headers: {
+    'Content-Type': 'application/json', // Default content type for requests
+  },
 });
+
+/**
+ * Axios request interceptor to include Authorization header with a Bearer token.
+ * Reads token from localStorage and attaches it to request headers.
+ *
+ * @function
+ * @param {AxiosRequestConfig} config - The configuration of the outgoing Axios request.
+ * @returns {AxiosRequestConfig} Updated request configuration with Authorization header if token is available.
+ * @throws {Promise} Rejected promise if the request fails.
+ */
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    } else {
+      console.warn('== Interceptor - No token found, request may be rejected');
+    }
+    return config;
+  },
+  (error) => {
+    console.error('== Interceptor Error:', error); // Log 3
+    return Promise.reject(error);
+  }
+);
 
 export default api;

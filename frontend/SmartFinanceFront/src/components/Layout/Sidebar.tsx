@@ -1,51 +1,80 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faBusinessTime, faCashRegister, faBoxOpen, faFileInvoiceDollar, faChartLine } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '@components/Auth/AuthContext';
+import { useEndpoint } from '../../contexts/EndpointContext';
 import './Sidebar.css';
 
-const Sidebar = () => {
-  const { state } = useAuth(); // Acceder a state.token en lugar de token
+const Sidebar: React.FC = () => {
+  const { state } = useAuth();
+  const { token } = state;
+  const { selectedBusinessId, setEndpoint } = useEndpoint();
 
-  if (!state.token) {  // Usar state.token para verificar si está autenticado
-    return null; // No mostrar la barra lateral si no hay token
+  if (!token) {
+    console.log('Sidebar hidden due to missing token');
+    return null;
   }
 
+  const handleClick = (endpoint: string) => {
+    setEndpoint(endpoint);
+  };
+
   return (
-    <div className="sidebar Seychelle-Islands-bg-5">
+    <div className="sidebar">
       <ul>
         <li>
-          <Link to="/">
+          <Link
+            to="/"
+            className={!selectedBusinessId ? 'disabled' : ''}
+            onClick={() => handleClick('/api/dashboard')}
+          >
             <FontAwesomeIcon icon={faTachometerAlt} className="icon" />
             <span className="text">Dashboard</span>
           </Link>
         </li>
         <li>
-          <Link to="/business">
+          <Link to="/business" onClick={() => handleClick('/api/businesses')}>
             <FontAwesomeIcon icon={faBusinessTime} className="icon" />
             <span className="text">Negocios</span>
           </Link>
         </li>
         <li>
-          <Link to="/sales">
+          <Link
+            to="/sales"
+            className={!selectedBusinessId ? 'disabled' : ''}
+            onClick={() => handleClick('/api/sales')}
+          >
             <FontAwesomeIcon icon={faCashRegister} className="icon" />
             <span className="text">Ventas</span>
           </Link>
         </li>
         <li>
-          <Link to="/products">
+          <Link
+            to="/products"
+            className={!selectedBusinessId ? 'disabled' : ''}
+            onClick={() => handleClick('/api/products')}
+          >
             <FontAwesomeIcon icon={faBoxOpen} className="icon" />
             <span className="text">Productos</span>
           </Link>
         </li>
         <li>
-          <Link to="/costs">
+          <Link
+            to="/costs"
+            className={!selectedBusinessId ? 'disabled' : ''}
+            onClick={() => handleClick('/api/costs')}
+          >
             <FontAwesomeIcon icon={faFileInvoiceDollar} className="icon" />
             <span className="text">Costos</span>
           </Link>
         </li>
         <li>
-          <Link to="/reports">
+          <Link
+            to="/reports"
+            className={!selectedBusinessId ? 'disabled' : ''}
+            onClick={() => handleClick('/api/reports')}
+          >
             <FontAwesomeIcon icon={faChartLine} className="icon" />
             <span className="text">Reportes</span>
           </Link>

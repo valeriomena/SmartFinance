@@ -13,108 +13,100 @@
 }
 
 .form-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.close-button {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--Seychelle-Islands-5);
-}
-
-.form-container h2 {
     text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.form-header h2 {
+    font-size: 1.5rem;
+    color: var(--Seychelle-Islands-5);
 }
 
 /* Estilos de los campos del formulario */
 .input-group {
-    position: relative;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center; /* Alinea los elementos verticalmente */
+  margin-bottom: 15px; /* Espaciado entre los campos */
 }
 
-.input-group label {
-    flex: 1;
-    display: flex;
-    align-items: center;
-}
-
-.input-group input,
-.input-group select {
-    width: 100%;
-    padding: 0.5rem 2.5rem 0.5rem 2.5rem;
-    /* Ajustar padding para el icono y el contenido */
-    border: 1px solid var(--Seychelle-Islands-3);
-    border-radius: 4px;
-    background-color: var(--Seychelle-Islands-bg-1);
-    transition: border-color 0.3s, background-color 0.3s;
-    box-sizing: border-box;
-    /* Incluye padding y borde en el ancho total del elemento */
+.input-group input {
+  flex: 1; /* Hace que el campo de entrada ocupe el espacio disponible */
+  padding: 10px;
+  font-size: 16px;
+  margin-left: 8px; /* Añade espacio entre el icono y el campo de entrada */
 }
 
 .input-group select {
-    padding-left: 1.5rem;
-    /* Asegurar que el padding izquierdo coincida con el padding del input */
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  margin-left: 8px;
 }
 
-.input-group input:focus,
-.input-group select:focus {
-    border-color: var(--Seychelle-Islands-4);
-    background-color: var(--Seychelle-Islands-bg-2);
-    outline: none;
+.input-group .fa {
+  font-size: 20px; /* Tamaño del icono */
+  color: #888; /* Color de los iconos */
 }
 
-.info-icon {
-    margin-left: 8px;
-    cursor: pointer;
-    color: var(--Seychelle-Islands-4);
+/* Mensajes de error debajo de cada campo */
+.info-error {
+    margin-top: 0.5rem;
+    color: var(--Seychelle-Islands-5);
+    font-size: 0.8rem;
 }
 
 /* Estilos del botón */
 .form-container button {
     background-color: var(--Seychelle-Islands-4);
-    /* Color de fondo del botón según la paleta */
     color: var(--Seychelle-Islands-1);
-    /* Color del texto del botón según la paleta */
     border: none;
     border-radius: 4px;
     padding: 0.75rem;
     cursor: pointer;
     font-size: 1rem;
     transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 1rem;
 }
 
 .form-container button:hover {
     background-color: var(--Seychelle-Islands-3);
-    /* Color de fondo cuando el botón está en hover */
 }
 
 .form-container button:active {
     background-color: var(--Seychelle-Islands-2);
-    /* Color de fondo cuando el botón está activo */
 }
 
 .success-message {
     color: #28a745;
-    /* Verde para el mensaje de éxito */
     text-align: center;
     margin-top: 1rem;
 }
 
-.info-error {
-    margin-top: 1rem;
-    color: var(--Seychelle-Islands-5);
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
 }
-.projection-container {
-    margin-top: 2rem;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.modal-content .close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
 }

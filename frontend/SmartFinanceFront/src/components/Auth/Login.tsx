@@ -2,83 +2,38 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { AxiosError } from 'axios';
-import { useAuth } from '../Auth/AuthContext';  
+import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+import { useAuth } from '../Auth/AuthContext';
+import ForgotPassword from '../Auth/ForgotPassword';
+import Register from './Register';
 import '../../styles/Form.css';
 import '../../styles/SlideForm.css';
 
-/**
- * Props for the Login component.
- */
-interface LoginProps {
-  /** Function to close the login form. */
-  onClose: () => void;
-}
-
-/**
- * Login component allows users to log into the application.
- * It handles form submission, calls the API for login, and manages error states.
- * 
- * @component
- * @example
- * const handleClose = () => { console.log('Closed!'); }
- * return (
- *   <Login onClose={handleClose} />
- * );
- * 
- * @param {LoginProps} props - The component props.
- * @returns {JSX.Element} - Rendered Login component.
- */
-const Login: React.FC<LoginProps> = ({ onClose }) => {
+const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);  // Error state
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
   const navigate = useNavigate();
-
-  // Obtener la función login del contexto
   const { login } = useAuth();
 
-  /**
-   * Handle form submission for login.
-   * This function sends the login data to the API and handles responses.
-   * 
-   * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
-   * @returns {Promise<void>}
-   */
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setErrorMessage(null); // Reset previous error message
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setErrorMessage(null);
 
     try {
       const response = await api.post('/api/users/login', { email, password });
-
-      // Save token and user ID in localStorage
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('userId', response.data.userId);
-
-      // Update auth context
-      login(response.data.token, response.data.userId);
-
-      // Redirect and close the form
+      const { token, userId } = response.data;
+      login(token, userId);
       navigate('/');
-      onClose();
-
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      if (axiosError.response) {
-        // Handle specific errors
-        setErrorMessage('Error en el inicio de sesión. Verifica tus credenciales.');
-      } else if (axiosError.request) {
-        setErrorMessage('No se recibió respuesta del servidor.');
-      } else {
-        setErrorMessage('Ocurrió un error inesperado. Inténtalo nuevamente.');
-      }
+    } catch (error: any) {
+      setErrorMessage('Credenciales incorrectas.');
     }
   };
 
   return (
-    <div className="slide-form login-container">
+    <div className="login-container">
       <h2>Iniciar Sesión</h2>
       <form onSubmit={handleSubmit}>
         <div className="input-group">
@@ -102,13 +57,32 @@ const Login: React.FC<LoginProps> = ({ onClose }) => {
           />
         </div>
         <button type="submit">Entrar</button>
-        <button type="button" className="close-button" onClick={onClose}>
-          <FontAwesomeIcon icon={faTimes} /> 
+
+        {/* Botón para abrir el formulario de registro */}
+        <button type="button" onClick={() => setShowRegister(true)}>
+          ¿No tienes una cuenta? Regístrate
         </button>
+
+        <button type="button" onClick={() => setShowForgotPassword(true)}>
+          ¿Olvidaste tu contraseña?
+        </button>
+
+        {errorMessage && <p className="error-message">{errorMessage}</p>}
       </form>
 
-      {/* Show error message if exists */}
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {/* Formulario de recuperación de contraseña */}
+      {showForgotPassword && (
+        <ForgotPassword onClose={() => setShowForgotPassword(false)} />
+      )}
+
+      {/* Formulario de registro como modal */}
+      {showRegister && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <Register onClose={() => setShowRegister(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

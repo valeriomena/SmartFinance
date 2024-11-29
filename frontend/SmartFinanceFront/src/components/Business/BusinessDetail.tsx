@@ -2,9 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../services/api';
 
+// Definir el tipo del negocio
+interface Business {
+  _id: string;
+  name: string;
+  description: string;
+}
+
 const BusinessDetail = () => {
   const { id } = useParams();
-  const [business, setBusiness] = useState(null);
+  const [business, setBusiness] = useState<Business | null>(null); // Definir tipo Business o null
 
   useEffect(() => {
     api.get(`/businesses/${id}`)

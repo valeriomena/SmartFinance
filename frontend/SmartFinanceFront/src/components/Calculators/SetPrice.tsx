@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle, faTimes, faCalculator } from '@fortawesome/free-solid-svg-icons';
-import CalculateVariableCosts from '@components/Costs/CalculateVariableCosts';
+import CalculateVariableCosts from '@components/Calculators/CalculateVariableCosts';
 import '../../styles/Form.css';
 import '../../styles/SlideForm.css';
 

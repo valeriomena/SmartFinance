@@ -3,10 +3,6 @@
     background-color: var(--Seychelle-Islands-5);
     color: var(--Seychelle-Islands-1);
     text-align: center;
-    padding: 1rem;
-    border-top: 1px solid var(--Seychelle-Islands-4);
-    margin-top: auto;
-    /* Mueve el footer al fondo del contenedor */
 }
 
 .footer {

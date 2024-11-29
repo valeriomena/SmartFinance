@@ -1,22 +1,46 @@
+/* register-container */
 .register-container {
     width: 100%;
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    animation: slideIn 0.5s ease-out;
+    opacity: 0;
+    animation-fill-mode: forwards;
 }
 
+/* Animación de entrada */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Título */
 .register-container h2 {
     margin-bottom: 1.5rem;
     text-align: center;
 }
 
+/* Contenedor de los campos de entrada */
 .register-container .input-group {
     display: flex;
     align-items: center;
     margin-bottom: 1rem;
+    position: relative;
 }
 
+/* Estilo para los inputs */
 .register-container .input-group input {
     flex: 1;
     padding: 0.75rem;
@@ -25,11 +49,15 @@
     border-radius: 4px;
 }
 
+/* Estilo para los íconos */
 .register-container .input-group svg {
     font-size: 20px;
     color: #333;
+    position: absolute;
+    left: 10px;
 }
 
+/* Botón de envío */
 .register-container button {
     width: 100%;
     padding: 0.75rem;
@@ -42,6 +70,44 @@
     transition: background-color 0.3s;
 }
 
+/* Cambio de color en hover */
 .register-container button:hover {
     background-color: var(--Seychelle-Islands-3);
+}
+
+/* Mensajes de error al final */
+.register-container .error-message {
+    color: #ff0000;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+/* Animación de error (opcional) */
+@keyframes showError {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.register-container .error-message {
+    animation: showError 1s ease-in-out;
+}
+
+/* Botón de cerrar */
+.close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Transition de la animación */
+.register-container .input-group input {
+    padding-left: 2.5rem;
+    /* espacio para el icono */
 }

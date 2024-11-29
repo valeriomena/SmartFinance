@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBuilding, faTag, faDollarSign, faCalculator } from '@fortawesome/free-solid-svg-icons';
-import CalculateFixedCosts from './CalculateFixedCosts';
+import CalculateFixedCosts from '../Calculators/CalculateFixedCosts';
 import '../../styles/Form.css'; // Importa los estilos del formulario
 import '../../styles/SlideForm.css'; // Importa los estilos del formulario deslizante
 
