@@ -1,45 +1,37 @@
 #root {
     max-width: 1280px;
-    /* Máximo ancho de la página */
     margin: 0 auto;
-    /* Centra horizontalmente el contenido */
     padding: 2rem;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 .main-content {
     padding-top: calc(1.5rem + 10px);
-        /* Ajusta este valor según la altura de tu header */
     display: flex;
-    /* Usa flexbox para centrar el contenido */
     justify-content: center;
-    /* Centra horizontalmente */
     align-items: flex-start;
-    /* Alinea el contenido en la parte superior */
     flex-direction: column;
-    /* Coloca el contenido en columna */
     width: 100%;
     margin: 0 auto;
     padding: 1rem 10px;
-    /* Espaciado alrededor del contenido */
     box-sizing: border-box;
-    /* Asegura que el padding no desborde el ancho */
 }
 
 .sidebar {
     position: fixed;
     top: 60px;
-    /* Ajusta la posición debajo del header */
     left: 0;
     height: 100%;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 .content {
     margin-left: 70px;
-    /* Añadir margen a la izquierda para evitar que el contenido se superponga con el sidebar */
     width: 100%;
     max-width: 1000px;
-    /* Define un máximo ancho para el contenido */
     padding: 2rem;
     text-align: left;
-    /* Si quieres que el texto esté alineado a la izquierda */
+    background-color: var(--background-color);
 }

@@ -1,15 +1,22 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { act, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faBusinessTime, faCashRegister, faBoxOpen, faFileInvoiceDollar, faChartLine } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '@components/Auth/AuthContext';
+import { toggleTheme } from '../../themeToggle';
 import { useEndpoint } from '../../contexts/EndpointContext';
 import './Sidebar.css';
 
 const Sidebar: React.FC = () => {
-  const { state } = useAuth();
+    const { state } = useAuth();
+    const [isDarkMode, setIsDarkMode] = useState(false);
   const { token } = state;
-  const { selectedBusinessId, setEndpoint } = useEndpoint();
+    const { selectedBusinessId, setEndpoint } = useEndpoint();
+    const handleToggleTheme = () => {
+        setIsDarkMode((prev) => !prev);
+        toggleTheme();
+    };
 
   if (!token) {
     console.log('Sidebar hidden due to missing token');
@@ -23,6 +30,14 @@ const Sidebar: React.FC = () => {
   return (
     <div className="sidebar">
       <ul>
+              <li>
+                  <button
+                      onClick={handleToggleTheme}
+                      className={`theme-toggle ${isDarkMode ? 'active' : ''}`}
+                  >
+                      Modo {isDarkMode ? 'Claro' : 'Oscuro'}
+                  </button>
+              </li>
         <li>
           <Link
             to="/"
