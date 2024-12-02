@@ -1,0 +1,67 @@
+SmartFinance-frontend/
+├── public/
+│   ├── index.html
+├── src/
+│   ├── assets/
+│   │   ├── Dashboard.js
+│   │   ├── NotFound.js
+│   ├── components/
+│   │   ├── Auth/
+│   │   │   ├── AuthContext.tsx
+│   │   │   ├── login.css
+│   │   │   ├── login.tsx
+│   │   │   ├── Register.tsx
+│   │   ├── Layout/
+│   │   │   ├── Header.tsx
+│   │   │   ├── Header.css
+│   │   │   ├── Footer.tsx
+│   │   │   ├── Footer.css
+│   │   │   ├── Sidebar.tsx
+│   │   │   ├── Sidebar.css
+│   │   │   ├── MainLayout.css
+│   │   │   ├── Layout.css
+│   │   │   ├── Layout.tsx
+│   │   │   ├── paleta.css
+│   │   ├── Business/
+│   │   │   ├── BusinessList.js
+│   │   │   ├── BusinessDetail.js
+│   │   │   ├── BusinessForm.js
+│   │   ├── Sales/
+│   │   │   ├── SalesList.js
+│   │   │   ├── SalesDetail.js
+│   │   │   ├── SalesForm.js
+│   │   ├── Products/
+│   │   │   ├── ProductList.js
+│   │   │   ├── ProductDetail.js
+│   │   │   ├── ProductForm.js
+│   │   ├── Costs/
+│   │   │   ├── CostList.js
+│   │   │   ├── CostDetail.js
+│   │   │   ├── CostForm.js
+│   │   ├── Reports/
+│   │   │   ├── ReportsList.js
+│   │   │   ├── ReportDetail.js
+│   │   │   ├── ReportForm.js
+│   │   ├── Indicators/
+│   │   │   ├── IndicatorList.js
+│   │   │   ├── IndicatorDetail.js
+│   │   │   ├── IndicatorForm.js
+│   │   ├── Auth/
+│   │   │   ├── Login.js
+│   │   │   ├── Register.js
+│   │   │   ├── AuthContext.tsx
+│   ├── hooks/
+│   │   ├── useRegisterUser.tsx
+│   ├── pages/
+│   │   ├── Dashboard.js
+│   │   ├── NotFound.js
+│   ├── services/
+│   │   ├── api.js
+│   │   ├── countryService.tsx
+│   ├── styles/
+│   │   ├── Form.css
+│   ├── App.tsx
+│   ├── index.js
+├── .env
+├── package.json
+├── README.md

@@ -1,0 +1,70 @@
+/* Sidebar.css */
+.sidebar {
+    width: 60px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: rgba(59, 47, 128, 0.5);
+    transition: width 0.3s ease;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+/* Sidebar.css */
+
+.sidebar a.disabled {
+    color: #999;
+    pointer-events: none;
+    opacity: 0.5;
+}
+.sidebar:hover {
+    width: 200px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.sidebar li {
+    padding: 20px;
+    text-align: right;
+    width: 100%;
+}
+
+.sidebar a {
+    color: #FAEDDA;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.sidebar a .text {
+    margin-left: 10px;
+    display: none;
+}
+
+.sidebar:hover a .text {
+    display: inline;
+}
+
+.sidebar a:hover {
+    color: #AEE8CA;
+}
+
+/* Reducir el tamaño de los íconos cuando el sidebar es compacto */
+.sidebar .icon {
+    font-size: 1.2em;
+    /* Tamaño más pequeño para los íconos en el estado compacto */
+}
+
+/* Aumentar el tamaño de los íconos cuando el sidebar está expandido */
+.sidebar:hover .icon {
+    font-size: 1.5em;
+    /* Tamaño más grande cuando el sidebar está expandido */
+}

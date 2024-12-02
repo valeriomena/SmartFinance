@@ -1,0 +1,64 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependencias
+/node_modules
+
+# Entorno
+.env
+
+# Sistemas operativos
+.DS_Store
+Thumbs.db
+
+# Directorios de construcción
+dist/
+build/
+
+# Cobertura de pruebas
+coverage/
+
+# Configuración de IDE
+.vscode/
+.idea/
+
+# Archivos temporales
+tmp/
+temp/
+
+# Directorio de configuración local
+config/local.js
+
+# Archivos de salida de procesos
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Archivos de editor
+*.sublime-workspace
+*.sublime-project
+
+# Archivos de lock
+package-lock.json
+yarn.lock
+.pnpm-lock.yaml
+
+# Configuración de ESLint
+.eslintcache
+
+# Archivos de configuración de servicio
+.pm2/
+
+# Archivos de configuración de JetBrains
+*.iml
+*.ipr
+*.iws
+
+# Directorios específicos de npm
+.npm/
+
+# Archivos de configuración de SonarQube
+.sonar/

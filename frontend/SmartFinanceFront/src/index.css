@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Variables CSS para temas personalizados */
+:root {
+    --background-color: #ffffff;
+    --text-color: #213547;
+    --link-color: #646cff;
+    --button-bg: #f9f9f9;
+}
+
+[data-theme="dark"] {
+    --background-color: #242424;
+    --text-color: rgba(255, 255, 255, 0.87);
+    --link-color: #535bf2;
+    --button-bg: #1a1a1a;
+}
+
+/* Aplicando estilos personalizados con Tailwind */
+body {
+    @apply bg-[var(--background-color)] text-[var(--text-color)] font-sans m-0 p-0;
+}
+
+a {
+    @apply no-underline text-[var(--link-color)];
+}
+
+    a:hover {
+        @apply text-indigo-400;
+    }
+
+button {
+    @apply bg-[var(--button-bg)] rounded-lg border border-transparent px-4 py-2 text-base font-medium transition-all cursor-pointer;
+}
+
+    button:hover {
+        border-color: var(--link-color);
+    }
