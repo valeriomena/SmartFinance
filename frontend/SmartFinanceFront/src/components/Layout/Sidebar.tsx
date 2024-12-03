@@ -3,20 +3,13 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faBusinessTime, faCashRegister, faBoxOpen, faFileInvoiceDollar, faChartLine } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '@components/Auth/AuthContext';
-import { toggleTheme } from '../../themeToggle';
 import { useEndpoint } from '../../contexts/EndpointContext';
 import './Sidebar.css';
 
 const Sidebar: React.FC = () => {
     const { state } = useAuth();
-    const [isDarkMode, setIsDarkMode] = useState(false);
     const { token } = state;
     const { selectedBusinessId, setEndpoint } = useEndpoint();
-
-    const handleToggleTheme = () => {
-        setIsDarkMode((prev) => !prev);
-        toggleTheme();
-    };
 
     const handleClick = (endpoint: string) => {
         setEndpoint(endpoint);

@@ -1,179 +1,144 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../services/api'; // Asegúrate de importar la instancia de Axios configurada
+import api from '../../services/api';
 import { fetchCountries } from '../../services/countryService';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope, faLock, faTimes, faPhone, faUser } from '@fortawesome/free-solid-svg-icons';
-
-import '../../styles/Form.css';
-import '../../styles/SlideForm.css';
 
 interface RegisterProps {
-  onClose: () => void;
-}
-
-interface RegisterResponse {
-  token: string;
-  userId: string;
+    onClose: () => void;
 }
 
 const Register: React.FC<RegisterProps> = ({ onClose }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('user');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [phoneCountryCode, setPhoneCountryCode] = useState('');
-  const [whatsappCountryCode, setWhatsappCountryCode] = useState('');
-  const [countries, setCountries] = useState<any[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState<any | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const navigate = useNavigate();
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [countries, setCountries] = useState<any[]>([]);
+    const [selectedCountry, setSelectedCountry] = useState<string>('');
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    const loadCountries = async () => {
-      try {
-        const countriesData = await fetchCountries() as any[];
-        setCountries(countriesData);
-      } catch (error) {
-        console.error('Error fetching countries:', error);
-      }
+    useEffect(() => {
+        const loadCountries = async () => {
+            try {
+                const countriesData = await fetchCountries();
+                setCountries(countriesData);
+            } catch (error) {
+                console.error('Error fetching countries:', error);
+            }
+        };
+
+        loadCountries();
+    }, []);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setErrorMessage(null);
+
+        if (password !== confirmPassword) {
+            setErrorMessage('Las contraseñas no coinciden');
+            return;
+        }
+
+        try {
+            const response = await api.post('/api/users', {
+                name,
+                email,
+                password,
+                phone: phoneNumber,
+                country: selectedCountry,
+            });
+
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('userId', response.data.userId);
+            navigate('/');
+            onClose();
+        } catch (error: any) {
+            setErrorMessage('Ocurrió un error al registrar.');
+        }
     };
 
-    loadCountries();
-  }, []);
+    return (
+        <div className="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50">
+            <form
+                onSubmit={handleSubmit}
+                className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md space-y-4"
+            >
+                <h2 className="text-2xl font-bold text-center text-gray-800">Registro</h2>
+                {errorMessage && (
+                    <p className="text-sm text-red-500 text-center">{errorMessage}</p>
+                )}
 
-  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const countryCode = e.target.value;
-    const country = countries.find((c) => c.cca2 === countryCode);
-    setSelectedCountry(country);
-    setPhoneCountryCode(country ? country.idd.root + (country.idd.suffixes ? country.idd.suffixes[0] : '') : '');
-  };
+                <input
+                    type="text"
+                    placeholder="Nombre completo"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                    required
+                />
+                <input
+                    type="email"
+                    placeholder="Correo electrónico"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                    required
+                />
+                <input
+                    type="password"
+                    placeholder="Contraseña"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                    required
+                />
+                <input
+                    type="password"
+                    placeholder="Confirmar contraseña"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                    required
+                />
+                <input
+                    type="text"
+                    placeholder="Número de teléfono"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                    required
+                />
+                <select
+                    value={selectedCountry}
+                    onChange={(e) => setSelectedCountry(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                    required
+                >
+                    <option value="">Seleccionar país</option>
+                    {countries.map((country) => (
+                        <option key={country.cca3} value={country.cca3}>
+                            {country.name.common}
+                        </option>
+                    ))}
+                </select>
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setErrorMessage(null);
-
-    if (password !== confirmPassword) {
-      setErrorMessage('Las contraseñas no coinciden');
-      return;
-    }
-
-    if (!name || !email || !password || !phoneNumber || !phoneCountryCode) {
-      setErrorMessage('Todos los campos son obligatorios');
-      return;
-    }
-
-    try {
-      // Usando la instancia personalizada `api` en lugar de `axios`
-      const response = await api.post<RegisterResponse>('/api/users', {
-        name,
-        email,
-        password,
-        role,
-        phone: {
-          number: phoneNumber,
-          country_code: phoneCountryCode,
-        },
-        whatsapp_country_code: whatsappCountryCode,
-      });
-
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('userId', response.data.userId);
-      navigate('/');
-      onClose();
-    } catch (error: any) {
-      if (error.response) {
-        const data = error.response?.data;
-        setErrorMessage(data?.message.includes('duplicate key error') ? 
-          'Este correo ya está registrado. Usa otro correo.' :
-          'Error en el registro. Intenta nuevamente.');
-      } else {
-        setErrorMessage('Ocurrió un error inesperado.');
-      }
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="register-container">
-      <h2>Registrar</h2>
-
-      <div className="input-group">
-        <FontAwesomeIcon icon={faUser} />
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Nombre completo"
-          required
-        />
-      </div>
-
-      <div className="input-group">
-        <FontAwesomeIcon icon={faEnvelope} />
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Correo electrónico"
-          required
-        />
-      </div>
-
-      <div className="input-group">
-        <FontAwesomeIcon icon={faLock} />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Contraseña"
-          required
-        />
-      </div>
-
-      <div className="input-group">
-        <FontAwesomeIcon icon={faLock} />
-        <input
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="Confirmar contraseña"
-          required
-        />
-      </div>
-
-      <div className="input-group">
-        <FontAwesomeIcon icon={faPhone} />
-        <input
-          type="text"
-          value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-          placeholder="Número de teléfono"
-          required
-        />
-      </div>
-
-      {/* País */}
-      <div className="input-group">
-        <select onChange={handleCountryChange} value={selectedCountry?.cca2}>
-          <option value="">Selecciona un país</option>
-          {countries.map((country) => (
-            <option key={country.cca2} value={country.cca2}>
-              {country.name.common}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="error-message">
-        {errorMessage && <p>{errorMessage}</p>}
-      </div>
-
-      <button type="submit">Registrar</button>
-      <span className="close-button" onClick={onClose}><FontAwesomeIcon icon={faTimes} /></span>
-    </form>
-  );
+                <button
+                    type="submit"
+                    className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+                >
+                    Registrar
+                </button>
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className="w-full text-gray-600 py-2 rounded-lg hover:bg-gray-100 transition"
+                >
+                    Cancelar
+                </button>
+            </form>
+        </div>
+    );
 };
 
 export default Register;
