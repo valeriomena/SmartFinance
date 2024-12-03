@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import PrivateRoute from '../Routes/PrivateRoute';
+import SalesProjectionCalculator from '@components/Calculators/SalesProjectionCalculator';
 import ItemContainer from '../Container/ItemContainer';
 import Home from '../Home'; // Importa el componente Home
 import { fields } from '../../types/formFields';
@@ -8,7 +9,7 @@ import { fields } from '../../types/formFields';
 const AppRoutes: React.FC = () => {
     return (
         <Routes>
-            {/* Página de Inicio */}
+            {/* Pï¿½gina de Inicio */}
             <Route path="/" element={<Home />} />
 
             {/* Rutas Protegidas */}
